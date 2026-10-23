@@ -1,0 +1,233 @@
+import React, { useState, useEffect, useCallback } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import type { DestinationId } from "../data/destinations";
+import type { Tour } from "../data/tours";
+import type { StoryScreenshotAsset } from "../data/reviews";
+import { getDictionary } from "../i18n";
+import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useSyncSceneTheme } from "../hooks/useActiveDestination";
+import { useFavorites } from "../hooks/useFavorites";
+import { useTourComparison } from "../hooks/useTourComparison";
+import type { Locale } from "../lib/whatsapp";
+
+// Layout components
+import { Header } from "../components/layout/Header";
+import { MobileNavigation } from "../components/layout/MobileNavigation";
+import { Footer } from "../components/layout/Footer";
+import { ScrollToTop } from "../components/common/ScrollToTop";
+import { ScrollProgressIndicator } from "../components/common/ScrollProgressIndicator";
+import { BackToTop } from "../components/common/BackToTop";
+
+// Modals
+import { TourDetails } from "../components/tours/TourDetails";
+import { StoryLightboxModal } from "../components/reviews/StoryLightboxModal";
+import { TourCompareModal } from "../components/tours/TourCompareModal";
+
+// Pages
+import { HomePage } from "../components/pages/HomePage";
+import { ToursCatalogPage } from "../components/pages/ToursCatalogPage";
+import { TourDetailPage } from "../components/pages/TourDetailPage";
+import { DestinationPage } from "../components/pages/DestinationPage";
+import { AboutPage } from "../components/pages/AboutPage";
+import { ReviewsPage } from "../components/pages/ReviewsPage";
+import { FAQPage } from "../components/pages/FAQPage";
+import { ContactsPage } from "../components/pages/ContactsPage";
+
+function AppContent() {
+  const [locale, setLocale] = useState<Locale>("ru");
+  const [activeDestinationId, setActiveDestinationId] =
+    useState<DestinationId>("kyrgyzstan");
+  const [activeTourDetails, setActiveTourDetails] = useState<Tour | null>(null);
+  const [activeStoryModal, setActiveStoryModal] =
+    useState<StoryScreenshotAsset | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
+
+  const reducedMotion = useReducedMotion();
+  const dict = getDictionary(locale);
+
+  const { favorites, toggleFavorite, favoritesCount } = useFavorites();
+  const { comparedTours, toggleCompare, clearCompare } = useTourComparison(3);
+
+  useSyncSceneTheme(activeDestinationId);
+
+  useEffect(() => {
+    document.documentElement.lang = locale === "kz" ? "kk" : "ru";
+  }, [locale]);
+
+  const handleBookTour = useCallback((tour: Tour) => {
+    setActiveTourDetails(tour);
+  }, []);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#0a1013] text-[#EDE6DA] relative selection:bg-red-500/30 selection:text-white">
+      {/* Scroll Progress Bar at the very top */}
+      <ScrollProgressIndicator />
+
+      {/* Primary Global Navigation Header */}
+      <Header
+        dict={dict}
+        locale={locale}
+        onToggleLocale={setLocale}
+        favoritesCount={favoritesCount}
+        onOpenMobileMenu={() => setMobileMenuOpen(true)}
+      />
+
+      {/* Mobile Drawer Menu */}
+      <MobileNavigation
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        dict={dict}
+        locale={locale}
+        onToggleLocale={setLocale}
+        favoritesCount={favoritesCount}
+      />
+
+      {/* Route Views */}
+      <main className="flex-1">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                dict={dict}
+                locale={locale}
+                reducedMotion={reducedMotion}
+                activeDestinationId={activeDestinationId}
+                onActiveDestinationChange={setActiveDestinationId}
+                onBookTour={handleBookTour}
+                onOpenTourDetails={(tour) => setActiveTourDetails(tour)}
+                onOpenStory={(story) => setActiveStoryModal(story)}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                comparedTours={comparedTours}
+                onToggleCompare={toggleCompare}
+              />
+            }
+          />
+
+          <Route
+            path="/tours"
+            element={
+              <ToursCatalogPage
+                dict={dict}
+                locale={locale}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                comparedTours={comparedTours}
+                onToggleCompare={toggleCompare}
+                onOpenCompareModal={() => setCompareModalOpen(true)}
+              />
+            }
+          />
+
+          <Route
+            path="/tours/:slug"
+            element={
+              <TourDetailPage
+                dict={dict}
+                locale={locale}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                comparedTours={comparedTours}
+                onToggleCompare={toggleCompare}
+                onOpenStory={(story) => setActiveStoryModal(story)}
+              />
+            }
+          />
+
+          <Route
+            path="/destinations/:destinationId"
+            element={
+              <DestinationPage
+                dict={dict}
+                locale={locale}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                comparedTours={comparedTours}
+                onToggleCompare={toggleCompare}
+                onOpenTourDetails={(tour) => setActiveTourDetails(tour)}
+              />
+            }
+          />
+
+          <Route
+            path="/destinations"
+            element={<Navigate to="/tours" replace />}
+          />
+
+          <Route
+            path="/about"
+            element={<AboutPage dict={dict} locale={locale} />}
+          />
+
+          <Route
+            path="/reviews"
+            element={
+              <ReviewsPage
+                dict={dict}
+                locale={locale}
+                onOpenStory={(story) => setActiveStoryModal(story)}
+              />
+            }
+          />
+
+          <Route
+            path="/faq"
+            element={<FAQPage dict={dict} locale={locale} />}
+          />
+
+          <Route
+            path="/contacts"
+            element={<ContactsPage dict={dict} locale={locale} />}
+          />
+
+          {/* Fallback to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+
+      {/* Global Footer */}
+      <Footer dict={dict} locale={locale} />
+
+      {/* Modals & Overlays */}
+      <TourDetails
+        tour={activeTourDetails}
+        onClose={() => setActiveTourDetails(null)}
+        onSelectForBookingForm={handleBookTour}
+        dict={dict}
+        locale={locale}
+      />
+
+      <StoryLightboxModal
+        activeStory={activeStoryModal}
+        onClose={() => setActiveStoryModal(null)}
+        onSelectStory={(story) => setActiveStoryModal(story)}
+        dict={dict}
+        locale={locale}
+      />
+
+      <TourCompareModal
+        open={compareModalOpen}
+        onClose={() => setCompareModalOpen(false)}
+        selectedTourIds={comparedTours}
+        onRemoveTour={toggleCompare}
+        locale={locale}
+      />
+
+      {/* Floating Back to Top Button */}
+      <BackToTop />
+    </div>
+  );
+}
+
+export function App() {
+  return (
+    <BrowserRouter>
+      <ScrollToTop />
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+export default App;

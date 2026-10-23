@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@import "./glass.css";
+
+:root {
+  --font-display: "Unbounded", system-ui, -apple-system, sans-serif;
+  --font-sans: "Onest", system-ui, -apple-system, sans-serif;
+
+  /* Dynamic scene CSS custom properties */
+  --scene-primary: #163E54;
+  --scene-accent: #6BAFB3;
+  --scene-surface: #E8E6DF;
+  --scene-charcoal: #182C32;
+  --scene-glass-tint: rgba(22, 62, 84, 0.32);
+  --scene-glow: rgba(107, 175, 179, 0.25);
+}
+
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  background-color: #0d1518;
+  color: #EDE6DA;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: clip;
+  background-color: #0d1518;
+  color: #EDE6DA;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.headline-hero {
+  font-family: var(--font-display);
+  font-size: clamp(2.15rem, 4.8vw, 4.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.headline-country {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6.8vw, 6.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.headline-section {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.2vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.editorial-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Subtle Ken Burns ambient drift when reduced motion is off */
+@keyframes kenBurnsSlow {
+  0% {
+    transform: scale(1.03) translate3d(0%, 0%, 0);
+  }
+  50% {
+    transform: scale(1.08) translate3d(-1.2%, -0.6%, 0);
+  }
+  100% {
+    transform: scale(1.03) translate3d(0%, 0%, 0);
+  }
+}
+
+.animate-ken-burns {
+  animation: kenBurnsSlow 26s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes scrollPulse {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.animate-scroll-indicator {
+  animation: scrollPulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
