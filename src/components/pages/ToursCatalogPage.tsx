@@ -269,6 +269,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
                 dict={dict}
                 locale={locale}
                 directLink={true}
+                useCatalogImage={true}
                 isFavorite={favorites.includes(tour.id)}
                 onToggleFavorite={onToggleFavorite}
                 isCompared={comparedTours.includes(tour.id)}

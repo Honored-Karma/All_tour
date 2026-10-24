@@ -20,6 +20,7 @@ interface TourCardProps {
   isCompared?: boolean;
   onToggleCompare?: (tourId: string) => void;
   directLink?: boolean;
+  useCatalogImage?: boolean;
 }
 
 export const TourCard: React.FC<TourCardProps> = ({
@@ -35,9 +36,20 @@ export const TourCard: React.FC<TourCardProps> = ({
   isCompared,
   onToggleCompare,
   directLink = true,
+  useCatalogImage = false,
 }) => {
   const [imgFailed, setImgFailed] = useState(false);
   const destination = getDestinationById(tour.destinationId);
+
+  const displayImage =
+    useCatalogImage && tour.catalogCardImage
+      ? tour.catalogCardImage
+      : tour.image;
+
+  const imagePosition =
+    useCatalogImage && tour.catalogCardImagePosition
+      ? tour.catalogCardImagePosition
+      : undefined;
 
   const durationText = tour.duration
     ? tour.duration[locale]
@@ -80,11 +92,12 @@ export const TourCard: React.FC<TourCardProps> = ({
             >
               {!imgFailed && (
                 <img
-                  src={tour.image}
+                  src={displayImage}
                   alt={tour.title[locale]}
                   loading="lazy"
                   referrerPolicy="no-referrer"
                   onError={() => setImgFailed(true)}
+                  style={imagePosition ? { objectPosition: imagePosition } : undefined}
                   className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                 />
               )}
@@ -98,11 +111,12 @@ export const TourCard: React.FC<TourCardProps> = ({
             >
               {!imgFailed && (
                 <img
-                  src={tour.image}
+                  src={displayImage}
                   alt={tour.title[locale]}
                   loading="lazy"
                   referrerPolicy="no-referrer"
                   onError={() => setImgFailed(true)}
+                  style={imagePosition ? { objectPosition: imagePosition } : undefined}
                   className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                 />
               )}

@@ -24,7 +24,7 @@ export const OFFICIAL_LOGO = {
   transparentPng: "/assets/brand/logo-transparent.png",
   markPng: "/assets/brand/logo-mark.png",
   faviconPng: "/favicon.png",
-  groupChinaPhoto: "/assets/brand/group-china-tour.jpg",
+  groupChinaPhoto: "/assets/brand/group-china-tour.png",
 };
 
 export const brandAssets: BrandAssetItem[] = [

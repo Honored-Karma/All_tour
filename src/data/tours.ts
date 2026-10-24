@@ -59,6 +59,8 @@ export interface Tour {
   departureDates: string[];
   departureCity: LocalizedText;
   image: string;
+  catalogCardImage?: string;
+  catalogCardImagePosition?: string;
   gallery: string[];
   media: TourMedia[];
   sourceAssets: string[];
@@ -119,6 +121,8 @@ export const tours: Tour[] = [
       kz: "Алматы",
     },
     image: "/media/kyrgyzstan-hero.jpg",
+    catalogCardImage: "/assets/bishkek-kyrgyzstan-travel-photo-20230627111204361-main-image.jpg",
+    catalogCardImagePosition: "center 45%",
     gallery: [
       "/media/kyrgyzstan-hero.jpg",
       "/media/kyrgyzstan-2.jpg",
@@ -284,6 +288,8 @@ export const tours: Tour[] = [
       kz: "Алматы",
     },
     image: "/media/china-hero.jpg",
+    catalogCardImage: "/assets/14346911_14346911_1445576022832.jpg",
+    catalogCardImagePosition: "center 25%",
     gallery: [
       "/media/china-hero.jpg",
       "/assets/brand/photo_1.jpg",
@@ -518,7 +524,7 @@ export const tours: Tour[] = [
       "/assets/brand/photo_12.jpg",
       "/assets/brand/photo_8.jpg",
       "/assets/brand/photo_7.jpg",
-      "/assets/brand/group-china-tour.jpg",
+      "/assets/brand/group-china-tour.png",
     ],
     sourceAssets: ["photo_12", "photo_8", "photo_7", "photo_2"],
     media: [
@@ -570,7 +576,7 @@ export const tours: Tour[] = [
         },
       },
       {
-        src: "/assets/brand/group-china-tour.jpg",
+        src: "/assets/brand/group-china-tour.png",
         type: "photo",
         sourceAsset: "photo_2",
         alt: {
