@@ -1,14 +1,71 @@
 @import "tailwindcss";
 @import "./glass.css";
 
+/* ==========================================================================
+   Montserrat Font Declarations (SIL Open Font License 1.1)
+   Supports Latin, Latin-Ext, Cyrillic, Cyrillic Extended, Kazakh & Currency
+   ========================================================================== */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Variable.ttf') format('truetype-variations'),
+       url('/fonts/montserrat/Montserrat-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Italic-Variable.ttf') format('truetype-variations'),
+       url('/fonts/montserrat/Montserrat-Italic-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Explicit weight aliases for complete browser compatibility */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Variable.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Variable.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Variable.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Variable.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: "Onest", "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Unbounded", "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 :root {
-  --font-display: "Unbounded", "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-sans: "Onest", "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Dynamic scene CSS custom properties */
   --scene-primary: #163E54;
@@ -46,13 +103,22 @@ body {
   background-color: #0d1518;
   color: #EDE6DA;
   font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button,
 input,
 select,
 textarea {
-  font-family: inherit;
+  font-family: var(--font-sans);
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-family: var(--font-sans);
 }
 
 .font-display {
@@ -63,35 +129,42 @@ textarea {
   font-family: var(--font-sans);
 }
 
+.font-serif {
+  font-family: var(--font-display);
+}
+
 .headline-hero {
   font-family: var(--font-display);
-  font-size: clamp(2.15rem, 4.8vw, 4.5rem);
-  line-height: 1.06;
-  letter-spacing: -0.02em;
+  font-size: clamp(2rem, 4.4vw, 4.25rem);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  font-weight: 700;
   text-wrap: balance;
 }
 
 .headline-country {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6.8vw, 6.25rem);
-  line-height: 1.02;
-  letter-spacing: -0.025em;
+  font-size: clamp(2.25rem, 6vw, 5.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  font-weight: 700;
   text-wrap: balance;
 }
 
 .headline-section {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.2vw, 3rem);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 700;
   text-wrap: balance;
 }
 
 .editorial-kicker {
   font-family: var(--font-sans);
   font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 

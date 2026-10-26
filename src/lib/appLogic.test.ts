@@ -202,3 +202,88 @@ test("Dictionary parity: all keys in ru exist in kz and have matching non-empty 
   assertParity(ru, kz, "root");
 });
 
+test("Montserrat typography & Kazakh character glyph support in font file", async () => {
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+
+  const fontPath = path.resolve("public/fonts/montserrat/Montserrat-Variable.ttf");
+  const licensePath = path.resolve("public/fonts/montserrat/OFL.txt");
+
+  assert.ok(fs.existsSync(fontPath), "Montserrat-Variable.ttf must exist in public/fonts/montserrat");
+  assert.ok(fs.existsSync(licensePath), "OFL.txt license must exist in public/fonts/montserrat");
+
+  const licenseContent = fs.readFileSync(licensePath, "utf8");
+  assert.ok(licenseContent.includes("SIL OPEN FONT LICENSE Version 1.1"), "License must be SIL OFL 1.1");
+
+  // Read TTF cmap table
+  const buf = fs.readFileSync(fontPath);
+  const numTables = buf.readUInt16BE(4);
+  let cmapOffset = 0;
+  for (let i = 0; i < numTables; i++) {
+    const tag = buf.toString("ascii", 12 + i * 16, 16 + i * 16);
+    if (tag === "cmap") {
+      cmapOffset = buf.readUInt32BE(12 + i * 16 + 8);
+      break;
+    }
+  }
+  assert.ok(cmapOffset > 0, "cmap table must exist");
+
+  const subtableCount = buf.readUInt16BE(cmapOffset + 2);
+  let chosenOffset = 0;
+  for (let i = 0; i < subtableCount; i++) {
+    const offset = cmapOffset + buf.readUInt32BE(cmapOffset + 4 + i * 8 + 4);
+    if (buf.readUInt16BE(offset) === 4) { chosenOffset = offset; break; }
+  }
+  assert.ok(chosenOffset > 0, "Format 4 subtable must exist");
+
+  const segCountX2 = buf.readUInt16BE(chosenOffset + 6);
+  const segCount = segCountX2 / 2;
+  const endCodeOffset = chosenOffset + 14;
+  const startCodeOffset = endCodeOffset + segCountX2 + 2;
+  const idDeltaOffset = startCodeOffset + segCountX2;
+  const idRangeOffsetOffset = idDeltaOffset + segCountX2;
+
+  function hasGlyph(ch: string): boolean {
+    const code = ch.codePointAt(0)!;
+    let found = 0;
+    for (let s = 0; s < segCount; s++) {
+      const start = buf.readUInt16BE(startCodeOffset + s * 2);
+      const end = buf.readUInt16BE(endCodeOffset + s * 2);
+      if (code >= start && code <= end) {
+        const delta = buf.readInt16BE(idDeltaOffset + s * 2);
+        const rangeOffset = buf.readUInt16BE(idRangeOffsetOffset + s * 2);
+        if (rangeOffset === 0) {
+          found = (code + delta) & 0xFFFF;
+        } else {
+          const glyphAddr = idRangeOffsetOffset + s * 2 + rangeOffset + (code - start) * 2;
+          found = buf.readUInt16BE(glyphAddr);
+          if (found !== 0) found = (found + delta) & 0xFFFF;
+        }
+        break;
+      }
+    }
+    return found > 0;
+  }
+
+  // 18 Kazakh specific uppercase and lowercase characters + Tenge
+  const kazakhChars = ["Ә", "ә", "Ғ", "ғ", "Қ", "қ", "Ң", "ң", "Ө", "ө", "Ү", "ү", "Ұ", "ұ", "Һ", "һ", "І", "і", "₸"];
+  for (const ch of kazakhChars) {
+    assert.ok(hasGlyph(ch), `Character ${ch} (U+${ch.codePointAt(0)!.toString(16).toUpperCase()}) must be present in Montserrat`);
+  }
+
+  // Full verification text from prompt
+  const sentence1 = "«Әсем әлемге саяхат. Ғажайып Қытай, Қырғызстан және Грузия. Кең дүниені бірге көрейік! Үлкен әсер, ұмытылмас сапар. Һәм жаңа мүмкіндіктер. Ізгі тілектер!»";
+  const sentence2 = "«ALL TOUR — 25 000 ₸ · 1–3 күн»";
+  for (const ch of sentence1 + sentence2) {
+    assert.ok(hasGlyph(ch), `Character '${ch}' in test sentence must be present in Montserrat`);
+  }
+
+  // Verify globals.css and index.html have 0 references to Onest or Unbounded
+  const globalsCss = fs.readFileSync(path.resolve("src/styles/globals.css"), "utf8");
+  const indexHtml = fs.readFileSync(path.resolve("index.html"), "utf8");
+  assert.ok(!globalsCss.includes("Onest"), "globals.css must not contain Onest");
+  assert.ok(!globalsCss.includes("Unbounded"), "globals.css must not contain Unbounded");
+  assert.ok(!indexHtml.includes("Onest"), "index.html must not contain Onest");
+  assert.ok(!indexHtml.includes("Unbounded"), "index.html must not contain Unbounded");
+});
+
