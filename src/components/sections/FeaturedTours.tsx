@@ -96,6 +96,7 @@ export const FeaturedTours: React.FC<FeaturedToursProps> = ({
               dict={dict}
               locale={locale}
               onOpenDetails={onOpenTourDetails}
+              directLink={false}
               onBookTour={onBookTour}
               onCursorEnter={onCursorEnter}
               onCursorLeave={onCursorLeave}

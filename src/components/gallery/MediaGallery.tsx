@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ZoomIn } from "lucide-react";
 import type { Locale } from "../../lib/whatsapp";
+import type { Dictionary } from "../../i18n/ru";
+import { getDictionary } from "../../i18n";
 import { GalleryLightbox, type GalleryMediaItem } from "./GalleryLightbox";
 
 interface MediaGalleryProps {
@@ -10,6 +12,7 @@ interface MediaGalleryProps {
   subtitle?: string;
   layout?: "grid" | "strip";
   className?: string;
+  dict?: Dictionary;
 }
 
 export const MediaGallery: React.FC<MediaGalleryProps> = ({
@@ -19,8 +22,10 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
   subtitle,
   layout = "grid",
   className = "",
+  dict,
 }) => {
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
+  const d = dict || getDictionary(locale);
 
   if (items.length === 0) return null;
 
@@ -86,7 +91,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
                 </span>
                 {isPoster ? (
                   <span className="px-2 py-0.5 rounded-md bg-[#0786c7]/80 text-white text-[10px] uppercase font-sans tracking-wide">
-                    АФИША ↗
+                    {d.lightbox.posterTag}
                   </span>
                 ) : (
                   <span className="p-1 rounded-md bg-black/60 text-white/80 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -112,6 +117,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
         onClose={() => setActiveLightboxIndex(null)}
         onNavigate={(idx) => setActiveLightboxIndex(idx)}
         locale={locale}
+        dict={d}
       />
     </div>
   );

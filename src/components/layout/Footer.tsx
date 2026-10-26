@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, MessageCircle, Instagram, MapPin, ShieldCheck, Heart } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Instagram, MapPin } from "lucide-react";
 import { BUSINESS_CONFIG } from "../../config/business";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
@@ -19,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
 
   const whatsappUrl = `https://wa.me/${BUSINESS_CONFIG.phoneWhatsAppRaw}?text=${encodeURIComponent(
     isKz
-      ? "Сәлеметсіз бе, ALL TOUR! Туралы кеңес алғым келеді."
+      ? "Сәлеметсіз бе, ALL TOUR! Турлар туралы кеңес алғым келеді."
       : "Здравствуйте, ALL TOUR! Хочу получить консультацию по турам."
   )}`;
 
@@ -33,9 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
         <div className="md:col-span-5 space-y-4">
           <BrandLogo variant="footer" />
           <p className="text-sm text-[#EDE6DA]/70 max-w-sm leading-relaxed font-sans">
-            {isKz
-              ? "Алматыдан Қырғызстанға, Қытайға және Грузияға авторлық және контент-турлар. Кәсіби фотосессия және жоғары деңгейдегі жайлылық."
-              : "Авторские и контент-туры из Алматы в Кыргызстан, Китай и Грузию. Мобильная съёмка для каждого участника, проверенные отели и опытные гиды."}
+            {dict.footer.tagline}
           </p>
           <div className="flex items-center gap-2 text-xs text-[#EDE6DA]/55 font-mono">
             <MapPin className="w-3.5 h-3.5 text-red-400" />
@@ -74,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
         {/* Company & Info */}
         <div className="md:col-span-2 space-y-3">
           <h3 className="text-xs font-mono tracking-wider uppercase text-white/60">
-            {isKz ? "Компания" : "Компания"}
+            {dict.footer.companyTitle}
           </h3>
           <ul className="space-y-2 text-sm">
             <li>
@@ -82,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
                 to="/about"
                 className="text-[#EDE6DA]/75 hover:text-white transition-colors"
               >
-                {isKz ? "Біз туралы" : "О нас"}
+                {dict.nav.about}
               </Link>
             </li>
             <li>
@@ -98,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
                 to="/faq"
                 className="text-[#EDE6DA]/75 hover:text-white transition-colors"
               >
-                FAQ / База знаний
+                {dict.footer.faqKnowledgeBase}
               </Link>
             </li>
             <li>
@@ -137,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
               <span>Instagram</span>
             </a>
             <div className="pt-2 text-[11px] text-[#EDE6DA]/50 leading-relaxed font-sans">
-              {isKz ? "Күн сайын 09:00 — 21:00" : "Ежедневно с 09:00 до 21:00"}
+              {dict.footer.workingHours}
             </div>
           </div>
         </div>

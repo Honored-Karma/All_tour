@@ -107,7 +107,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
                 key={imgUrl + idx}
                 type="button"
                 onClick={() => setSelectedImageIdx(idx)}
-                aria-label={`Фото ${idx + 1}`}
+                aria-label={`${dict.tours.modal.photoAria} ${idx + 1}`}
                 className={`relative w-24 h-16 rounded-xl overflow-hidden border transition-all shrink-0 cursor-pointer ${
                   selectedImageIdx === idx
                     ? "border-white ring-2 ring-white/40"

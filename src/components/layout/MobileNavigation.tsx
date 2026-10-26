@@ -50,7 +50,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
   const isKz = locale === "kz";
   const whatsappUrl = `https://wa.me/${BUSINESS_CONFIG.phoneWhatsAppRaw}?text=${encodeURIComponent(
     isKz
-      ? "Сәлеметсіз бе, ALL TOUR! Туралы толық ақпарат алғым келеді."
+      ? "Сәлеметсіз бе, ALL TOUR! Турлар туралы толық ақпарат алғым келеді."
       : "Здравствуйте, ALL TOUR! Хочу узнать актуальные даты и программы туров."
   )}`;
 
@@ -58,7 +58,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Mobile Navigation"
+      aria-label={dict.nav.mobileMenuOpen}
       className="fixed inset-0 z-50 xl:hidden bg-[#0a1013]/95 backdrop-blur-2xl flex flex-col justify-between p-5 sm:p-6 text-[#EDE6DA] overflow-y-auto animate-in fade-in duration-200"
     >
       {/* Top Bar: Brand Logo & Controls */}
@@ -68,6 +68,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
           <button
             type="button"
             onClick={() => onToggleLocale(locale === "ru" ? "kz" : "ru")}
+            aria-label={dict.nav.langSwitchAria}
             className="px-2.5 py-1.5 rounded-lg bg-white/10 text-xs font-mono text-white cursor-pointer"
           >
             <span className={locale === "ru" ? "font-bold text-red-400" : "opacity-60"}>
@@ -98,8 +99,10 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             onClick={onClose}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
           >
-            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">01</span>
-            <span className="text-white font-semibold">{isKz ? "Басты бет" : "Главная"}</span>
+            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">
+              {dict.mobileNav.homeSub}
+            </span>
+            <span className="text-white font-semibold">{dict.nav.home}</span>
           </Link>
 
           <Link
@@ -107,7 +110,9 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             onClick={onClose}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
           >
-            <span className="block text-xs font-mono text-red-400 uppercase">Каталог</span>
+            <span className="block text-xs font-mono text-red-400 uppercase">
+              {dict.mobileNav.catalogSub}
+            </span>
             <span className="text-white font-semibold">{dict.nav.tours}</span>
           </Link>
 
@@ -116,8 +121,10 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             onClick={onClose}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
           >
-            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">Компания</span>
-            <span className="text-white font-semibold">{isKz ? "Біз туралы" : "О нас"}</span>
+            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">
+              {dict.mobileNav.aboutSub}
+            </span>
+            <span className="text-white font-semibold">{dict.nav.about}</span>
           </Link>
 
           <Link
@@ -125,7 +132,9 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             onClick={onClose}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
           >
-            <span className="block text-xs font-mono text-amber-400 uppercase">Истории</span>
+            <span className="block text-xs font-mono text-amber-400 uppercase">
+              {dict.mobileNav.storiesSub}
+            </span>
             <span className="text-white font-semibold">{dict.nav.reviews}</span>
           </Link>
 
@@ -134,8 +143,10 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             onClick={onClose}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
           >
-            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">Инфо</span>
-            <span className="text-white font-semibold">FAQ / Вопросы</span>
+            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">
+              {dict.mobileNav.infoSub}
+            </span>
+            <span className="text-white font-semibold">{dict.mobileNav.faqLabel}</span>
           </Link>
 
           <Link
@@ -143,7 +154,9 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             onClick={onClose}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
           >
-            <span className="block text-xs font-mono text-cyan-400 uppercase">Связь</span>
+            <span className="block text-xs font-mono text-cyan-400 uppercase">
+              {dict.mobileNav.contactsSub}
+            </span>
             <span className="text-white font-semibold">{dict.nav.contacts}</span>
           </Link>
         </div>
@@ -161,7 +174,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
               }`}
             />
             <span className="text-sm font-semibold">
-              {isKz ? "Таңдаулы турлар" : "Избранные туры"}
+              {dict.mobileNav.favoritesLabel}
             </span>
           </div>
           <span className="px-2 py-0.5 rounded-full bg-red-600 text-xs font-bold text-white">

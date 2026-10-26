@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const isKz = locale === "kz";
+
 
   return (
     <header className="fixed top-0 inset-x-0 z-40 px-3 sm:px-6 pt-2 sm:pt-3 pointer-events-none">
@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             {({ isActive }) => (
               <>
-                {isKz ? "Басты бет" : "Главная"}
+                {dict.nav.home}
                 {isActive && (
                   <span className="absolute bottom-0 inset-x-0 h-[2px] bg-red-500 rounded-full" />
                 )}
@@ -115,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
             {destDropdownOpen && (
               <div className="absolute top-full left-0 mt-3 w-64 rounded-2xl bg-[#0f171c]/95 border border-white/15 p-2 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-150 z-50">
                 <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#EDE6DA]/50">
-                  {isKz ? "Бағытты таңдаңыз" : "Выберите направление"}
+                  {dict.nav.selectDestination}
                 </div>
                 {destinations.map((dest) => (
                   <Link
@@ -151,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             {({ isActive }) => (
               <>
-                {isKz ? "Біз туралы" : "О нас"}
+                {dict.nav.about}
                 {isActive && (
                   <span className="absolute bottom-0 inset-x-0 h-[2px] bg-red-500 rounded-full" />
                 )}
@@ -219,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Favorites Link */}
           <Link
             to="/tours?favorites=true"
-            aria-label={isKz ? "Таңдаулы турлар" : "Избранные туры"}
+            aria-label={dict.nav.favoritesAria}
             className="relative p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors"
           >
             <Heart
@@ -238,11 +238,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={() => onToggleLocale(locale === "ru" ? "kz" : "ru")}
-            aria-label={
-              locale === "ru"
-                ? "Переключить язык на казахский (RU / KZ)"
-                : "Тілді орыс тіліне ауыстыру (RU / KZ)"
-            }
+            aria-label={dict.nav.langSwitchAria}
             className="text-xs font-mono tracking-wider text-white/80 hover:text-white transition-colors px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer"
           >
             <span className={locale === "ru" ? "text-white font-bold" : "opacity-50"}>

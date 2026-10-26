@@ -153,7 +153,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
                 />
                 <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between px-2.5 py-1 rounded-lg bg-black/55 backdrop-blur-md border border-white/10 text-[11px] font-mono text-white/95">
                   <span>0{idx + 1} / 05</span>
-                  <span className="text-[#6BAFB3]">ОТКРЫТЬ ↗</span>
+                  <span className="text-[#6BAFB3]">{locale === "kz" ? "АШУ ↗" : "ОТКРЫТЬ ↗"}</span>
                 </div>
                 <div className="absolute bottom-3.5 left-3.5 right-3.5 space-y-1">
                   <div className="text-xs sm:text-sm font-semibold text-white leading-snug">

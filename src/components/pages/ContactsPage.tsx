@@ -17,7 +17,6 @@ import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
 import { BUSINESS_CONFIG } from "../../config/business";
 import { BrandLogo } from "../layout/BrandLogo";
-import { generateWhatsAppBookingLink } from "../../lib/whatsapp";
 import { BRAND_ASSETS } from "../../data/assets";
 
 interface ContactsPageProps {

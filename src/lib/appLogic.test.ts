@@ -124,6 +124,8 @@ test("strict separation of China programs: Urumqi 6D (145 000 ₸) and China Con
   assert.notEqual(urumqi.id, china3d.id);
   assert.equal(urumqi.posterReferencePriceKzt, 145000);
   assert.equal(china3d.posterReferencePriceKzt, 85000);
+  assert.ok(urumqi.duration, "Urumqi duration must be specified");
+  assert.ok(china3d.duration, "China 3-day duration must be specified");
   assert.ok(urumqi.duration.ru.includes("6 дней / 5 ночей"));
   assert.equal(china3d.duration.ru, "3 дня / 2 ночи");
   assert.ok(urumqi.itinerary.length >= 4);
@@ -139,5 +141,64 @@ test("brand assets manifest: 16 official photos, logo is photo_16", async () => 
     assert.ok(asset, `Asset photo_${i} must exist in catalog`);
     assert.equal(asset.src, `/assets/brand/photo_${i}.jpg`);
   }
+});
+
+test("formatWhatsAppMessage formats structured tour inquiry in Kazakh", () => {
+  const msg = formatWhatsAppMessage({
+    name: "Айгерім",
+    destinationName: "Қырғызстан",
+    tourTitle: "Ыстықкөл",
+    desiredDate: "15 шілде",
+    travelersCount: 3,
+    comment: "Трансфер қажет",
+    locale: "kz",
+  });
+  assert.ok(msg.includes("Бағыт: Қырғызстан"));
+  assert.ok(msg.includes("Тур: Ыстықкөл"));
+  assert.ok(msg.includes("Күні: 15 шілде"));
+  assert.ok(msg.includes("Адам саны: 3"));
+  assert.ok(msg.includes("Есімі: Айгерім"));
+  assert.ok(msg.includes("Пікір: Трансфер қажет"));
+});
+
+test("Kazakh dictionary contains natural required phrasing", async () => {
+  const { kz } = await import("../i18n/kz");
+  assert.equal(kz.catalog.favoritesFilter, "Таңдаулылар");
+  assert.equal(kz.catalog.sort.default, "Әдепкі ретпен");
+  assert.equal(kz.catalog.formats.all, "Барлық тур түрлері");
+  assert.equal(kz.catalog.formats.mountain_nature, "Тау және көл турлары");
+  assert.equal(kz.catalog.formats.cultural_city, "Қалалық және мәдени турлар");
+  assert.equal(kz.catalog.openFinder, "Турды жылдам таңдау");
+  assert.equal(kz.catalog.hideFinder, "Жылдам таңдауды жасыру");
+  assert.equal(kz.catalog.compareSelected, "Таңдалғандарды салыстыру");
+  assert.equal(kz.catalog.sort.priceAsc, "Алдымен қолжетімділері");
+  assert.equal(kz.catalog.sort.priceDesc, "Алдымен ауқымдылары");
+  assert.equal(kz.catalog.resetFilters, "Барлық сүзгілерді тазарту");
+});
+
+test("Dictionary parity: all keys in ru exist in kz and have matching non-empty structures", async () => {
+  const { ru } = await import("../i18n/ru");
+  const { kz } = await import("../i18n/kz");
+
+  function assertParity(rObj: any, kObj: any, path = "") {
+    assert.ok(kObj !== undefined, `Missing key in kz: ${path}`);
+    if (typeof rObj === "string") {
+      assert.equal(typeof kObj, "string", `Type mismatch at ${path}`);
+      assert.ok(kObj.trim().length > 0, `Empty string in kz at ${path}`);
+    } else if (Array.isArray(rObj)) {
+      assert.ok(Array.isArray(kObj), `Array expected at ${path}`);
+      assert.equal(rObj.length, kObj.length, `Array length mismatch at ${path}`);
+      rObj.forEach((item, idx) => {
+        assertParity(item, kObj[idx], `${path}[${idx}]`);
+      });
+    } else if (typeof rObj === "object" && rObj !== null) {
+      assert.equal(typeof kObj, "object", `Object expected at ${path}`);
+      for (const key of Object.keys(rObj)) {
+        assertParity(rObj[key], kObj[key], `${path}.${key}`);
+      }
+    }
+  }
+
+  assertParity(ru, kz, "root");
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { DestinationId } from "../../data/destinations";
-import type { Tour } from "../../data/tours";
+import { getTourBySlug, type Tour } from "../../data/tours";
 import type { StoryScreenshotAsset } from "../../data/reviews";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
@@ -12,7 +12,7 @@ import { ReviewsShowcase } from "../sections/ReviewsShowcase";
 import { HowToBook } from "../sections/HowToBook";
 import { FAQ } from "../sections/FAQ";
 import { FinalCTA } from "../sections/FinalCTA";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface HomePageProps {
   dict: Dictionary;
@@ -44,6 +44,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   onToggleCompare,
 }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const bookingTourSlug = searchParams.get("tour");
+  const bookingTour = bookingTourSlug ? getTourBySlug(bookingTourSlug) : undefined;
   const [selectedFilter, setSelectedFilter] = useState<"all" | DestinationId>("all");
   const [cursorVisible, setCursorVisible] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
@@ -99,6 +102,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         dict={dict}
         locale={locale}
         preselectedDestinationId={activeDestinationId}
+        preselectedTour={bookingTour}
       />
 
       <FAQ dict={dict} />

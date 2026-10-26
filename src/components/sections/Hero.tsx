@@ -120,11 +120,11 @@ export const Hero: React.FC<HeroProps> = ({
         </button>
 
         <div className="flex items-center gap-3 text-xs text-white/65 font-mono">
-          <span>01 КЫРГЫЗСТАН</span>
+          <span>01 {destinations[0]?.name[locale].toUpperCase()}</span>
           <span aria-hidden="true">·</span>
-          <span>02 ГРУЗИЯ</span>
+          <span>02 {destinations[1]?.name[locale].toUpperCase()}</span>
           <span aria-hidden="true">·</span>
-          <span>03 КИТАЙ</span>
+          <span>03 {destinations[2]?.name[locale].toUpperCase()}</span>
         </div>
       </div>
     </section>

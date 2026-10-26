@@ -13,12 +13,15 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   className = "",
   onClick,
 }) => {
+  const isKz = typeof document !== "undefined" && document.documentElement.lang === "kk";
+  const homeAriaLabel = isKz ? "ALL TOUR — Басты бет" : "ALL TOUR — Главная";
+
   if (variant === "header") {
     return (
       <Link
         to="/"
         onClick={onClick}
-        aria-label="ALL TOUR — Главная"
+        aria-label={homeAriaLabel}
         className={`group inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-[#0786c7] ${className}`}
       >
         <div className="relative p-1 rounded-xl bg-white/95 shadow-sm transition-transform duration-200 group-hover:scale-105">
@@ -45,7 +48,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <Link
         to="/"
         onClick={onClick}
-        aria-label="ALL TOUR — Главная"
+        aria-label={homeAriaLabel}
         className={`group inline-flex items-center gap-3 ${className}`}
       >
         <div className="p-2 rounded-2xl bg-white/95 shadow-md">
@@ -72,7 +75,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <Link
         to="/"
         onClick={onClick}
-        aria-label="ALL TOUR — Главная"
+        aria-label={homeAriaLabel}
         className={`inline-flex items-center gap-2.5 ${className}`}
       >
         <div className="p-1.5 rounded-xl bg-white/95 shadow-sm">
@@ -83,7 +86,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           />
         </div>
         <div className="flex flex-col leading-none">
-          <span className="font-display text-base font-bold tracking-wider text-white">
+          <span className="font-display text-base font-bold text-white tracking-wider">
             ALL <span className="text-[#0786c7]">TOUR</span>
           </span>
           <span className="text-[9px] font-mono tracking-[0.2em] text-[#d11d35] font-semibold uppercase mt-0.5">
@@ -94,16 +97,37 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     );
   }
 
-  // "full" or "card" showcase
+  if (variant === "full") {
+    return (
+      <div className={`p-8 rounded-3xl bg-white/95 shadow-2xl flex flex-col items-center justify-center space-y-4 text-center border border-white/20 ${className}`}>
+        <img
+          src={businessConfig.logoTransparent}
+          alt="ALL TOUR"
+          className="w-24 h-24 object-contain"
+        />
+        <div className="space-y-1">
+          <div className="font-display text-2xl font-bold tracking-wider text-[#0e171a]">
+            ALL <span className="text-[#0786c7]">TOUR</span>
+          </div>
+          <div className="text-xs font-mono tracking-[0.3em] text-[#d11d35] font-bold uppercase">
+            CONTENT TOUR · ALMATY
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // card variant (default fallback)
   return (
-    <div
-      className={`inline-flex flex-col items-center justify-center p-6 rounded-3xl bg-white/95 text-[#17212b] shadow-xl border border-black/5 ${className}`}
-    >
+    <div className={`inline-flex items-center gap-2 ${className}`}>
       <img
-        src={businessConfig.logoTransparent}
-        alt="ALL TOUR Logo Full"
-        className="max-h-36 w-auto object-contain"
+        src={businessConfig.logoMark}
+        alt="ALL TOUR"
+        className="w-6 h-6 object-contain rounded-lg bg-white/95 p-0.5"
       />
+      <span className="font-display text-xs font-bold text-white tracking-wider">
+        ALL <span className="text-[#0786c7]">TOUR</span>
+      </span>
     </div>
   );
 };

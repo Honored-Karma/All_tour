@@ -14,7 +14,7 @@ import {
   FileText,
   SlidersHorizontal,
 } from "lucide-react";
-import { getTourBySlug, type Tour } from "../../data/tours";
+import { getTourBySlug } from "../../data/tours";
 import { getDestinationById } from "../../data/destinations";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
@@ -22,6 +22,7 @@ import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
 import { MediaGallery } from "../gallery/MediaGallery";
 import { GlassPanel } from "../glass/GlassPanel";
 import { GlassButton } from "../glass/GlassButton";
+import { BookingForm } from "../booking/BookingForm";
 
 interface TourDetailPageProps {
   dict: Dictionary;
@@ -30,7 +31,6 @@ interface TourDetailPageProps {
   onToggleFavorite: (id: string) => void;
   comparedTours: string[];
   onToggleCompare: (id: string) => void;
-  onBookTour: (tour: Tour) => void;
 }
 
 export const TourDetailPage: React.FC<TourDetailPageProps> = ({
@@ -40,32 +40,25 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
   onToggleFavorite,
   comparedTours,
   onToggleCompare,
-  onBookTour,
 }) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [copiedShare, setCopiedShare] = useState(false);
-
-  // Booking Form State within Page
-  const [travelerName, setTravelerName] = useState("");
-  const [desiredDate, setDesiredDate] = useState("");
-  const [travelersCount, setTravelersCount] = useState(2);
-  const [comment, setComment] = useState("");
 
   const tour = slug ? getTourBySlug(slug) : undefined;
 
   if (!tour) {
     return (
       <div className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-36 pb-20 px-4 sm:px-8 flex flex-col items-center justify-center text-center space-y-4">
-        <h1 className="font-display text-2xl font-bold text-white">Тур не найден</h1>
+        <h1 className="font-display text-2xl font-bold text-white">{dict.tourDetail.notFoundTitle}</h1>
         <p className="text-sm text-[#EDE6DA]/70 max-w-md">
-          Возможно, ссылка устарела или тур был перемещён в каталог.
+          {dict.tourDetail.notFoundSubtitle}
         </p>
         <Link
           to="/tours"
           className="liquid-glass-button-primary px-5 py-2.5 rounded-xl text-sm font-semibold"
         >
-          Вернуться в каталог туров
+          {dict.tourDetail.backToCatalog}
         </Link>
       </div>
     );
@@ -79,10 +72,6 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
     locale,
     destinationName: destination.name[locale],
     tourTitle: tour.title[locale],
-    name: travelerName.trim() || undefined,
-    desiredDate: desiredDate.trim() || undefined,
-    travelersCount,
-    comment: comment.trim() || undefined,
   });
 
   const handleShare = async () => {
@@ -118,8 +107,8 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
     typeof tour.priceKzt === "number"
       ? `${tour.priceKzt.toLocaleString("ru-KZ")} ₸`
       : tour.posterReferencePriceKzt
-      ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ (по афише)`
-      : "Стоимость по запросу";
+      ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ ${dict.compare.posterRefSuffix}`
+      : dict.tourDetail.priceFallback;
 
   return (
     <div className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-28 pb-24 px-4 sm:px-8">
@@ -131,18 +120,18 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
             className="inline-flex items-center gap-2 text-xs sm:text-sm text-[#0786c7] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Все туры</span>
+            <span>{dict.tourDetail.allTours}</span>
           </Link>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleShare}
-              title="Поделиться ссылкой на тур"
+              title={dict.tourDetail.shareTitle}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 hover:bg-white/15 text-xs text-[#EDE6DA] transition-colors cursor-pointer border border-white/12"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>{copiedShare ? "Ссылка скопирована!" : "Поделиться"}</span>
+              <span>{copiedShare ? dict.tourDetail.copiedShare : dict.tourDetail.shareBtn}</span>
             </button>
 
             <button
@@ -153,7 +142,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                   ? "bg-[#0786c7] text-white border-[#0786c7]"
                   : "bg-white/8 hover:bg-white/15 border-white/12 text-[#EDE6DA]"
               }`}
-              title={isCmp ? "Убрать из сравнения" : "Сравнить тур"}
+              title={isCmp ? dict.tourDetail.compareRemove : dict.tourDetail.compareAdd}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
             </button>
@@ -166,7 +155,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                   ? "bg-[#d11d35] text-white border-[#d11d35]"
                   : "bg-white/8 hover:bg-white/15 border-white/12 text-[#EDE6DA]"
               }`}
-              title={isFav ? "В избранном" : "Добавить в избранное"}
+              title={isFav ? dict.tourDetail.favoriteIn : dict.tourDetail.favoriteAdd}
             >
               <Heart className={`w-3.5 h-3.5 ${isFav ? "fill-current" : ""}`} />
             </button>
@@ -188,7 +177,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                 ·
               </span>
               <span>
-                {tour.duration ? tour.duration[locale] : "Длительность по запросу"}
+                {tour.duration ? tour.duration[locale] : dict.tourDetail.durationFallback}
               </span>
             </div>
 
@@ -208,14 +197,14 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
             <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <span className="text-xs uppercase tracking-wider text-[#EDE6DA]/60">
-                  Стоимость тура:
+                  {dict.tourDetail.priceLabel}
                 </span>
                 <span className="text-lg sm:text-xl font-display font-bold text-white tabular-nums">
                   {priceText}
                 </span>
               </div>
               <p className="text-xs text-[#EDE6DA]/65 leading-relaxed">
-                * Опубликованные на промо-афише цены и даты являются справочными данными программы. Итоговая стоимость и свободные места на ваши числа подтверждаются менеджером при обращении в WhatsApp.
+                {dict.tourDetail.priceNotice}
               </p>
               {tour.posterReferenceDates && (
                 <p className="text-xs text-[#6BAFB3] font-mono pt-1">
@@ -254,8 +243,8 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
             <MediaGallery
               items={galleryItems}
               locale={locale}
-              title="Материалы тура и оригинальные промо-афиши"
-              subtitle="Нажмите на любой кадр или афишу, чтобы рассмотреть детали программы, карту и условия в полноразмерном режиме."
+              title={dict.tourDetail.galleryTitle}
+              subtitle={dict.tourDetail.gallerySubtitle}
             />
           </section>
         )}
@@ -264,10 +253,10 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
         <section className="space-y-6 pt-4 border-t border-white/10">
           <div className="space-y-1">
             <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
-              Программа путешествия по этапам
+              {dict.tourDetail.itineraryTitle}
             </h2>
             <p className="text-xs sm:text-sm text-[#EDE6DA]/70">
-              Порядок посещения локаций согласован с гидами ALL TOUR для максимального комфорта группы.
+              {dict.tourDetail.itinerarySubtitle}
             </p>
           </div>
 
@@ -276,10 +265,10 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
               <GlassPanel key={idx} className="p-6 space-y-4 flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-xs font-mono text-[#0786c7]">
-                    <span>ЭТАП 0{idx + 1}</span>
+                    <span>{dict.tourDetail.stepPrefix} 0{idx + 1}</span>
                     {step.optional && (
                       <span className="text-[#EDE6DA]/60 uppercase text-[10px]">
-                        По желанию
+                        {dict.tourDetail.optionalStep}
                       </span>
                     )}
                   </div>
@@ -307,7 +296,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           <div className="p-6 sm:p-7 rounded-3xl bg-white/[0.04] border border-white/12 space-y-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <Check className="w-4 h-4 text-[#0786c7]" />
-              <span>Что входит в стоимость тура:</span>
+              <span>{dict.tourDetail.includedTitle}</span>
             </div>
             <ul className="space-y-2.5 text-xs sm:text-sm text-[#EDE6DA]/85">
               {tour.included[locale].map((item, idx) => (
@@ -322,7 +311,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           <div className="p-6 sm:p-7 rounded-3xl bg-white/[0.04] border border-white/12 space-y-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <X className="w-4 h-4 text-[#d11d35]" />
-              <span>Что не входит (оплачивается отдельно):</span>
+              <span>{dict.tourDetail.excludedTitle}</span>
             </div>
             <ul className="space-y-2.5 text-xs sm:text-sm text-[#EDE6DA]/80">
               {tour.excluded[locale].map((item, idx) => (
@@ -339,7 +328,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
         {tour.optionalActivities && (
           <section className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 space-y-3">
             <h4 className="text-sm font-semibold text-white">
-              Дополнительные локации по желанию участников:
+              {dict.tourDetail.optionalActivitiesTitle}
             </h4>
             <div className="flex flex-wrap gap-2 text-xs">
               {tour.optionalActivities[locale].map((act, idx) => (
@@ -359,7 +348,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           <div className="space-y-3">
             <h3 className="font-display text-base font-semibold text-white flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#0786c7]" />
-              <span>Документы и правила выезда</span>
+              <span>{dict.tourDetail.documentsTitle}</span>
             </h3>
             <p className="text-xs sm:text-sm text-[#EDE6DA]/80 leading-relaxed">
               {tour.documentsInfo[locale]}
@@ -369,7 +358,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           <div className="space-y-3">
             <h3 className="font-display text-base font-semibold text-white flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-[#6BAFB3]" />
-              <span>Полезно знать перед поездкой</span>
+              <span>{dict.tourDetail.notesTitle}</span>
             </h3>
             <ul className="space-y-1.5 text-xs sm:text-sm text-[#EDE6DA]/80">
               {tour.notes[locale].map((note, idx) => (
@@ -381,74 +370,9 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           </div>
         </section>
 
-        {/* Interactive WhatsApp Booking Section */}
+        {/* Shared booking form keeps validation and WhatsApp messages consistent. */}
         <section className="pt-8 border-t border-white/15">
-          <GlassPanel className="p-6 sm:p-10 space-y-6">
-            <div className="space-y-2 max-w-2xl">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#0786c7]">
-                БРОНИРОВАНИЕ В WHATSAPP
-              </span>
-              <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
-                Забронировать тур: {tour.title[locale]}
-              </h2>
-              <p className="text-xs sm:text-sm text-[#EDE6DA]/75 leading-relaxed">
-                Заполните параметры — мы подготовим готовый запрос для чата с менеджером ALL TOUR, где вам подтвердят свободные места и актуальную стоимость.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#EDE6DA]/80">Ваше имя</label>
-                <input
-                  type="text"
-                  value={travelerName}
-                  onChange={(e) => setTravelerName(e.target.value)}
-                  placeholder="Например, Айгерим"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/6 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#EDE6DA]/80">Желаемая дата или месяц</label>
-                <input
-                  type="text"
-                  value={desiredDate}
-                  onChange={(e) => setDesiredDate(e.target.value)}
-                  placeholder="Ближайшие выходные / октябрь"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/6 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#EDE6DA]/80">Количество человек</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="30"
-                  value={travelersCount}
-                  onChange={(e) => setTravelersCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/6 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
-              <span className="text-xs text-[#EDE6DA]/60">
-                Отправление: {tour.departureCity[locale]} · Менеджер отвечает в WhatsApp
-              </span>
-
-              <GlassButton
-                variant="primary"
-                href={directWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto"
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                <span>Отправить заявку в WhatsApp ↗</span>
-              </GlassButton>
-            </div>
-          </GlassPanel>
+          <BookingForm key={tour.id} dict={dict} locale={locale} preselectedTour={tour} />
         </section>
       </div>
     </div>

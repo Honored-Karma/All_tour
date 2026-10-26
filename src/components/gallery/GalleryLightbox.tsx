@@ -1,7 +1,9 @@
 import React, { useEffect, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { LocalizedText } from "../../data/destinations";
 import type { Locale } from "../../lib/whatsapp";
+import type { Dictionary } from "../../i18n/ru";
+import { getDictionary } from "../../i18n";
 
 export interface GalleryMediaItem {
   id?: string;
@@ -18,6 +20,7 @@ interface GalleryLightboxProps {
   onClose: () => void;
   onNavigate: (index: number) => void;
   locale: Locale;
+  dict?: Dictionary;
 }
 
 export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
@@ -26,7 +29,10 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
   onClose,
   onNavigate,
   locale,
+  dict,
 }) => {
+  const d = dict || getDictionary(locale);
+  const lb = d.lightbox;
   const isOpen = currentIndex !== null && currentIndex >= 0 && currentIndex < items.length;
 
   const handlePrev = useCallback(() => {
@@ -58,14 +64,14 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Просмотр материалов"
+      aria-label={lb.ariaTitle}
       className="fixed inset-0 z-50 bg-black/92 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6"
     >
       {/* Top Controls */}
       <div className="flex items-center justify-between text-xs font-mono text-white/80 border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">
           <span className="text-[#0786c7] font-semibold tracking-wider uppercase">
-            {activeItem.type === "poster" ? "Оригинальная афиша" : "Фотоматериал"}
+            {activeItem.type === "poster" ? lb.posterBadge : lb.photoBadge}
           </span>
           <span aria-hidden="true" className="text-white/30">
             ·
@@ -78,10 +84,10 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Закрыть галерею"
+          aria-label={lb.closeAria}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer text-xs font-sans"
         >
-          <span>Закрыть (Esc)</span>
+          <span>{lb.closeBtn}</span>
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -94,7 +100,7 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
             <button
               type="button"
               onClick={handlePrev}
-              aria-label="Предыдущее изображение"
+              aria-label={lb.prevAria}
               className="absolute left-2 sm:left-4 z-10 w-11 h-11 rounded-2xl bg-black/60 hover:bg-black/90 border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -102,7 +108,7 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
             <button
               type="button"
               onClick={handleNext}
-              aria-label="Следующее изображение"
+              aria-label={lb.nextAria}
               className="absolute right-2 sm:right-4 z-10 w-11 h-11 rounded-2xl bg-black/60 hover:bg-black/90 border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"
             >
               <ChevronRight className="w-6 h-6" />

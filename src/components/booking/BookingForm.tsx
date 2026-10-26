@@ -99,7 +99,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   };
 
   return (
-    <GlassPanel id="booking" className="p-6 sm:p-10">
+    <GlassPanel id="booking" className="scroll-mt-28 p-6 sm:p-10">
       <div className="mb-8 space-y-2">
         <h3 className="font-display text-xl sm:text-2xl font-bold text-white">
           {dict.bookingForm.title}

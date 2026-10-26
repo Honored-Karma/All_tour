@@ -64,7 +64,7 @@ export const TourCard: React.FC<TourCardProps> = ({
     typeof tour.priceKzt === "number"
       ? `${tour.priceKzt.toLocaleString("ru-KZ")} ₸`
       : tour.posterReferencePriceKzt
-      ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ (по афише)`
+      ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ ${dict.tours.card.posterRefPriceSuffix}`
       : dict.tours.card.priceFallback;
 
   const handleCardClick = () => {
@@ -141,8 +141,8 @@ export const TourCard: React.FC<TourCardProps> = ({
                   e.stopPropagation();
                   onToggleCompare(tour.id);
                 }}
-                aria-label={isCompared ? "Убрать из сравнения" : "Добавить к сравнению"}
-                title={isCompared ? "Убрать из сравнения" : "Сравнить тур"}
+                aria-label={isCompared ? dict.tours.card.compareRemove : dict.tours.card.compareAdd}
+                title={isCompared ? dict.tours.card.compareRemove : dict.tours.card.compareAdd}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer border ${
                   isCompared
                     ? "bg-[#0786c7] text-white border-[#0786c7]"
@@ -161,8 +161,8 @@ export const TourCard: React.FC<TourCardProps> = ({
                   e.stopPropagation();
                   onToggleFavorite(tour.id);
                 }}
-                aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
-                title={isFavorite ? "В избранном" : "В избранное"}
+                aria-label={isFavorite ? dict.tours.card.favoriteAdd : dict.tours.card.favoriteAdd}
+                title={isFavorite ? dict.tours.card.favoriteIn : dict.tours.card.favoriteAdd}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer border ${
                   isFavorite
                     ? "bg-[#d11d35] text-white border-[#d11d35]"

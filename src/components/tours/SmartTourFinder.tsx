@@ -1,21 +1,26 @@
 import React, { useState, useMemo } from "react";
 import { Search, Sparkles, ArrowRight, MessageCircle } from "lucide-react";
 import { tours, type Tour, type TourType } from "../../data/tours";
-import type { DestinationId } from "../../data/destinations";
+import { destinations, type DestinationId } from "../../data/destinations";
 import type { Locale } from "../../lib/whatsapp";
 import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
 import { GlassPanel } from "../glass/GlassPanel";
 import { GlassButton } from "../glass/GlassButton";
 import { Link } from "react-router-dom";
+import { matchesTourDuration, type DurationFilter } from "../../lib/tourFilters";
+import type { Dictionary } from "../../i18n/ru";
+import { getDictionary } from "../../i18n";
 
 interface SmartTourFinderProps {
   locale: Locale;
+  dict?: Dictionary;
   onSelectTour?: (tour: Tour) => void;
 }
 
-export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSelectTour }) => {
+export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, dict, onSelectTour }) => {
+  const t = dict || getDictionary(locale);
   const [selectedDestination, setSelectedDestination] = useState<"all" | DestinationId>("all");
-  const [selectedDuration, setSelectedDuration] = useState<"all" | "short" | "multi">("all");
+  const [selectedDuration, setSelectedDuration] = useState<DurationFilter>("all");
   const [selectedType, setSelectedType] = useState<"all" | TourType>("all");
   const [travelers, setTravelers] = useState<number>(2);
 
@@ -27,33 +32,26 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
       if (selectedType !== "all" && tour.tourType !== selectedType) {
         return false;
       }
-      if (selectedDuration === "short") {
-        // 1-3 days
-        if (tour.slug.includes("6d") || tour.id.includes("urumqi")) return false;
-      } else if (selectedDuration === "multi") {
-        // Multi-day
-        if (tour.id === "kyrgyzstan-content-tour") return false;
-      }
-      return true;
+      return matchesTourDuration(tour, selectedDuration);
     });
   }, [selectedDestination, selectedDuration, selectedType]);
 
   const whatsappInquiryUrl = useMemo(() => {
     const destName =
       selectedDestination === "kyrgyzstan"
-        ? "Кыргызстан"
+        ? (locale === "kz" ? "Қырғызстан" : "Кыргызстан")
         : selectedDestination === "georgia"
         ? "Грузия"
         : selectedDestination === "china"
-        ? "Китай"
-        : "Направления ALL TOUR";
+        ? (locale === "kz" ? "Қытай" : "Китай")
+        : (locale === "kz" ? "ALL TOUR бағыттары" : "Направления ALL TOUR");
     return buildWhatsAppBookingUrl({
       locale,
       destinationName: destName,
       travelersCount: travelers,
-      comment: "Подобрано через Smart Tour Finder на сайте",
+      comment: t.finder.whatsappComment,
     });
-  }, [selectedDestination, travelers, locale]);
+  }, [selectedDestination, travelers, locale, t]);
 
   return (
     <GlassPanel className="p-6 sm:p-8 space-y-6">
@@ -61,61 +59,59 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-xs font-mono text-[#0786c7] uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Smart Tour Finder</span>
+            <span>{t.finder.badge}</span>
           </div>
           <h3 className="font-display text-lg sm:text-xl font-bold text-white">
-            {locale === "kz" ? "Турды жылдам таңдау" : "Быстрый поиск тура под ваши планы"}
+            {t.finder.title}
           </h3>
         </div>
         <span className="text-xs font-mono text-[#EDE6DA]/60 tabular-nums">
-          {locale === "kz" ? `Табылғаны: ${filteredTours.length} тур` : `Подходит: ${filteredTours.length} предложений`}
+          {t.finder.foundCount.replace("{count}", String(filteredTours.length))}
         </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Destination */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-[#EDE6DA]/75">
-            {locale === "kz" ? "Бағыт" : "Направление"}
+          <label htmlFor="finder-destination" className="text-xs font-medium text-[#EDE6DA]/75">
+            {t.finder.destinationLabel}
           </label>
           <select
+            id="finder-destination"
             value={selectedDestination}
             onChange={(e) => setSelectedDestination(e.target.value as any)}
             className="w-full px-3.5 py-2.5 rounded-xl bg-white/8 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
           >
             <option value="all" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Барлық бағыттар" : "Все направления"}
+              {t.finder.allDestinations}
             </option>
-            <option value="kyrgyzstan" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Қырғызстан" : "Кыргызстан"}
-            </option>
-            <option value="china" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Қытай" : "Китай"}
-            </option>
-            <option value="georgia" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Грузия" : "Грузия"}
-            </option>
+            {destinations.map((dest) => (
+              <option key={dest.id} value={dest.id} className="bg-[#121c21] text-white">
+                {dest.name[locale]}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* Duration */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-[#EDE6DA]/75">
-            {locale === "kz" ? "Ұзақтығы" : "Длительность"}
+          <label htmlFor="finder-duration" className="text-xs font-medium text-[#EDE6DA]/75">
+            {t.finder.durationLabel}
           </label>
           <select
+            id="finder-duration"
             value={selectedDuration}
-            onChange={(e) => setSelectedDuration(e.target.value as any)}
+            onChange={(e) => setSelectedDuration(e.target.value as DurationFilter)}
             className="w-full px-3.5 py-2.5 rounded-xl bg-white/8 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
           >
             <option value="all" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Кез келген" : "Любая длительность"}
+              {t.finder.durations.all}
             </option>
             <option value="short" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "1-3 күн (қысқа сапарлар)" : "1-3 дня (выходные и короткие)"}
+              {t.finder.durations.short}
             </option>
             <option value="multi" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Көпкүндік (5-6 күн)" : "Многодневные туры (5-6 дней)"}
+              {t.finder.durations.multi}
             </option>
           </select>
         </div>
@@ -123,7 +119,7 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
         {/* Tour Type */}
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-[#EDE6DA]/75">
-            {locale === "kz" ? "Формат" : "Формат поездки"}
+            {t.finder.typeLabel}
           </label>
           <select
             value={selectedType}
@@ -131,16 +127,16 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
             className="w-full px-3.5 py-2.5 rounded-xl bg-white/8 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
           >
             <option value="all" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Барлық форматтар" : "Все форматы"}
+              {t.finder.types.all}
             </option>
             <option value="content_tour" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Контент-турлар (фото/видео)" : "Контент-туры (фото/видео)"}
+              {t.finder.types.content_tour}
             </option>
             <option value="mountain_nature" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Тау және табиғат" : "Горные и природные"}
+              {t.finder.types.mountain_nature}
             </option>
             <option value="cultural_city" className="bg-[#121c21] text-white">
-              {locale === "kz" ? "Қалалық және мәдени" : "Культурные и городские"}
+              {t.finder.types.cultural_city}
             </option>
           </select>
         </div>
@@ -148,7 +144,7 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
         {/* Travelers */}
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-[#EDE6DA]/75">
-            {locale === "kz" ? "Саяхатшылар саны" : "Количество человек"}
+            {t.finder.travelersLabel}
           </label>
           <div className="flex items-center gap-2">
             {[1, 2, 4, 6].map((num) => (
@@ -184,7 +180,7 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
           ))}
           {filteredTours.length > 3 && (
             <span className="text-xs text-[#EDE6DA]/60">
-              +{filteredTours.length - 3} ещё
+              {t.finder.moreTours.replace("{count}", String(filteredTours.length - 3))}
             </span>
           )}
         </div>
@@ -197,7 +193,7 @@ export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, onSele
           className="shrink-0"
         >
           <MessageCircle className="w-4 h-4 mr-2" />
-          <span>{locale === "kz" ? "Менеджермен WhatsApp-та кеңесу ↗" : "Получить консультацию в WhatsApp ↗"}</span>
+          <span>{t.finder.consultationBtn}</span>
         </GlassButton>
       </div>
     </GlassPanel>

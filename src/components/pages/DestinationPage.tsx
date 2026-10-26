@@ -40,6 +40,8 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
   const countryTours = getToursByDestination(validId);
   const brandAssets = getBrandAssetsByDestination(validId);
 
+  const dp = dict.destinationPage;
+
   const galleryItems = brandAssets.map((asset) => ({
     id: asset.id,
     src: asset.src,
@@ -51,7 +53,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
   const whatsappInquiryUrl = buildWhatsAppBookingUrl({
     locale,
     destinationName: dest.name[locale],
-    comment: `Интересует направление: ${dest.name[locale]} с выездом из Алматы`,
+    comment: dp.whatsappInquiryComment.replace("{name}", dest.name[locale]),
   });
 
   return (
@@ -64,7 +66,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
             className="inline-flex items-center gap-2 text-xs sm:text-sm text-[#0786c7] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Каталог всех направлений</span>
+            <span>{dp.allDestinations}</span>
           </Link>
 
           <span className="font-mono text-xs text-white/50">{dest.coordinates}</span>
@@ -109,7 +111,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
                 rel="noopener noreferrer"
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
-                <span>Уточнить даты в WhatsApp ↗</span>
+                <span>{dp.whatsappCta}</span>
               </GlassButton>
             </div>
           </div>
@@ -118,7 +120,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
         {/* Unboxed Key Highlights */}
         <div className="flex flex-wrap items-center justify-between gap-4 p-5 rounded-2xl bg-white/[0.04] border border-white/10 text-xs sm:text-sm">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-white/60">Ключевые локации:</span>
+            <span className="text-white/60">{dp.highlightsLabel}</span>
             {dest.highlights[locale].map((hl, idx) => (
               <React.Fragment key={idx}>
                 {idx > 0 && <span aria-hidden="true" className="text-white/30">·</span>}
@@ -137,16 +139,16 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-1">
               <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
-                Маршруты и программы по направлению {dest.name[locale]}
+                {dp.toursTitle.replace("{name}", dest.name[locale])}
               </h2>
               <p className="text-xs sm:text-sm text-[#EDE6DA]/70">
                 {validId === "china"
-                  ? "Два отдельных предложения: 6-дневный тур в Урумчи и 3-дневный контент-тур в Китай (не смешиваются)."
-                  : "Все выезды стартуют из Алматы с сопровождением гидов."}
+                  ? dp.toursSubtitleChina
+                  : dp.toursSubtitleDefault}
               </p>
             </div>
             <span className="text-xs font-mono text-[#EDE6DA]/60">
-              {countryTours.length} доступно
+              {dp.availableCount.replace("{count}", String(countryTours.length))}
             </span>
           </div>
 
@@ -174,8 +176,8 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
             <MediaGallery
               items={galleryItems}
               locale={locale}
-              title={`Оригинальные материалы и афиши: ${dest.name[locale]}`}
-              subtitle="Подлинные рекламные постеры, программы и условия из архива ALL TOUR."
+              title={dp.galleryTitle.replace("{name}", dest.name[locale])}
+              subtitle={dp.gallerySubtitle}
             />
           </section>
         )}
@@ -185,10 +187,10 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
           <GlassPanel className="p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
               <h3 className="font-display text-lg sm:text-xl font-bold text-white">
-                Планируете поездку в {dest.name[locale]}?
+                {dp.consultationTitle.replace("{name}", dest.name[locale])}
               </h3>
               <p className="text-sm text-[#EDE6DA]/75 leading-relaxed">
-                Напишите нам в WhatsApp — мы расскажем о ближайших датах сбора групп, необходимых документах и актуальной стоимости.
+                {dp.consultationText}
               </p>
             </div>
             <GlassButton
@@ -199,7 +201,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
               className="shrink-0"
             >
               <MessageCircle className="w-4 h-4 mr-2" />
-              <span>Консультация в WhatsApp ↗</span>
+              <span>{dp.consultationBtn}</span>
             </GlassButton>
           </GlassPanel>
         </section>

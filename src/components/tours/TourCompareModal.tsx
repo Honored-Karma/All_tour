@@ -7,6 +7,8 @@ import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
 import { GlassModal } from "../glass/GlassModal";
 import { GlassButton } from "../glass/GlassButton";
 import { Link } from "react-router-dom";
+import type { Dictionary } from "../../i18n/ru";
+import { getDictionary } from "../../i18n";
 
 interface TourCompareModalProps {
   open: boolean;
@@ -14,6 +16,7 @@ interface TourCompareModalProps {
   selectedTourIds: string[];
   onRemoveTour: (tourId: string) => void;
   locale: Locale;
+  dict?: Dictionary;
 }
 
 export const TourCompareModal: React.FC<TourCompareModalProps> = ({
@@ -22,22 +25,22 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
   selectedTourIds,
   onRemoveTour,
   locale,
+  dict,
 }) => {
-  const comparedTours = tours.filter((t) => selectedTourIds.includes(t.id));
+  const t = dict || getDictionary(locale);
+  const comparedTours = tours.filter((tour) => selectedTourIds.includes(tour.id));
 
   return (
     <GlassModal
       open={open}
       onClose={onClose}
-      title={locale === "kz" ? "Турларды салыстыру" : "Сравнение выбранных туров"}
-      closeLabel="Закрыть"
+      title={t.compare.modalTitle}
+      closeLabel={t.compare.close}
     >
       {comparedTours.length === 0 ? (
         <div className="py-12 text-center space-y-3">
           <p className="text-sm text-[#EDE6DA]/70">
-            {locale === "kz"
-              ? "Салыстыру үшін кемінде 2 турды таңдаңыз."
-              : "Для сравнения выберите 2 или 3 тура в каталоге, нажав иконку сравнения."}
+            {t.compare.emptyNotice}
           </p>
         </div>
       ) : (
@@ -64,7 +67,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                       <button
                         type="button"
                         onClick={() => onRemoveTour(tour.id)}
-                        aria-label="Убрать из сравнения"
+                        aria-label={t.compare.removeAria}
                         className="text-white/40 hover:text-white transition-colors cursor-pointer"
                       >
                         <X className="w-4 h-4" />
@@ -84,31 +87,31 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                     {/* Criteria */}
                     <div className="space-y-2 text-xs border-t border-white/10 pt-3">
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">Длительность:</span>
+                        <span className="text-[#EDE6DA]/50 block">{t.compare.duration}</span>
                         <span className="text-white font-medium">
-                          {tour.duration ? tour.duration[locale] : "По запросу"}
+                          {tour.duration ? tour.duration[locale] : t.compare.onRequest}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">Формат:</span>
+                        <span className="text-[#EDE6DA]/50 block">{t.compare.format}</span>
                         <span className="text-white font-medium">
                           {tour.tourType === "content_tour"
-                            ? "Контент-тур (фото/видео)"
+                            ? t.compare.types.content_tour
                             : tour.tourType === "mountain_nature"
-                            ? "Горный / природный"
-                            : "Культурный / сити-тур"}
+                            ? t.compare.types.mountain_nature
+                            : t.compare.types.cultural_city}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">Ориентир стоимости:</span>
+                        <span className="text-[#EDE6DA]/50 block">{t.compare.priceRef}</span>
                         <span className="text-[#6BAFB3] font-mono font-medium">
                           {tour.posterReferencePriceKzt
-                            ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ (по афише)`
-                            : "По запросу"}
+                            ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ ${t.compare.posterRefSuffix}`
+                            : t.compare.onRequest}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">Включено:</span>
+                        <span className="text-[#EDE6DA]/50 block">{t.compare.included}</span>
                         <ul className="text-[11px] text-[#EDE6DA]/80 space-y-1 mt-1">
                           {tour.included[locale].slice(0, 3).map((item, idx) => (
                             <li key={idx} className="flex items-start gap-1.5">
@@ -127,7 +130,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                       onClick={onClose}
                       className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white text-center font-medium block transition-colors"
                     >
-                      Подробнее о туре →
+                      {t.compare.detailsLink}
                     </Link>
                     <GlassButton
                       variant="primary"
@@ -136,7 +139,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                       rel="noopener noreferrer"
                       className="w-full py-2 text-xs text-center justify-center"
                     >
-                      <span>В WhatsApp ↗</span>
+                      <span>{t.compare.whatsappBtn}</span>
                     </GlassButton>
                   </div>
                 </div>

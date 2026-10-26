@@ -21,7 +21,6 @@ import { BackToTop } from "../components/common/BackToTop";
 // Modals
 import { TourDetails } from "../components/tours/TourDetails";
 import { StoryLightboxModal } from "../components/reviews/StoryLightboxModal";
-import { TourCompareModal } from "../components/tours/TourCompareModal";
 
 // Pages
 import { HomePage } from "../components/pages/HomePage";
@@ -34,20 +33,42 @@ import { FAQPage } from "../components/pages/FAQPage";
 import { ContactsPage } from "../components/pages/ContactsPage";
 
 function AppContent() {
-  const [locale, setLocale] = useState<Locale>("ru");
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get("lang");
+        if (langParam === "kz" || langParam === "ru") {
+          localStorage.setItem("alltour_locale", langParam);
+          return langParam;
+        }
+        const saved = localStorage.getItem("alltour_locale");
+        if (saved === "kz" || saved === "ru") return saved;
+      } catch {}
+    }
+    return "ru";
+  });
+
+  const setLocale = useCallback((newLocale: Locale) => {
+    setLocaleState(newLocale);
+    try {
+      localStorage.setItem("alltour_locale", newLocale);
+    } catch {}
+  }, []);
+
   const [activeDestinationId, setActiveDestinationId] =
     useState<DestinationId>("kyrgyzstan");
   const [activeTourDetails, setActiveTourDetails] = useState<Tour | null>(null);
   const [activeStoryModal, setActiveStoryModal] =
     useState<StoryScreenshotAsset | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [compareModalOpen, setCompareModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const reducedMotion = useReducedMotion();
   const dict = getDictionary(locale);
 
   const { favorites, toggleFavorite, favoritesCount } = useFavorites();
-  const { comparedTours, toggleCompare, clearCompare } = useTourComparison(3);
+  const { comparedTours, toggleCompare } = useTourComparison(3);
 
   useSyncSceneTheme(activeDestinationId);
 
@@ -56,8 +77,10 @@ function AppContent() {
   }, [locale]);
 
   const handleBookTour = useCallback((tour: Tour) => {
-    setActiveTourDetails(tour);
-  }, []);
+    setActiveTourDetails(null);
+    const search = new URLSearchParams({ tour: tour.slug });
+    navigate({ pathname: "/", search: `?${search}`, hash: "#booking" });
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0a1013] text-[#EDE6DA] relative selection:bg-red-500/30 selection:text-white">
@@ -116,7 +139,7 @@ function AppContent() {
                 onToggleFavorite={toggleFavorite}
                 comparedTours={comparedTours}
                 onToggleCompare={toggleCompare}
-                onOpenCompareModal={() => setCompareModalOpen(true)}
+                onBookTour={handleBookTour}
               />
             }
           />
@@ -131,7 +154,6 @@ function AppContent() {
                 onToggleFavorite={toggleFavorite}
                 comparedTours={comparedTours}
                 onToggleCompare={toggleCompare}
-                onOpenStory={(story) => setActiveStoryModal(story)}
               />
             }
           />
@@ -146,7 +168,7 @@ function AppContent() {
                 onToggleFavorite={toggleFavorite}
                 comparedTours={comparedTours}
                 onToggleCompare={toggleCompare}
-                onOpenTourDetails={(tour) => setActiveTourDetails(tour)}
+                onBookTour={handleBookTour}
               />
             }
           />
@@ -204,14 +226,6 @@ function AppContent() {
         onClose={() => setActiveStoryModal(null)}
         onSelectStory={(story) => setActiveStoryModal(story)}
         dict={dict}
-        locale={locale}
-      />
-
-      <TourCompareModal
-        open={compareModalOpen}
-        onClose={() => setCompareModalOpen(false)}
-        selectedTourIds={comparedTours}
-        onRemoveTour={toggleCompare}
         locale={locale}
       />
 

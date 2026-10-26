@@ -35,6 +35,8 @@ export interface Tour {
    * Optional confirmed duration. When undefined, UI displays "По запросу / На выбор".
    */
   duration?: LocalizedText;
+  /** Confirmed route length used by duration filters; absent when unknown. */
+  durationDays?: number;
   /**
    * Optional confirmed live price in KZT. Kept undefined until verified by owner.
    */
@@ -112,6 +114,7 @@ export const tours: Tour[] = [
       ru: "1 день (выезд выходного дня)",
       kz: "1 күн (демалыс күнгі тур)",
     },
+    durationDays: 1,
     priceKzt: undefined,
     posterReferencePriceKzt: 25000,
     priceVerified: false,
@@ -279,6 +282,7 @@ export const tours: Tour[] = [
       ru: "6 дней / 5 ночей (гостиница 5 дней / 4 ночи)",
       kz: "6 күн / 5 түн (қонақүй 5 күн / 4 түн)",
     },
+    durationDays: 6,
     priceKzt: undefined,
     posterReferencePriceKzt: 145000,
     priceVerified: false,
@@ -505,6 +509,7 @@ export const tours: Tour[] = [
       ru: "3 дня / 2 ночи",
       kz: "3 күн / 2 түн",
     },
+    durationDays: 3,
     priceKzt: undefined,
     posterReferencePriceKzt: 85000,
     posterOriginalPriceKzt: 99000,

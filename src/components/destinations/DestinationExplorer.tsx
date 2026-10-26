@@ -27,18 +27,7 @@ export const DestinationExplorer: React.FC<DestinationExplorerProps> = ({
       <div className="flex items-center gap-1 sm:gap-1.5" role="tablist">
         {destinations.map((dest) => {
           const isActive = dest.id === activeDestinationId;
-          const label =
-            locale === "ru"
-              ? dest.id === "kyrgyzstan"
-                ? "Кыргызстан"
-                : dest.id === "georgia"
-                ? "Грузия"
-                : "Китай"
-              : dest.id === "kyrgyzstan"
-              ? "Қырғызстан"
-              : dest.id === "georgia"
-              ? "Грузия"
-              : "Қытай";
+          const label = dest.name[locale];
 
           return (
             <button
