@@ -16,11 +16,30 @@ npm run build
 npm run preview
 ```
 
-Запуск модульных тестов бизнес-логики:
+Запуск автоматических тестов (22 теста):
 
 ```bash
-npx tsx --test src/lib/appLogic.test.ts
+npm test
 ```
+
+Проверка типов TypeScript:
+
+```bash
+npm run lint
+```
+
+## Үздіксіз интеграция (CI / GitHub Actions)
+
+Жобада GitHub Actions негізінде автоматтандырылған CI бапталған (`.github/workflows/ci.yml`). Ол `main` тармағына push жасалғанда, Pull Request ашылғанда немесе жаңартылғанда, сондай-ақ қолмен (`workflow_dispatch`) іске қосылады.
+
+CI `ubuntu-latest` ортасында (Node.js 22.x) мына қадамдарды қатаң ретпен тексереді:
+1. **Таза орнату (Clean install)**: `npm ci` (`package.json` және `package-lock.json` үйлесімділігін кэш арқылы тексеру).
+2. **TypeScript тексерісі**: `npm run lint` (`tsc --noEmit`).
+3. **Автоматтандырылған тесттер**: `npm test` (22 тест: брондау сценарийлері, ұзақтық сүзгісі, таңдаулылар, бағыттар тұтастығы, WhatsApp хабарламалары, i18n сөздіктер паритеті және Montserrat қарпіндегі қазақша глифтер).
+4. **Өндірістік құрастыру**: `npm run build` (`vite build`).
+
+CI нәтижелері мен логтарын репозиторийдің **Actions** қосымша бетінен көруге болады:
+[https://github.com/Honored-Karma/All_tour/actions](https://github.com/Honored-Karma/All_tour/actions)
 
 ## Поля, которые необходимо подтвердить и заполнить реальными данными компании перед релизом
 
