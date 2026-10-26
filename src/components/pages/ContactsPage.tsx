@@ -89,7 +89,7 @@ ${notes ? `Вопрос: ${notes}` : ""}`;
           <MessageCircle className="w-3.5 h-3.5" />
           {isKz ? "Байланыс орталығы" : "Прямая связь с ALL TOUR"}
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white mb-4 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">
           {isKz ? "Бізбен байланысыңыз" : "Контакты и бронирование"}
         </h1>
         <p className="max-w-2xl mx-auto text-base sm:text-lg text-[#EDE6DA]/70 font-sans leading-relaxed">

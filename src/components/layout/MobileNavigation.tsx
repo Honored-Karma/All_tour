@@ -196,7 +196,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
                 className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-left transition-colors"
               >
                 <div>
-                  <div className="font-serif text-sm font-semibold text-white">
+                  <div className="font-display text-sm font-semibold text-white">
                     {dest.name[locale]}
                   </div>
                   <div className="text-[11px] text-[#EDE6DA]/60">

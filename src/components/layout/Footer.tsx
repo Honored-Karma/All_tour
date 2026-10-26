@@ -162,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
         closeLabel={dict.tours.modal.closeLabel}
       >
         <div className="space-y-4 text-sm leading-relaxed text-[#EDE6DA]/85">
-          <h3 className="font-serif text-lg text-white font-bold">
+          <h3 className="font-display text-lg text-white font-bold">
             {dict.footer.privacyModalTitle}
           </h3>
           <p>{dict.footer.privacyModalText}</p>
