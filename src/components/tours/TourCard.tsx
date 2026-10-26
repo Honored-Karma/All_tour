@@ -161,7 +161,7 @@ export const TourCard: React.FC<TourCardProps> = ({
                   e.stopPropagation();
                   onToggleFavorite(tour.id);
                 }}
-                aria-label={isFavorite ? dict.tours.card.favoriteAdd : dict.tours.card.favoriteAdd}
+                aria-label={isFavorite ? dict.tours.card.favoriteIn : dict.tours.card.favoriteAdd}
                 title={isFavorite ? dict.tours.card.favoriteIn : dict.tours.card.favoriteAdd}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer border ${
                   isFavorite

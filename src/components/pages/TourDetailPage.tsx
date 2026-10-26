@@ -155,6 +155,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                   ? "bg-[#d11d35] text-white border-[#d11d35]"
                   : "bg-white/8 hover:bg-white/15 border-white/12 text-[#EDE6DA]"
               }`}
+              aria-label={isFav ? dict.tourDetail.favoriteIn : dict.tourDetail.favoriteAdd}
               title={isFav ? dict.tourDetail.favoriteIn : dict.tourDetail.favoriteAdd}
             >
               <Heart className={`w-3.5 h-3.5 ${isFav ? "fill-current" : ""}`} />

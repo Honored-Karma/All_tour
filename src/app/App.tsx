@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import type { DestinationId } from "../data/destinations";
 import type { Tour } from "../data/tours";
 import type { StoryScreenshotAsset } from "../data/reviews";
@@ -33,13 +33,18 @@ import { FAQPage } from "../components/pages/FAQPage";
 import { ContactsPage } from "../components/pages/ContactsPage";
 
 function AppContent() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [locale, setLocaleState] = useState<Locale>(() => {
     if (typeof window !== "undefined") {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const langParam = urlParams.get("lang");
         if (langParam === "kz" || langParam === "ru") {
-          localStorage.setItem("alltour_locale", langParam);
+          try {
+            localStorage.setItem("alltour_locale", langParam);
+          } catch {}
           return langParam;
         }
         const saved = localStorage.getItem("alltour_locale");
@@ -49,12 +54,38 @@ function AppContent() {
     return "ru";
   });
 
-  const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    try {
-      localStorage.setItem("alltour_locale", newLocale);
-    } catch {}
-  }, []);
+  // Keep locale state in sync whenever Router location changes (e.g. Back/Forward, deep linking)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const langParam = urlParams.get("lang");
+    if ((langParam === "kz" || langParam === "ru") && langParam !== locale) {
+      setLocaleState(langParam);
+      try {
+        localStorage.setItem("alltour_locale", langParam);
+      } catch {}
+    }
+  }, [location.search, locale]);
+
+  const setLocale = useCallback(
+    (newLocale: Locale) => {
+      setLocaleState(newLocale);
+      try {
+        localStorage.setItem("alltour_locale", newLocale);
+      } catch {}
+
+      const params = new URLSearchParams(location.search);
+      params.set("lang", newLocale);
+      navigate(
+        {
+          pathname: location.pathname,
+          search: `?${params.toString()}`,
+          hash: location.hash,
+        },
+        { replace: true }
+      );
+    },
+    [location.pathname, location.search, location.hash, navigate]
+  );
 
   const [activeDestinationId, setActiveDestinationId] =
     useState<DestinationId>("kyrgyzstan");
@@ -62,7 +93,6 @@ function AppContent() {
   const [activeStoryModal, setActiveStoryModal] =
     useState<StoryScreenshotAsset | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const reducedMotion = useReducedMotion();
   const dict = getDictionary(locale);
@@ -76,11 +106,16 @@ function AppContent() {
     document.documentElement.lang = locale === "kz" ? "kk" : "ru";
   }, [locale]);
 
-  const handleBookTour = useCallback((tour: Tour) => {
-    setActiveTourDetails(null);
-    const search = new URLSearchParams({ tour: tour.slug });
-    navigate({ pathname: "/", search: `?${search}`, hash: "#booking" });
-  }, [navigate]);
+  const handleBookTour = useCallback(
+    (tour: Tour) => {
+      setActiveTourDetails(null);
+      const search = new URLSearchParams();
+      search.set("lang", locale);
+      search.set("tour", tour.slug);
+      navigate({ pathname: "/", search: `?${search.toString()}`, hash: "#booking" });
+    },
+    [navigate, locale]
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0a1013] text-[#EDE6DA] relative selection:bg-red-500/30 selection:text-white">

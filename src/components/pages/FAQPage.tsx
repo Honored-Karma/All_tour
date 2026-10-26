@@ -104,13 +104,18 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
           ) : (
             filteredItems.map((item, idx) => {
               const isOpen = openItems.includes(idx);
+              const buttonId = `faq-page-button-${idx}`;
+              const panelId = `faq-page-panel-${idx}`;
               return (
                 <div
                   key={idx}
                   className="rounded-2xl border border-white/12 bg-white/[0.03] overflow-hidden transition-colors"
                 >
                   <button
+                    id={buttonId}
                     type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
                     onClick={() => toggleItem(idx)}
                     className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-white/[0.02]"
                   >
@@ -125,7 +130,12 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-[#EDE6DA]/80 leading-relaxed border-t border-white/5">
+                    <div
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={buttonId}
+                      className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-[#EDE6DA]/80 leading-relaxed border-t border-white/5"
+                    >
                       {item.a}
                     </div>
                   )}

@@ -205,3 +205,140 @@ test("language choice persists in localStorage and updates html lang attribute",
   assert.equal(document.documentElement.lang, "ru");
   assert.equal(dom.window.localStorage.getItem("alltour_locale"), "ru");
 });
+
+test("TourCard updates aria-label when toggled to favorite (accessibility parity)", async () => {
+  await mount("/tours");
+  const firstCard = document.querySelector('[data-testid^="tour-card-"]')!;
+  assert.ok(firstCard);
+  const favBtn = firstCard.querySelector('button[aria-label="Добавить в избранное"]') as HTMLButtonElement;
+  assert.ok(favBtn, "Card favorite button should start with Добавить в избранное");
+  await click(favBtn);
+  assert.equal(favBtn.getAttribute("aria-label"), "В избранном");
+});
+
+test("FAQPage buttons include aria-expanded and aria-controls for screen readers", async () => {
+  await mount("/faq");
+  const faqButtons = Array.from(document.querySelectorAll('button[aria-expanded]')) as HTMLButtonElement[];
+  assert.ok(faqButtons.length > 0, "FAQPage buttons must have aria-expanded");
+  assert.equal(faqButtons[0].getAttribute("aria-expanded"), "true");
+  assert.ok(faqButtons[0].getAttribute("aria-controls"), "FAQ button must have aria-controls");
+  await click(faqButtons[0]);
+  assert.equal(faqButtons[0].getAttribute("aria-expanded"), "false");
+});
+
+test("switching to RU on /tours?lang=kz and toggling favorites retains RU on reload", async () => {
+  await mount("/tours?lang=kz");
+  assert.equal(document.documentElement.lang, "kk");
+
+  // Switch to RU
+  const langBtn = document.querySelector('header button[aria-label="Тілді ауыстыру (RU / KZ)"]') as HTMLButtonElement;
+  assert.ok(langBtn);
+  await click(langBtn);
+  assert.equal(document.documentElement.lang, "ru");
+  assert.match(dom.window.location.search, /lang=ru/);
+
+  // Toggle favorites in catalog
+  const favFilterBtn = Array.from(document.querySelectorAll("button")).find(
+    (b) => b.textContent?.includes("Избранное")
+  ) as HTMLButtonElement;
+  assert.ok(favFilterBtn);
+  await click(favFilterBtn);
+  assert.match(dom.window.location.search, /favorites=true/);
+  assert.match(dom.window.location.search, /lang=ru/);
+
+  // Simulate reload (remount with current URL)
+  await act(async () => {
+    root!.unmount();
+    document.body.innerHTML = '<div id="root"></div>';
+    root = createRoot(document.getElementById("root")!);
+    root.render(<App />);
+  });
+
+  assert.equal(document.documentElement.lang, "ru");
+  assert.match(dom.window.location.search, /lang=ru/);
+  assert.match(dom.window.location.search, /favorites=true/);
+});
+
+test("lang, favorites, tour and hash parameters are fully preserved when language is toggled", async () => {
+  await mount("/?lang=kz&favorites=true&tour=china-urumqi#booking");
+  assert.equal(document.documentElement.lang, "kk");
+  assert.equal(dom.window.location.hash, "#booking");
+
+  const langBtn = document.querySelector('header button[aria-label="Тілді ауыстыру (RU / KZ)"]') as HTMLButtonElement;
+  assert.ok(langBtn);
+  await click(langBtn);
+
+  assert.equal(document.documentElement.lang, "ru");
+  assert.equal(dom.window.location.pathname, "/");
+  assert.equal(dom.window.location.hash, "#booking");
+
+  const params = new URLSearchParams(dom.window.location.search);
+  assert.equal(params.get("lang"), "ru");
+  assert.equal(params.get("favorites"), "true");
+  assert.equal(params.get("tour"), "china-urumqi");
+});
+
+test("browser back and forward restore matching language without loops", async () => {
+  await mount("/tours?lang=kz");
+  assert.equal(document.documentElement.lang, "kk");
+
+  const langBtn = document.querySelector('header button[aria-label="Тілді ауыстыру (RU / KZ)"]') as HTMLButtonElement;
+  assert.ok(langBtn);
+  await click(langBtn);
+  assert.equal(document.documentElement.lang, "ru");
+
+  // Push new location with kz
+  dom.window.history.pushState(null, "", "/about?lang=kz");
+  await act(async () => {
+    dom.window.dispatchEvent(new dom.window.PopStateEvent("popstate"));
+  });
+  assert.equal(document.documentElement.lang, "kk");
+
+  // Push another location with ru
+  dom.window.history.pushState(null, "", "/about?lang=ru");
+  await act(async () => {
+    dom.window.dispatchEvent(new dom.window.PopStateEvent("popstate"));
+  });
+  assert.equal(document.documentElement.lang, "ru");
+});
+
+test("language and URL update gracefully even if localStorage throws an error", async () => {
+  await mount("/tours?lang=kz");
+  assert.equal(document.documentElement.lang, "kk");
+
+  const originalSet = dom.window.localStorage.setItem;
+  dom.window.localStorage.setItem = () => {
+    throw new Error("SecurityError: Access to localStorage is denied");
+  };
+
+  try {
+    const langBtn = document.querySelector('header button[aria-label="Тілді ауыстыру (RU / KZ)"]') as HTMLButtonElement;
+    assert.ok(langBtn);
+    await click(langBtn);
+
+    assert.equal(document.documentElement.lang, "ru");
+    assert.match(dom.window.location.search, /lang=ru/);
+  } finally {
+    dom.window.localStorage.setItem = originalSet;
+  }
+});
+
+test("booking carries current language parameter to booking form in both KZ and RU modes", async () => {
+  // Test KZ mode
+  await mount("/tours?lang=kz");
+  const cardKZ = document.querySelector('[data-testid="tour-card-china-content-3d"]')!;
+  const bookBtnKZ = Array.from(cardKZ.querySelectorAll("button")).find(b => b.textContent?.includes("Брондау"))!;
+  await click(bookBtnKZ);
+  assert.match(dom.window.location.search, /lang=kz/);
+  assert.match(dom.window.location.search, /tour=china-content-3d/);
+  assert.equal(dom.window.location.hash, "#booking");
+
+  // Test RU mode
+  await mount("/tours?lang=ru");
+  const cardRU = document.querySelector('[data-testid="tour-card-china-content-3d"]')!;
+  const bookBtnRU = Array.from(cardRU.querySelectorAll("button")).find(b => b.textContent?.includes("Забронировать"))!;
+  await click(bookBtnRU);
+  assert.match(dom.window.location.search, /lang=ru/);
+  assert.match(dom.window.location.search, /tour=china-content-3d/);
+  assert.equal(dom.window.location.hash, "#booking");
+});
