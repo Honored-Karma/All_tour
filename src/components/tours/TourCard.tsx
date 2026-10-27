@@ -81,7 +81,8 @@ export const TourCard: React.FC<TourCardProps> = ({
   return (
     <GlassPanel
       data-testid={`tour-card-${tour.id}`}
-      className="@container group overflow-hidden flex flex-col justify-between p-5 sm:p-7 transition-all duration-300 hover:border-line"
+      data-reveal="card"
+      className="tour-card @container group overflow-hidden flex flex-col justify-between p-5 sm:p-7 hover:border-line"
     >
       <div>
         {/* Editorial photographic frame */}

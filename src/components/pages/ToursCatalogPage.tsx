@@ -103,7 +103,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
     <div className="min-h-screen bg-canvas text-ink pt-28 pb-20 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto space-y-7">
         {/* Editorial Page Header */}
-        <div className="space-y-3 max-w-4xl">
+        <div data-reveal className="space-y-3 max-w-4xl">
           <p className="editorial-kicker text-sage-ink">
             {dict.catalog.kicker}
           </p>
@@ -219,7 +219,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
             </button>
           </GlassPanel>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div data-reveal-group className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredTours.map((tour) => (
               <TourCard
                 key={tour.id}
@@ -240,7 +240,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
         )}
 
         {/* Bottom Conversion & WhatsApp consultation block */}
-        <div className="pt-8">
+        <div data-reveal className="pt-8">
           <GlassPanel className="p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
               <h3 className="font-display text-lg sm:text-xl font-bold text-ink">

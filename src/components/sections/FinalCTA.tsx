@@ -39,7 +39,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({
       </div>
 
       <div className="sunset-content">
-        <div className="sunset-invitation">
+        <div data-reveal className="sunset-invitation">
           <p className="editorial-kicker sunset-kicker"><Sunset size={20} strokeWidth={1.5} aria-hidden="true" />{dict.finalCta.kicker}</p>
           <h2 id="sunset-title">{dict.finalCta.title}</h2>
           <p className="sunset-subtitle">{dict.finalCta.subtitle}</p>
@@ -55,14 +55,14 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({
             </GlassButton>
           </div>
         </div>
-        <div className="sunset-route">
+        <div data-reveal data-reveal-delay="140" className="sunset-route">
           <div className="sunset-origin"><MapPin size={16} strokeWidth={1.5} aria-hidden="true" /><span>{dict.homeAtmosphere.departure}</span></div>
           <div className="sunset-route-stops">
             {destinations.map((destination) => <span key={destination.id}>{destination.name[locale]}</span>)}
           </div>
           <p>{dict.homeAtmosphere.routeNote}</p>
         </div>
-        <p className="sunset-margin-note"><span aria-hidden="true" />{dict.homeAtmosphere.sunsetNote}</p>
+        <p data-reveal className="sunset-margin-note"><span aria-hidden="true" />{dict.homeAtmosphere.sunsetNote}</p>
       </div>
     </section>
   );

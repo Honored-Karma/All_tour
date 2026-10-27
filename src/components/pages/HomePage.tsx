@@ -37,7 +37,7 @@ export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion 
 
       <section id="service" aria-labelledby="service-title" className="home-editorial scroll-mt-24">
         <div className="home-editorial-grid">
-          <div className="space-y-6">
+          <div data-reveal className="space-y-6">
             <p className="editorial-kicker text-sage-ink">{dict.homeIntro.kicker}</p>
             <h2 id="service-title" className="headline-section font-bold text-ink">{dict.homeIntro.title}</h2>
             <p className="max-w-xl text-base sm:text-lg text-muted leading-relaxed">{dict.homeIntro.description}</p>
@@ -52,9 +52,9 @@ export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion 
           </div>
           <div className="destination-sketches">
             <p className="destination-sketches-label"><Compass size={18} strokeWidth={1.5} aria-hidden="true" />{dict.homeAtmosphere.destinationsLabel}</p>
-            <div className="destination-sketches-photos">
+            <div data-reveal-group className="destination-sketches-photos">
               {destinations.map((destination) => (
-                <Link key={destination.id} to={`/destinations/${destination.id}`} className="destination-sketch">
+                <Link data-reveal="card" key={destination.id} to={`/destinations/${destination.id}`} className="destination-sketch">
                   <div className="destination-sketch-image">
                     <picture>
                       <source srcSet={destination.media.heroImage.replace(/\.jpg$/, ".webp")} type="image/webp" />
@@ -70,9 +70,9 @@ export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion 
             <p className="destination-sketches-origin"><MapPin size={14} aria-hidden="true" />{dict.homeAtmosphere.departure}</p>
           </div>
         </div>
-        <dl className="home-service-notes">
+        <dl data-reveal-group className="home-service-notes">
             {dict.homeIntro.items.map((item) => (
-              <div key={item.title}>
+              <div data-reveal key={item.title}>
                 <dt className="font-display text-lg font-semibold text-ink">{item.title}</dt>
                 <dd className="max-w-lg text-sm text-muted leading-relaxed">{item.text}</dd>
               </div>

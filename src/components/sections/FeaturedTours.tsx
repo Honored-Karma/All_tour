@@ -45,7 +45,7 @@ export const FeaturedTours: React.FC<FeaturedToursProps> = ({
     >
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Editorial Header & Interactive Filter Segmented Control */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-line pb-8">
+        <div data-reveal className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-line pb-8">
           <div className="space-y-3 max-w-2xl">
             <p className="editorial-kicker text-sage-ink">{dict.tours.kicker}</p>
             <h2 className="headline-section font-bold text-ink">
@@ -87,6 +87,7 @@ export const FeaturedTours: React.FC<FeaturedToursProps> = ({
         {/* Asymmetric Editorial Tour Grid */}
         <div
           data-testid="tour-grid"
+          data-reveal-group
           className="grid grid-cols-1 lg:grid-cols-2 gap-8"
         >
           {filteredTours.map((tour) => (

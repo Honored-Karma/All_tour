@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
+import React, { useState, useEffect, useCallback, useRef, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import type { Tour } from "../data/tours";
 import type { StoryScreenshotAsset } from "../data/reviews";
 import { getDictionary } from "../i18n";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useScrollReveal } from "../hooks/useScrollReveal";
 import { useSyncSceneTheme } from "../hooks/useActiveDestination";
 import { useFavorites } from "../hooks/useFavorites";
 import { useTourComparison } from "../hooks/useTourComparison";
@@ -118,6 +119,8 @@ function AppContent() {
   const [compareModalOpen, setCompareModalOpen] = useState(false);
 
   const reducedMotion = useReducedMotion();
+  const mainRef = useRef<HTMLElement>(null);
+  useScrollReveal(mainRef, reducedMotion);
   const dict = getDictionary(locale);
 
   const { favorites, toggleFavorite, favoritesCount } = useFavorites();
@@ -173,7 +176,7 @@ function AppContent() {
         />
 
         {/* Route Views */}
-        <main className="flex-1">
+        <main ref={mainRef} className="flex-1">
           <RouteErrorBoundary
             dict={dict}
             locale={locale}

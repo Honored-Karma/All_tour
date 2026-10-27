@@ -91,6 +91,7 @@ export function SmartTourFinder({
     <section
       id="tour-planner"
       className="tour-planner"
+      data-reveal
       aria-labelledby="planner-title"
     >
       <div className="planner-heading">

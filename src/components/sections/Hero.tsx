@@ -64,6 +64,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
     const update = () => {
       frame = 0;
       const progress = clamp((window.scrollY - start) / distance);
+      stage.style.setProperty("--cloud-play-state", progress < 1 && !document.hidden ? "running" : "paused");
       const exit = clamp((progress - 0.88) / 0.12);
       const softExit = exit * exit * (3 - 2 * exit);
       stage.style.setProperty("--hero-exit", String(softExit));
@@ -108,12 +109,14 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
     measure();
     window.addEventListener("scroll", queueUpdate, { passive: true });
     window.addEventListener("resize", measure);
+    document.addEventListener("visibilitychange", queueUpdate);
     const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measure);
     observer?.observe(section);
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", queueUpdate);
       window.removeEventListener("resize", measure);
+      document.removeEventListener("visibilitychange", queueUpdate);
       observer?.disconnect();
     };
   }, [reducedMotion]);
@@ -129,10 +132,10 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
 
   const introduction = (
     <div className="hero-intro-content">
-      <p className="editorial-kicker text-muted">{copy.kicker}</p>
-      <h1 className="headline-hero font-bold text-ink">{dict.hero.title}</h1>
-      <p className="hero-intro-description">{dict.hero.subtitle}</p>
-      <div className="flex flex-wrap items-center gap-3.5 pt-3">
+      <p className="editorial-kicker text-muted hero-enter hero-enter-1">{copy.kicker}</p>
+      <h1 className="headline-hero font-bold text-ink hero-enter hero-enter-2">{dict.hero.title}</h1>
+      <p className="hero-intro-description hero-enter hero-enter-3">{dict.hero.subtitle}</p>
+      <div className="flex flex-wrap items-center gap-3.5 pt-3 hero-enter hero-enter-4">
         <GlassButton variant="primary" onClick={onExploreClick}>{dict.hero.exploreCta}</GlassButton>
         <GlassButton variant="secondary" href={buildWhatsAppBookingUrl({ locale })} target="_blank" rel="noopener noreferrer">
           {dict.hero.whatsappCta}
@@ -172,6 +175,11 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
               <SceneImage index={index} alt="" />
             </div>
           ))}
+        </div>
+        <div className="hero-atmosphere" aria-hidden="true">
+          <div className="hero-cloud hero-cloud-left"><span /></div>
+          <div className="hero-cloud hero-cloud-right"><span /></div>
+          <div className="hero-cloud hero-cloud-low"><span /></div>
         </div>
         <div className="hero-cinema-scrim" />
         <div ref={introRef} className="hero-cinema-intro" inert={activeScene !== -1}>
