@@ -68,12 +68,21 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
                   : "aspect-[4/3]"
               }`}
             >
-              <img
-                src={item.src}
-                alt={item.alt[locale]}
-                loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-              />
+              <picture>
+                {item.src.startsWith("/media/") && (
+                  <source srcSet={item.src.replace(/\.jpg$/, ".webp")} type="image/webp" />
+                )}
+                {item.src === "/assets/brand/group-china-tour.png" && (
+                  <source srcSet="/assets/brand/group-china-tour.webp" type="image/webp" />
+                )}
+                <img
+                  src={item.src}
+                  alt={item.alt[locale]}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+              </picture>
 
               {/* Gradient scrim */}
               <div

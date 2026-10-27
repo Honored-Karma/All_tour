@@ -46,6 +46,12 @@ export const TourCard: React.FC<TourCardProps> = ({
       ? tour.catalogCardImage
       : tour.image;
 
+  const webpDisplayImage = displayImage.startsWith("/media/")
+    ? displayImage.replace(/\.jpg$/, ".webp")
+    : displayImage === "/assets/brand/group-china-tour.png"
+    ? "/assets/brand/group-china-tour.webp"
+    : null;
+
   const imagePosition =
     useCatalogImage && tour.catalogCardImagePosition
       ? tour.catalogCardImagePosition
@@ -91,15 +97,19 @@ export const TourCard: React.FC<TourCardProps> = ({
               aria-label={`${dict.tours.card.detailsBtn}: ${tour.title[locale]}`}
             >
               {!imgFailed && (
-                <img
-                  src={displayImage}
-                  alt={tour.title[locale]}
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                  onError={() => setImgFailed(true)}
-                  style={imagePosition ? { objectPosition: imagePosition } : undefined}
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                />
+                <picture>
+                  {webpDisplayImage && <source srcSet={webpDisplayImage} type="image/webp" />}
+                  <img
+                    src={displayImage}
+                    alt={tour.title[locale]}
+                    loading="lazy"
+                    decoding="async"
+                    referrerPolicy="no-referrer"
+                    onError={() => setImgFailed(true)}
+                    style={imagePosition ? { objectPosition: imagePosition } : undefined}
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                  />
+                </picture>
               )}
             </Link>
           ) : (
@@ -110,15 +120,19 @@ export const TourCard: React.FC<TourCardProps> = ({
               className="w-full h-full cursor-pointer"
             >
               {!imgFailed && (
-                <img
-                  src={displayImage}
-                  alt={tour.title[locale]}
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                  onError={() => setImgFailed(true)}
-                  style={imagePosition ? { objectPosition: imagePosition } : undefined}
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                />
+                <picture>
+                  {webpDisplayImage && <source srcSet={webpDisplayImage} type="image/webp" />}
+                  <img
+                    src={displayImage}
+                    alt={tour.title[locale]}
+                    loading="lazy"
+                    decoding="async"
+                    referrerPolicy="no-referrer"
+                    onError={() => setImgFailed(true)}
+                    style={imagePosition ? { objectPosition: imagePosition } : undefined}
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                  />
+                </picture>
               )}
             </div>
           )}

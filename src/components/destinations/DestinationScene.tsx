@@ -56,16 +56,29 @@ export const DestinationScene: React.FC<DestinationSceneProps> = ({
             <source src={media.backgroundVideo} type="video/mp4" />
           </video>
         ) : !imageFailed ? (
-          <img
-            src={media.heroImage}
-            alt={destination.name.ru}
-            referrerPolicy="no-referrer"
-            onError={() => setImageFailed(true)}
-            style={{
-              objectPosition: media.objectPositionDesktop,
-            }}
-            className="w-full h-full object-cover select-none"
-          />
+          <picture>
+            <source
+              media="(max-width: 640px)"
+              srcSet={media.heroImage.replace(/\.jpg$/, "-sm.webp")}
+              type="image/webp"
+            />
+            <source
+              srcSet={media.heroImage.replace(/\.jpg$/, ".webp")}
+              type="image/webp"
+            />
+            <img
+              src={media.heroImage}
+              alt={destination.name.ru}
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              onError={() => setImageFailed(true)}
+              style={{
+                objectPosition: media.objectPositionDesktop,
+              }}
+              className="w-full h-full object-cover select-none"
+            />
+          </picture>
         ) : null}
       </div>
 

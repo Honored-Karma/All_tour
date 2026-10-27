@@ -21,14 +21,18 @@ export const WhyTravel: React.FC<WhyTravelProps> = ({ dict }) => {
             className="relative w-full h-full min-h-[360px] lg:min-h-[520px] rounded-3xl overflow-hidden border border-white/15"
           >
             {!imgFailed && (
-              <img
-                src="/media/editorial-travel.jpg"
-                alt={dict.whyTravel.caption}
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                onError={() => setImgFailed(true)}
-                className="w-full h-full object-cover"
-              />
+              <picture>
+                <source srcSet="/media/editorial-travel.webp" type="image/webp" />
+                <img
+                  src="/media/editorial-travel.jpg"
+                  alt={dict.whyTravel.caption}
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgFailed(true)}
+                  className="w-full h-full object-cover"
+                />
+              </picture>
             )}
             <div
               className="absolute inset-0 pointer-events-none"

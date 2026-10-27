@@ -74,12 +74,26 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
 
         {/* Hero Section of the Country */}
         <div className="relative rounded-3xl overflow-hidden min-h-[380px] sm:min-h-[460px] flex flex-col justify-end p-6 sm:p-12 border border-white/15 shadow-2xl">
-          <img
-            src={dest.media.heroImage}
-            alt={dest.name[locale]}
-            className="absolute inset-0 w-full h-full object-cover select-none"
-            style={{ objectPosition: dest.media.objectPositionDesktop }}
-          />
+          <picture>
+            <source
+              media="(max-width: 640px)"
+              srcSet={dest.media.heroImage.replace(/\.jpg$/, "-sm.webp")}
+              type="image/webp"
+            />
+            <source
+              srcSet={dest.media.heroImage.replace(/\.jpg$/, ".webp")}
+              type="image/webp"
+            />
+            <img
+              src={dest.media.heroImage}
+              alt={dest.name[locale]}
+              loading="eager"
+              fetchPriority="high"
+              decoding="sync"
+              className="absolute inset-0 w-full h-full object-cover select-none"
+              style={{ objectPosition: dest.media.objectPositionDesktop }}
+            />
+          </picture>
 
           <div
             className="absolute inset-0 pointer-events-none"

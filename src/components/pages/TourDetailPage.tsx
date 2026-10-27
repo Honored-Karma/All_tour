@@ -217,11 +217,22 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
 
           {/* Right Image / Hero Visual */}
           <div className="lg:col-span-5 relative aspect-[16/11] sm:aspect-[4/3] rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
-            <img
-              src={tour.image}
-              alt={tour.title[locale]}
-              className="w-full h-full object-cover"
-            />
+            <picture>
+              {tour.image.startsWith("/media/") && (
+                <source srcSet={tour.image.replace(/\.jpg$/, ".webp")} type="image/webp" />
+              )}
+              {tour.image === "/assets/brand/group-china-tour.png" && (
+                <source srcSet="/assets/brand/group-china-tour.webp" type="image/webp" />
+              )}
+              <img
+                src={tour.image}
+                alt={tour.title[locale]}
+                loading="eager"
+                fetchPriority="high"
+                decoding="sync"
+                className="w-full h-full object-cover"
+              />
+            </picture>
             <div
               className="absolute inset-0 pointer-events-none"
               style={{

@@ -28,14 +28,18 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({
         className="absolute inset-0 -z-20"
       >
         {!imgFailed && (
-          <img
-            src="/media/final-cta.jpg"
-            alt="Mountain Lake Panorama"
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            onError={() => setImgFailed(true)}
-            className="w-full h-full object-cover"
-          />
+          <picture>
+            <source srcSet="/media/final-cta.webp" type="image/webp" />
+            <img
+              src="/media/final-cta.jpg"
+              alt="Mountain Lake Panorama"
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              onError={() => setImgFailed(true)}
+              className="w-full h-full object-cover"
+            />
+          </picture>
         )}
       </div>
 

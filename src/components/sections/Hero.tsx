@@ -35,14 +35,28 @@ export const Hero: React.FC<HeroProps> = ({
         }`}
       >
         {!heroImgFailed && (
-          <img
-            src={kyrgyzstan.media.heroImage}
-            alt={kyrgyzstan.name[locale]}
-            referrerPolicy="no-referrer"
-            onError={() => setHeroImgFailed(true)}
-            style={{ objectPosition: kyrgyzstan.media.objectPositionDesktop }}
-            className="w-full h-full object-cover select-none"
-          />
+          <picture>
+            <source
+              media="(max-width: 640px)"
+              srcSet="/media/kyrgyzstan-2-sm.webp"
+              type="image/webp"
+            />
+            <source
+              srcSet="/media/kyrgyzstan-2.webp"
+              type="image/webp"
+            />
+            <img
+              src={kyrgyzstan.media.heroImage}
+              alt={kyrgyzstan.name[locale]}
+              loading="eager"
+              fetchPriority="high"
+              decoding="sync"
+              referrerPolicy="no-referrer"
+              onError={() => setHeroImgFailed(true)}
+              style={{ objectPosition: kyrgyzstan.media.objectPositionDesktop }}
+              className="w-full h-full object-cover select-none"
+            />
+          </picture>
         )}
       </div>
 
