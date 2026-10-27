@@ -10,6 +10,8 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useTourComparison } from "../hooks/useTourComparison";
 import type { Locale } from "../lib/whatsapp";
 
+import { CurrencyProvider } from "../context/CurrencyContext";
+
 // Layout components
 import { Header } from "../components/layout/Header";
 import { MobileNavigation } from "../components/layout/MobileNavigation";
@@ -24,6 +26,7 @@ import { useSEO } from "../hooks/useSEO";
 // Modals
 import { TourDetails } from "../components/tours/TourDetails";
 import { StoryLightboxModal } from "../components/reviews/StoryLightboxModal";
+import { TourCompareModal } from "../components/tours/TourCompareModal";
 
 // Route views - code split at route boundaries
 const HomePage = lazy(() =>
@@ -115,6 +118,7 @@ function AppContent() {
   const [activeStoryModal, setActiveStoryModal] =
     useState<StoryScreenshotAsset | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
 
   const reducedMotion = useReducedMotion();
   const dict = getDictionary(locale);
@@ -142,166 +146,181 @@ function AppContent() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a1013] text-[#EDE6DA] relative selection:bg-red-500/30 selection:text-white">
-      {/* Scroll Progress Bar at the very top */}
-      <ScrollProgressIndicator />
+    <CurrencyProvider locale={locale}>
+      <div className="min-h-screen flex flex-col bg-[#0a1013] text-[#EDE6DA] relative selection:bg-red-500/30 selection:text-white">
+        {/* Scroll Progress Bar at the very top */}
+        <ScrollProgressIndicator />
 
-      {/* Primary Global Navigation Header */}
-      <Header
-        dict={dict}
-        locale={locale}
-        onToggleLocale={setLocale}
-        favoritesCount={favoritesCount}
-        onOpenMobileMenu={() => setMobileMenuOpen(true)}
-      />
-
-      {/* Mobile Drawer Menu */}
-      <MobileNavigation
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        dict={dict}
-        locale={locale}
-        onToggleLocale={setLocale}
-        favoritesCount={favoritesCount}
-      />
-
-      {/* Route Views */}
-      <main className="flex-1">
-        <RouteErrorBoundary
+        {/* Primary Global Navigation Header */}
+        <Header
           dict={dict}
           locale={locale}
-          resetKey={location.pathname}
-        >
-          <Suspense fallback={<PageFallback locale={locale} />}>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    dict={dict}
-                    locale={locale}
-                    reducedMotion={reducedMotion}
-                    activeDestinationId={activeDestinationId}
-                    onActiveDestinationChange={setActiveDestinationId}
-                    onBookTour={handleBookTour}
-                    onOpenTourDetails={(tour) => setActiveTourDetails(tour)}
-                    onOpenStory={(story) => setActiveStoryModal(story)}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    comparedTours={comparedTours}
-                    onToggleCompare={toggleCompare}
-                  />
-                }
-              />
+          onToggleLocale={setLocale}
+          favoritesCount={favoritesCount}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
+        />
 
-              <Route
-                path="/tours"
-                element={
-                  <ToursCatalogPage
-                    dict={dict}
-                    locale={locale}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    comparedTours={comparedTours}
-                    onToggleCompare={toggleCompare}
-                    onBookTour={handleBookTour}
-                  />
-                }
-              />
+        {/* Mobile Drawer Menu */}
+        <MobileNavigation
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          dict={dict}
+          locale={locale}
+          onToggleLocale={setLocale}
+          favoritesCount={favoritesCount}
+        />
 
-              <Route
-                path="/tours/:slug"
-                element={
-                  <TourDetailPage
-                    dict={dict}
-                    locale={locale}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    comparedTours={comparedTours}
-                    onToggleCompare={toggleCompare}
-                  />
-                }
-              />
+        {/* Route Views */}
+        <main className="flex-1">
+          <RouteErrorBoundary
+            dict={dict}
+            locale={locale}
+            resetKey={location.pathname}
+          >
+            <Suspense fallback={<PageFallback locale={locale} />}>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <HomePage
+                      dict={dict}
+                      locale={locale}
+                      reducedMotion={reducedMotion}
+                      activeDestinationId={activeDestinationId}
+                      onActiveDestinationChange={setActiveDestinationId}
+                      onBookTour={handleBookTour}
+                      onOpenTourDetails={(tour) => setActiveTourDetails(tour)}
+                      onOpenStory={(story) => setActiveStoryModal(story)}
+                      favorites={favorites}
+                      onToggleFavorite={toggleFavorite}
+                      comparedTours={comparedTours}
+                      onToggleCompare={toggleCompare}
+                    />
+                  }
+                />
 
-              <Route
-                path="/destinations/:destinationId"
-                element={
-                  <DestinationPage
-                    dict={dict}
-                    locale={locale}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    comparedTours={comparedTours}
-                    onToggleCompare={toggleCompare}
-                    onBookTour={handleBookTour}
-                  />
-                }
-              />
+                <Route
+                  path="/tours"
+                  element={
+                    <ToursCatalogPage
+                      dict={dict}
+                      locale={locale}
+                      favorites={favorites}
+                      onToggleFavorite={toggleFavorite}
+                      comparedTours={comparedTours}
+                      onToggleCompare={toggleCompare}
+                      onBookTour={handleBookTour}
+                      onOpenCompareModal={() => setCompareModalOpen(true)}
+                    />
+                  }
+                />
 
-              <Route
-                path="/destinations"
-                element={<Navigate to="/tours" replace />}
-              />
+                <Route
+                  path="/tours/:slug"
+                  element={
+                    <TourDetailPage
+                      dict={dict}
+                      locale={locale}
+                      favorites={favorites}
+                      onToggleFavorite={toggleFavorite}
+                      comparedTours={comparedTours}
+                      onToggleCompare={toggleCompare}
+                      onBookTour={handleBookTour}
+                      onOpenStory={(story: StoryScreenshotAsset) => setActiveStoryModal(story)}
+                    />
+                  }
+                />
 
-              <Route
-                path="/about"
-                element={<AboutPage dict={dict} locale={locale} />}
-              />
+                <Route
+                  path="/destinations/:destinationId"
+                  element={
+                    <DestinationPage
+                      dict={dict}
+                      locale={locale}
+                      favorites={favorites}
+                      onToggleFavorite={toggleFavorite}
+                      comparedTours={comparedTours}
+                      onToggleCompare={toggleCompare}
+                      onBookTour={handleBookTour}
+                      onOpenTourDetails={(tour: Tour) => setActiveTourDetails(tour)}
+                    />
+                  }
+                />
 
-              <Route
-                path="/reviews"
-                element={
-                  <ReviewsPage
-                    dict={dict}
-                    locale={locale}
-                    onOpenStory={(story) => setActiveStoryModal(story)}
-                  />
-                }
-              />
+                <Route
+                  path="/destinations"
+                  element={<Navigate to="/tours" replace />}
+                />
 
-              <Route
-                path="/faq"
-                element={<FAQPage dict={dict} locale={locale} />}
-              />
+                <Route
+                  path="/about"
+                  element={<AboutPage dict={dict} locale={locale} />}
+                />
 
-              <Route
-                path="/contacts"
-                element={<ContactsPage dict={dict} locale={locale} />}
-              />
+                <Route
+                  path="/reviews"
+                  element={
+                    <ReviewsPage
+                      dict={dict}
+                      locale={locale}
+                      onOpenStory={(story) => setActiveStoryModal(story)}
+                    />
+                  }
+                />
 
-              {/* Dedicated 404 Not Found Page */}
-              <Route
-                path="*"
-                element={<NotFoundPage dict={dict} locale={locale} />}
-              />
-            </Routes>
-          </Suspense>
-        </RouteErrorBoundary>
-      </main>
+                <Route
+                  path="/faq"
+                  element={<FAQPage dict={dict} locale={locale} />}
+                />
 
-      {/* Global Footer */}
-      <Footer dict={dict} locale={locale} />
+                <Route
+                  path="/contacts"
+                  element={<ContactsPage dict={dict} locale={locale} />}
+                />
 
-      {/* Modals & Overlays */}
-      <TourDetails
-        tour={activeTourDetails}
-        onClose={() => setActiveTourDetails(null)}
-        onSelectForBookingForm={handleBookTour}
-        dict={dict}
-        locale={locale}
-      />
+                {/* Dedicated 404 Not Found Page */}
+                <Route
+                  path="*"
+                  element={<NotFoundPage dict={dict} locale={locale} />}
+                />
+              </Routes>
+            </Suspense>
+          </RouteErrorBoundary>
+        </main>
 
-      <StoryLightboxModal
-        activeStory={activeStoryModal}
-        onClose={() => setActiveStoryModal(null)}
-        onSelectStory={(story) => setActiveStoryModal(story)}
-        dict={dict}
-        locale={locale}
-      />
+        {/* Global Footer */}
+        <Footer dict={dict} locale={locale} />
 
-      {/* Floating Back to Top Button */}
-      <BackToTop />
-    </div>
+        {/* Modals & Overlays */}
+        <TourDetails
+          tour={activeTourDetails}
+          onClose={() => setActiveTourDetails(null)}
+          onSelectForBookingForm={handleBookTour}
+          dict={dict}
+          locale={locale}
+        />
+
+        <StoryLightboxModal
+          activeStory={activeStoryModal}
+          onClose={() => setActiveStoryModal(null)}
+          onSelectStory={(story) => setActiveStoryModal(story)}
+          dict={dict}
+          locale={locale}
+        />
+
+        <TourCompareModal
+          open={compareModalOpen}
+          onClose={() => setCompareModalOpen(false)}
+          selectedTourIds={comparedTours}
+          onRemoveTour={toggleCompare}
+          locale={locale}
+          dict={dict}
+        />
+
+        {/* Floating Back to Top Button */}
+        <BackToTop />
+      </div>
+    </CurrencyProvider>
   );
 }
 

@@ -6,6 +6,8 @@ import { getDestinationById } from "../../data/destinations";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
 import { GlassPanel } from "../glass/GlassPanel";
+import { useCurrency } from "../../context/CurrencyContext";
+import { PriceDisplay } from "../common/PriceDisplay";
 
 interface TourCardProps {
   tour: Tour;
@@ -66,12 +68,8 @@ export const TourCard: React.FC<TourCardProps> = ({
       ? tour.departureDates[0]
       : dict.tours.card.nextDateFallback;
 
-  const priceText =
-    typeof tour.priceKzt === "number"
-      ? `${tour.priceKzt.toLocaleString("ru-KZ")} ₸`
-      : tour.posterReferencePriceKzt
-      ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ ${dict.tours.card.posterRefPriceSuffix}`
-      : dict.tours.card.priceFallback;
+  const { formatTourPrice } = useCurrency();
+  const priceResult = formatTourPrice(tour, dict.tours.card.priceFallback);
 
   const handleCardClick = () => {
     if (onOpenDetails) onOpenDetails(tour);
@@ -224,22 +222,39 @@ export const TourCard: React.FC<TourCardProps> = ({
         </p>
       </div>
 
-      {/* Hairline divider + asymmetric editorial footer */}
-      <div className="pt-5 border-t border-white/12 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="block text-[11px] uppercase tracking-wider text-[#EDE6DA]/50">
+      {/* Hairline divider + aligned card footer */}
+      <div className="pt-4 border-t border-white/12 flex items-center justify-between gap-3 min-h-[58px]">
+        {/* Uniform price block with identical height and baseline across all cards */}
+        <div className="flex flex-col justify-center min-w-0 flex-1">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-[#EDE6DA]/50 block leading-none mb-1">
             {dict.tours.card.priceLabel}
           </span>
-          <span className="text-sm sm:text-base font-medium text-[#EDE6DA] tabular-nums">
-            {priceText}
-          </span>
+          <div className="flex items-center leading-tight">
+            <PriceDisplay
+              priceResult={priceResult}
+              className="text-base sm:text-lg"
+            />
+          </div>
+          {priceResult.note ? (
+            <span className="text-[11px] text-[#EDE6DA]/60 font-sans tracking-normal block leading-tight mt-0.5">
+              ({priceResult.note})
+            </span>
+          ) : (
+            <span
+              className="text-[11px] text-transparent select-none block leading-tight mt-0.5"
+              aria-hidden="true"
+            >
+              &nbsp;
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2.5">
+        {/* Action buttons (aligned across row, shrink-0 prevents shrinking) */}
+        <div className="flex items-center gap-2 shrink-0">
           {directLink ? (
             <Link
               to={`/tours/${tour.slug}`}
-              className="liquid-glass-button-secondary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+              className="liquid-glass-button-secondary px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-colors"
             >
               <span>{dict.tours.card.detailsBtn}</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -248,7 +263,7 @@ export const TourCard: React.FC<TourCardProps> = ({
             <button
               type="button"
               onClick={handleCardClick}
-              className="liquid-glass-button-secondary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+              className="liquid-glass-button-secondary px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-colors"
             >
               <span>{dict.tours.card.detailsBtn}</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -259,7 +274,7 @@ export const TourCard: React.FC<TourCardProps> = ({
             <button
               type="button"
               onClick={() => onBookTour(tour)}
-              className="liquid-glass-button-primary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+              className="liquid-glass-button-primary px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer shadow-md shadow-red-900/20"
             >
               <span>{dict.tours.card.bookBtn}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />

@@ -6,6 +6,7 @@ import type { Locale } from "../../lib/whatsapp";
 import { BUSINESS_CONFIG } from "../../config/business";
 import { destinations } from "../../data/destinations";
 import { BrandLogo } from "./BrandLogo";
+import { CurrencySwitcher } from "../common/CurrencySwitcher";
 
 interface MobileNavigationProps {
   open: boolean;
@@ -65,6 +66,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
       <div className="flex items-center justify-between border-b border-white/10 pb-4">
         <BrandLogo variant="mobile" onClick={onClose} />
         <div className="flex items-center gap-2">
+          <CurrencySwitcher locale={locale} variant="header" />
           <button
             type="button"
             onClick={() => onToggleLocale(locale === "ru" ? "kz" : "ru")}

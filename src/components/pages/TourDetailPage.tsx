@@ -14,7 +14,7 @@ import {
   FileText,
   SlidersHorizontal,
 } from "lucide-react";
-import { getTourBySlug } from "../../data/tours";
+import { getTourBySlug, type Tour } from "../../data/tours";
 import { getDestinationById } from "../../data/destinations";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
@@ -23,6 +23,9 @@ import { MediaGallery } from "../gallery/MediaGallery";
 import { GlassPanel } from "../glass/GlassPanel";
 import { GlassButton } from "../glass/GlassButton";
 import { BookingForm } from "../booking/BookingForm";
+import { useCurrency } from "../../context/CurrencyContext";
+import { PriceDisplay } from "../common/PriceDisplay";
+import type { StoryScreenshotAsset } from "../../data/reviews";
 
 interface TourDetailPageProps {
   dict: Dictionary;
@@ -31,6 +34,8 @@ interface TourDetailPageProps {
   onToggleFavorite: (id: string) => void;
   comparedTours: string[];
   onToggleCompare: (id: string) => void;
+  onBookTour?: (tour: Tour) => void;
+  onOpenStory?: (story: StoryScreenshotAsset) => void;
 }
 
 export const TourDetailPage: React.FC<TourDetailPageProps> = ({
@@ -103,12 +108,11 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
     type: m.type,
   }));
 
-  const priceText =
-    typeof tour.priceKzt === "number"
-      ? `${tour.priceKzt.toLocaleString("ru-KZ")} ₸`
-      : tour.posterReferencePriceKzt
-      ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ ${dict.compare.posterRefSuffix}`
-      : dict.tourDetail.priceFallback;
+  const { formatTourPrice } = useCurrency();
+  const priceResult = formatTourPrice(
+    tour,
+    dict.tourDetail.priceFallback
+  );
 
   return (
     <div className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-28 pb-24 px-4 sm:px-8">
@@ -200,9 +204,17 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                 <span className="text-xs uppercase tracking-wider text-[#EDE6DA]/60">
                   {dict.tourDetail.priceLabel}
                 </span>
-                <span className="text-lg sm:text-xl font-display font-bold text-white tabular-nums">
-                  {priceText}
-                </span>
+                <div className="text-right">
+                  <PriceDisplay
+                    priceResult={priceResult}
+                    className="text-lg sm:text-xl font-bold"
+                  />
+                  {priceResult.note && (
+                    <span className="text-[11px] text-[#EDE6DA]/60 font-sans block leading-tight mt-0.5">
+                      ({priceResult.note})
+                    </span>
+                  )}
+                </div>
               </div>
               <p className="text-xs text-[#EDE6DA]/65 leading-relaxed">
                 {dict.tourDetail.priceNotice}

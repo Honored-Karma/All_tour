@@ -137,3 +137,6 @@ export function buildWhatsAppBookingUrl(
   const message = formatWhatsAppMessage(payload);
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }
+
+export const generateWhatsAppBookingLink = buildWhatsAppBookingUrl;
+

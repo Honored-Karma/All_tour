@@ -9,6 +9,8 @@ import { GlassButton } from "../glass/GlassButton";
 import { Link } from "react-router-dom";
 import type { Dictionary } from "../../i18n/ru";
 import { getDictionary } from "../../i18n";
+import { useCurrency } from "../../context/CurrencyContext";
+import { PriceDisplay } from "../common/PriceDisplay";
 
 interface TourCompareModalProps {
   open: boolean;
@@ -28,6 +30,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
   dict,
 }) => {
   const t = dict || getDictionary(locale);
+  const { formatTourPrice } = useCurrency();
   const comparedTours = tours.filter((tour) => selectedTourIds.includes(tour.id));
 
   return (
@@ -104,11 +107,25 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                       </div>
                       <div>
                         <span className="text-[#EDE6DA]/50 block">{t.compare.priceRef}</span>
-                        <span className="text-[#6BAFB3] font-mono font-medium">
-                          {tour.posterReferencePriceKzt
-                            ? `${tour.posterReferencePriceKzt.toLocaleString("ru-KZ")} ₸ ${t.compare.posterRefSuffix}`
-                            : t.compare.onRequest}
-                        </span>
+                        {(() => {
+                          const pRes = formatTourPrice(
+                            tour,
+                            t.compare.onRequest
+                          );
+                          return (
+                            <div>
+                              <PriceDisplay
+                                priceResult={pRes}
+                                className="text-white font-mono font-bold text-sm"
+                              />
+                              {pRes.note && (
+                                <span className="text-[10px] text-[#EDE6DA]/60 font-sans block leading-tight mt-0.5">
+                                  ({pRes.note})
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                       <div>
                         <span className="text-[#EDE6DA]/50 block">{t.compare.included}</span>

@@ -19,7 +19,9 @@ interface ToursCatalogPageProps {
   onToggleFavorite: (id: string) => void;
   comparedTours: string[];
   onToggleCompare: (id: string) => void;
-  onBookTour: (tour: Tour) => void;
+  onBookTour?: (tour: Tour) => void;
+  onClearCompared?: () => void;
+  onOpenCompareModal?: () => void;
 }
 
 export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({

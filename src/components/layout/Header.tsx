@@ -5,6 +5,7 @@ import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
 import { BrandLogo } from "./BrandLogo";
 import { destinations } from "../../data/destinations";
+import { CurrencySwitcher } from "../common/CurrencySwitcher";
 
 interface HeaderProps {
   dict: Dictionary;
@@ -214,8 +215,11 @@ export const Header: React.FC<HeaderProps> = ({
           </NavLink>
         </nav>
 
-        {/* Zone 3: Actions (Favorites, Lang switch, CTA, Mobile Menu) */}
+        {/* Zone 3: Actions (Favorites, Currency switch, Lang switch, CTA, Mobile Menu) */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Currency Switcher */}
+          <CurrencySwitcher locale={locale} variant="header" />
+
           {/* Favorites Link */}
           <Link
             to="/tours?favorites=true"

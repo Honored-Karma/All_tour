@@ -19,7 +19,8 @@ interface DestinationPageProps {
   onToggleFavorite: (id: string) => void;
   comparedTours: string[];
   onToggleCompare: (id: string) => void;
-  onBookTour: (tour: Tour) => void;
+  onBookTour?: (tour: Tour) => void;
+  onOpenTourDetails?: (tour: Tour) => void;
 }
 
 export const DestinationPage: React.FC<DestinationPageProps> = ({

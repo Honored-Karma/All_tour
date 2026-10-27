@@ -7,6 +7,8 @@ import type { Dictionary } from "../../i18n/ru";
 import { buildWhatsAppBookingUrl, type Locale } from "../../lib/whatsapp";
 import { GlassModal } from "../glass/GlassModal";
 import { TourItinerary } from "./TourItinerary";
+import { useCurrency } from "../../context/CurrencyContext";
+import { PriceDisplay } from "../common/PriceDisplay";
 
 interface TourDetailsProps {
   tour: Tour | null;
@@ -26,6 +28,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
   locale,
 }) => {
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
+  const { formatTourPrice } = useCurrency();
 
   if (!tour) return null;
 
@@ -42,10 +45,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
       ? tour.departureDates.join(", ")
       : dict.tours.card.nextDateFallback;
 
-  const priceText =
-    typeof tour.priceKzt === "number"
-      ? `${tour.priceKzt.toLocaleString("ru-KZ")} ₸`
-      : dict.tours.card.priceFallback;
+  const priceResult = formatTourPrice(tour, dict.tours.card.priceFallback);
 
   const directWhatsappUrl = buildWhatsAppBookingUrl({
     destinationId: tour.destinationId,
@@ -147,12 +147,18 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
           <span className="text-sm font-medium text-white">{datesText}</span>
         </div>
         <div>
-          <span className="block text-xs text-[#EDE6DA]/55">
+          <span className="block text-xs text-[#EDE6DA]/55 mb-0.5">
             {dict.tours.card.priceLabel}
           </span>
-          <span className="text-sm font-semibold text-[#6BAFB3] tabular-nums">
-            {priceText}
-          </span>
+          <PriceDisplay
+            priceResult={priceResult}
+            className="text-sm font-semibold"
+          />
+          {priceResult.note && (
+            <span className="block text-[11px] text-[#EDE6DA]/60 font-sans leading-tight mt-0.5">
+              ({priceResult.note})
+            </span>
+          )}
         </div>
       </div>
 

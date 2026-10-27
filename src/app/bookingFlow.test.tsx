@@ -218,7 +218,7 @@ test("TourCard updates aria-label when toggled to favorite (accessibility parity
 
 test("FAQPage buttons include aria-expanded and aria-controls for screen readers", async () => {
   await mount("/faq");
-  const faqButtons = Array.from(document.querySelectorAll('button[aria-expanded]')) as HTMLButtonElement[];
+  const faqButtons = Array.from(document.querySelectorAll('main button[aria-expanded]')) as HTMLButtonElement[];
   assert.ok(faqButtons.length > 0, "FAQPage buttons must have aria-expanded");
   assert.equal(faqButtons[0].getAttribute("aria-expanded"), "true");
   assert.ok(faqButtons[0].getAttribute("aria-controls"), "FAQ button must have aria-controls");
