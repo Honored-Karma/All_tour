@@ -1,6 +1,6 @@
 {
   "name": "ALL TOUR — Туры из Алматы в Кыргызстан, Грузию и Китай",
-  "description": "Откройте путешествия из Алматы вместе с ALL TOUR. Кыргызстан, Грузия и Китай. Выбирайте направление и уточняйте даты туров в WhatsApp.",
+  "description": "Туры из Алматы в Кыргызстан, Грузию и Китай. Посмотрите программы и уточните даты и стоимость в WhatsApp.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

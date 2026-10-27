@@ -154,7 +154,7 @@ export const StoryLightboxModal: React.FC<StoryLightboxModalProps> = ({
                   className="p-4 sm:p-5 rounded-2xl bg-surface-soft border border-line space-y-2.5"
                 >
                   <p className="text-sm sm:text-base text-ink leading-relaxed">
-                    «{rev.quote}»
+                    {rev.quote}
                   </p>
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted pt-1">
                     <span className="font-semibold text-ink">

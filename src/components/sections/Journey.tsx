@@ -158,7 +158,7 @@ export const Journey: React.FC<JourneyProps> = ({
               </h2>
 
               <p className="text-lg sm:text-2xl text-ink font-medium max-w-2xl leading-snug">
-                «{currentDest.tagline[locale]}»
+                {currentDest.tagline[locale]}
               </p>
 
               <p className="text-sm sm:text-base text-muted max-w-xl leading-relaxed">

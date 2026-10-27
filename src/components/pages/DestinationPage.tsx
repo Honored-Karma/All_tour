@@ -100,7 +100,6 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
             <span>{dp.allDestinations}</span>
           </Link>
 
-          <span className="font-mono text-xs text-muted">{dest.coordinates}</span>
         </div>
 
         {/* Hero Section of the Country */}
@@ -145,7 +144,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
               {dest.name[locale]}
             </h1>
             <p className="text-base sm:text-xl text-ink font-medium leading-snug">
-              «{dest.tagline[locale]}»
+              {dest.tagline[locale]}
             </p>
             <p className="text-xs sm:text-sm text-muted max-w-2xl leading-relaxed">
               {dest.atmosphereNote[locale]}

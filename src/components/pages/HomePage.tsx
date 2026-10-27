@@ -63,7 +63,6 @@ export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion 
                     <ArrowUpRight size={18} aria-hidden="true" />
                   </div>
                   <span className="destination-sketch-name">{destination.name[locale]}</span>
-                  <span className="destination-sketch-coordinate">{destination.coordinates}</span>
                 </Link>
               ))}
             </div>

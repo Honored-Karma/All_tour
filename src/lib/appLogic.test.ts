@@ -166,13 +166,13 @@ test("Kazakh dictionary contains natural required phrasing", async () => {
   assert.equal(kz.catalog.favoritesFilter, "Таңдаулылар");
   assert.equal(kz.catalog.sort.default, "Әдепкі ретпен");
   assert.equal(kz.catalog.formats.all, "Барлық тур түрлері");
-  assert.equal(kz.catalog.formats.mountain_nature, "Тау және көл турлары");
-  assert.equal(kz.catalog.formats.cultural_city, "Қалалық және мәдени турлар");
-  assert.equal(kz.catalog.openFinder, "Турды жылдам таңдау");
-  assert.equal(kz.catalog.hideFinder, "Жылдам таңдауды жасыру");
+  assert.equal(kz.catalog.formats.mountain_nature, "Таулар мен көлдер");
+  assert.equal(kz.catalog.formats.cultural_city, "Қалаларға экскурсиялар");
+  assert.equal(kz.catalog.openFinder, "Тур таңдау");
+  assert.equal(kz.catalog.hideFinder, "Тур таңдауды жасыру");
   assert.equal(kz.catalog.compareSelected, "Таңдалғандарды салыстыру");
-  assert.equal(kz.catalog.sort.priceAsc, "Алдымен қолжетімділері");
-  assert.equal(kz.catalog.sort.priceDesc, "Алдымен ауқымдылары");
+  assert.equal(kz.catalog.sort.priceAsc, "Алдымен арзанырақ");
+  assert.equal(kz.catalog.sort.priceDesc, "Алдымен қымбатырақ");
   assert.equal(kz.catalog.resetFilters, "Барлық сүзгілерді тазарту");
 });
 

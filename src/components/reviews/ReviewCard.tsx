@@ -55,7 +55,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
 
         {/* Authentic review quote */}
         <blockquote className="text-sm sm:text-base text-ink leading-relaxed font-normal">
-          «{review.quote}»
+          {review.quote}
         </blockquote>
       </div>
 

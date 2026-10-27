@@ -188,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             {({ isActive }) => (
               <>
-                FAQ
+                {dict.nav.faq}
                 {isActive && (
                   <span className="absolute bottom-0 inset-x-0 h-[2px] bg-accent rounded-full" />
                 )}

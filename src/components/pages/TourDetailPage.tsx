@@ -260,12 +260,6 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                   "linear-gradient(180deg, transparent 50%, rgba(9, 15, 18, 0.85) 100%)",
               }}
             />
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-ink">
-              <span className="font-mono">{destination.coordinates}</span>
-              <span className="px-2.5 py-1 rounded-lg bg-black/60 text-ink text-xs">
-                ALL TOUR · BEYOND BORDERS
-              </span>
-            </div>
           </div>
         </div>
 

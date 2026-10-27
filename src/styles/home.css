@@ -111,13 +111,6 @@
   font-weight: 650;
   letter-spacing: 0.06em;
 }
-.destination-sketch-coordinate {
-  display: block;
-  margin-top: 0.3rem;
-  color: var(--palette-muted);
-  font-size: 0.6rem;
-  font-variant-numeric: tabular-nums;
-}
 .destination-sketches-origin { justify-content: end; font-size: 0.65rem; }
 .destination-sketches-origin::before {
   content: "";
@@ -259,7 +252,6 @@ main:has(.home-page) + #footer { border-top: 0; }
   .destination-sketches { max-width: 34rem; }
   .destination-sketches-photos { gap: 0.65rem; padding-top: 1.25rem; }
   .destination-sketch-name { font-size: 0.6rem; letter-spacing: 0.03em; }
-  .destination-sketch-coordinate { font-size: 0.5rem; }
   .home-service-notes { grid-template-columns: 1fr; gap: 1.5rem; margin-top: 2.5rem; }
   .home-service-notes > div { padding-top: 1rem; }
   .sunset-story { min-height: 56rem; }

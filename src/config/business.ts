@@ -25,8 +25,8 @@ export interface BusinessConfig {
 export const businessConfig: BusinessConfig = {
   brandName: "ALL TOUR",
   brandSubline: "CONTENT TOUR",
-  brandSubtitleRu: "Туры и контент-путешествия из Алматы",
-  brandSubtitleKz: "Алматыдан турлар мен контент-саяхаттар",
+  brandSubtitleRu: "Туры из Алматы",
+  brandSubtitleKz: "Алматыдан турлар",
   logoOriginal: "/assets/brand/photo_16.jpg",
   logoTransparent: "/assets/brand/logo-transparent.png",
   logoMark: "/assets/brand/logo-mark.png",

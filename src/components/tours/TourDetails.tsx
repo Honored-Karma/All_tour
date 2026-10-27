@@ -236,7 +236,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
               className="p-4 rounded-2xl bg-surface-soft border border-line space-y-2"
             >
               <p className="text-xs sm:text-sm text-ink leading-relaxed">
-                «{rev.quote}»
+                {rev.quote}
               </p>
               <div className="text-xs text-muted">
                 {rev.author} · {rev.guideName[locale]}

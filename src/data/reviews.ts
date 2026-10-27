@@ -47,12 +47,12 @@ export const storyScreenshots: StoryScreenshotAsset[] = [
     id: "story-kg-dilmina",
     image: "/assets/aistudio/image_fbeb45d6.png",
     title: {
-      ru: "Однодневный тур в Кыргызстан · Отзывы 2",
-      kz: "Қырғызстанға біркүндік тур · Пікірлер 2",
+      ru: "Отзывы о поездке в Кыргызстан",
+      kz: "Қырғызстан сапары туралы пікірлер",
     },
     subtitle: {
-      ru: "Горные панорамы и атмосфера в группе",
-      kz: "Тау панорамалары және топтағы атмосфера",
+      ru: "Поездка с гидом Дильминой",
+      kz: "Гид Дильминамен сапар",
     },
     category: "kyrgyzstan",
     guides: {
@@ -68,8 +68,8 @@ export const storyScreenshots: StoryScreenshotAsset[] = [
       kz: "Қытайдағы контент-тур",
     },
     subtitle: {
-      ru: "Групповой выезд · Полное сопровождение",
-      kz: "Топтық сапар · Толық сүйемелдеу",
+      ru: "Поездка в Китай с группой",
+      kz: "Қытайға топтық сапар",
     },
     category: "china",
     guides: {
@@ -102,8 +102,8 @@ export const storyScreenshots: StoryScreenshotAsset[] = [
       kz: "Баламен саяхаттау",
     },
     subtitle: {
-      ru: "Комфортная атмосфера для всей семьи",
-      kz: "Бүкіл отбасы үшін жайлы атмосфера",
+      ru: "Отзыв о семейной поездке",
+      kz: "Отбасылық сапар туралы пікір",
     },
     category: "uzbekistan_family",
     guides: {
