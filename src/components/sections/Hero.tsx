@@ -122,6 +122,10 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
   }, [reducedMotion]);
 
   const selectScene = (index: number) => {
+    if (reducedMotion) {
+      setActiveScene(index);
+      return;
+    }
     const section = sectionRef.current;
     const stage = stageRef.current;
     if (!section || !stage) return;
@@ -144,24 +148,40 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
     </div>
   );
 
+  const controls = (
+    <div className="hero-cinema-bottom">
+      <button type="button" onClick={() => activeScene === 2 ? onExploreClick() : selectScene(Math.max(0, activeScene + 1))} className="hero-scroll-cue">
+        <span>{activeScene === 2 ? dict.hero.exploreCta : copy.scrollHint}</span>
+        <ArrowDown size={16} aria-hidden="true" />
+      </button>
+      <nav aria-label={copy.navigationLabel} className="hero-scene-navigation">
+        {scenes.map((scene, index) => (
+          <button key={scene.id} type="button" aria-current={activeScene === index || (activeScene === -1 && index === 0) ? "step" : undefined} onClick={() => selectScene(index)}>
+            <span className="hero-scene-button-label"><span className="hero-scene-index">0{index + 1}</span>{copy.scenes[index].title}</span>
+            <span className="hero-scene-track" aria-hidden="true"><span ref={(node) => { progressRefs.current[index] = node; }} style={reducedMotion ? { transform: `scaleX(${index === Math.max(0, activeScene) ? 1 : 0})` } : undefined} /></span>
+          </button>
+        ))}
+      </nav>
+      <button type="button" onClick={onExploreClick} className="hero-skip-story">{copy.skipLabel}</button>
+    </div>
+  );
+
   if (reducedMotion) {
+    const sceneIndex = Math.max(0, activeScene);
     return (
       <section id="hero" className="photo-surface hero-static" aria-label={copy.label}>
         <div className="hero-static-intro">
-          <SceneImage index={0} alt={copy.scenes[0].alt} />
+          <SceneImage key={scenes[sceneIndex].id} index={sceneIndex} alt={copy.scenes[sceneIndex].alt} />
           <div className="hero-cinema-scrim" />
-          <div className="hero-static-content">{introduction}</div>
+          {activeScene === -1 && <div className="hero-static-content">{introduction}</div>}
+          <div className="hero-place-caption" aria-live="polite" aria-atomic="true">
+            {activeScene !== -1 && <>
+              <h2>{copy.scenes[sceneIndex].title}</h2>
+              <p>{copy.scenes[sceneIndex].description}</p>
+            </>}
+          </div>
+          {controls}
         </div>
-        {scenes.map((scene, index) => (
-          <figure key={scene.id} className="hero-static-scene">
-            <SceneImage index={index} alt={copy.scenes[index].alt} />
-            <div className="hero-cinema-scrim" />
-            <figcaption className="hero-place-caption">
-              <h2>{copy.scenes[index].title}</h2>
-              <p>{copy.scenes[index].description}</p>
-            </figcaption>
-          </figure>
-        ))}
       </section>
     );
   }
@@ -191,21 +211,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
             <p>{copy.scenes[index].description}</p>
           </div>
         ))}
-        <div className="hero-cinema-bottom">
-          <button type="button" onClick={() => activeScene === 2 ? onExploreClick() : selectScene(Math.max(0, activeScene + 1))} className="hero-scroll-cue">
-            <span>{activeScene === 2 ? dict.hero.exploreCta : copy.scrollHint}</span>
-            <ArrowDown size={16} aria-hidden="true" />
-          </button>
-          <nav aria-label={copy.navigationLabel} className="hero-scene-navigation">
-            {scenes.map((scene, index) => (
-              <button key={scene.id} type="button" aria-current={activeScene === index || (activeScene === -1 && index === 0) ? "step" : undefined} onClick={() => selectScene(index)}>
-                <span className="hero-scene-button-label"><span className="hero-scene-index">0{index + 1}</span>{copy.scenes[index].title}</span>
-                <span className="hero-scene-track" aria-hidden="true"><span ref={(node) => { progressRefs.current[index] = node; }} /></span>
-              </button>
-            ))}
-          </nav>
-          <button type="button" onClick={onExploreClick} className="hero-skip-story">{copy.skipLabel}</button>
-        </div>
+        {controls}
       </div>
     </section>
   );

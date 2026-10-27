@@ -147,6 +147,31 @@ test("home introduces the service without duplicating dedicated pages", async ()
   assert.ok(scrolledIds.includes("tour-planner"));
 });
 
+test("reduced-motion hero switches destinations in one frame and keeps the planner reachable", async () => {
+  await mount("/");
+  const hero = document.getElementById("hero")!;
+  const frame = hero.querySelector(".hero-static-intro");
+  assert.ok(frame, "Reduced motion should have a single hero frame");
+  assert.equal(hero.querySelectorAll(".hero-landscape").length, 1, "Landscapes must not stack vertically");
+  assert.equal(hero.querySelectorAll("figure").length, 0);
+  assert.ok(hero.querySelector("h1"));
+  const sceneButtons = hero.querySelectorAll<HTMLButtonElement>(".hero-scene-navigation button");
+  assert.equal(sceneButtons.length, 3);
+
+  for (const [index, sceneButton] of Array.from(sceneButtons).entries()) {
+    await click(sceneButton);
+    assert.equal(hero.querySelector(".hero-static-intro"), frame, "Switching must keep the same frame");
+    assert.equal(hero.querySelectorAll(".hero-landscape").length, 1);
+    assert.equal(hero.querySelector("h2")?.textContent, ru.heroPlaces.scenes[index].title);
+    assert.equal(hero.querySelector("img")?.alt, ru.heroPlaces.scenes[index].alt);
+    assert.equal(sceneButton.getAttribute("aria-current"), "step");
+    assert.equal(hero.querySelectorAll('[aria-current="step"]').length, 1);
+  }
+
+  await click(hero.querySelector<HTMLButtonElement>(".hero-skip-story")!);
+  assert.ok(scrolledIds.includes("tour-planner"));
+});
+
 test("legacy home booking links redirect to contacts with the chosen tour", async () => {
   await mount("/?lang=ru&tour=china-urumqi#booking");
   assert.equal(dom.window.location.pathname, "/contacts");

@@ -424,10 +424,8 @@ textarea::placeholder {
 .hero-scene-track > span { display: block; height: 100%; background: #ede6da; transform: scaleX(0); transform-origin: left; }
 .hero-cinema-bottom button:focus-visible { outline: 2px solid #ede6da; outline-offset: 6px; border-radius: 2px; }
 
-.hero-static-intro { position: relative; min-height: 100svh; isolation: isolate; }
+.hero-static-intro { position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; }
 .hero-static-content { min-height: 100svh; }
-.hero-static-scene { position: relative; min-height: 70svh; margin: 0; overflow: hidden; }
-.hero-static-scene .hero-place-caption { bottom: 3rem; }
 
 @media (max-width: 700px) {
   .hero-scroll-story { height: 310svh; }

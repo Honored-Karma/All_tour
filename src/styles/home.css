@@ -4,8 +4,7 @@
   background: var(--home-paper);
 }
 
-.home-page .hero-cinema-stage::after,
-.home-page .hero-static-scene:last-child::after {
+.home-page .hero-cinema-stage::after {
   content: "";
   position: absolute;
   z-index: 3;
@@ -16,8 +15,6 @@
   pointer-events: none;
 }
 
-.home-page .hero-static-scene:last-child::after { opacity: 1; }
-.home-page .hero-static-scene:last-child .hero-place-caption { bottom: 12rem; }
 .home-page .hero-cinema-bottom {
   z-index: 4;
   --hero-control: color-mix(in srgb, #fffefa calc((1 - var(--hero-exit, 0)) * 100%), #293c34);
