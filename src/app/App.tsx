@@ -18,6 +18,7 @@ import { ScrollToTop } from "../components/common/ScrollToTop";
 import { ScrollProgressIndicator } from "../components/common/ScrollProgressIndicator";
 import { BackToTop } from "../components/common/BackToTop";
 import { PageFallback } from "../components/common/PageFallback";
+import { useSEO } from "../hooks/useSEO";
 
 // Modals
 import { TourDetails } from "../components/tours/TourDetails";
@@ -119,9 +120,11 @@ function AppContent() {
 
   useSyncSceneTheme(activeDestinationId);
 
-  useEffect(() => {
-    document.documentElement.lang = locale === "kz" ? "kk" : "ru";
-  }, [locale]);
+  useSEO({
+    pathname: location.pathname,
+    search: location.search,
+    locale,
+  });
 
   const handleBookTour = useCallback(
     (tour: Tour) => {

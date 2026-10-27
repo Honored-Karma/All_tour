@@ -77,7 +77,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
         >
           <img
             src={review.storyScreenshot}
-            alt=""
+            alt={matchingStory?.title?.[locale] || review.author}
             loading="lazy"
             className="w-5 h-7 rounded object-cover border border-white/20"
           />

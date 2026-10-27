@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { Destination } from "../../data/destinations";
+import type { Locale } from "../../lib/whatsapp";
 
 interface DestinationSceneProps {
   destination: Destination;
@@ -7,6 +8,7 @@ interface DestinationSceneProps {
   weight: number; // 0 to 1 opacity/visibility blend weight
   active: boolean;
   reducedMotion: boolean;
+  locale?: Locale;
 }
 
 export const DestinationScene: React.FC<DestinationSceneProps> = ({
@@ -15,6 +17,7 @@ export const DestinationScene: React.FC<DestinationSceneProps> = ({
   weight,
   active,
   reducedMotion,
+  locale = "ru",
 }) => {
   const [imageFailed, setImageFailed] = useState(false);
   const { media, palette } = destination;
@@ -68,7 +71,7 @@ export const DestinationScene: React.FC<DestinationSceneProps> = ({
             />
             <img
               src={media.heroImage}
-              alt={destination.name.ru}
+              alt={destination.name[locale]}
               loading="lazy"
               decoding="async"
               referrerPolicy="no-referrer"

@@ -116,7 +116,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
               >
                 <img
                   src={imgUrl}
-                  alt=""
+                  alt={`${tour.title[locale]} — ${idx + 1}`}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover"
                 />

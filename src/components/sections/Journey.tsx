@@ -122,6 +122,7 @@ export const Journey: React.FC<JourneyProps> = ({
             weight={journeyState.sceneWeights[dest.id]}
             active={journeyState.activeDestinationId === dest.id}
             reducedMotion={reducedMotion}
+            locale={locale}
           />
         ))}
 
