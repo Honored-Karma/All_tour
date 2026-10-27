@@ -230,6 +230,9 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                 loading="eager"
                 fetchPriority="high"
                 decoding="sync"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
                 className="w-full h-full object-cover"
               />
             </picture>
@@ -288,6 +291,9 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                     <img
                       src={step.image}
                       alt={step.title[locale]}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                       className="w-full aspect-[16/10] object-cover rounded-xl border border-white/10"
                     />
                   )}

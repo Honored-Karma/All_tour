@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, MessageCircle, Check, ArrowRight } from "lucide-react";
+import { ArrowLeft, MessageCircle, Check, ArrowRight, Compass } from "lucide-react";
 import { destinations, getDestinationById, type DestinationId } from "../../data/destinations";
 import { getToursByDestination, type Tour } from "../../data/tours";
 import { getBrandAssetsByDestination } from "../../data/assets";
@@ -32,10 +32,40 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
   onBookTour,
 }) => {
   const { destinationId } = useParams<{ destinationId: string }>();
-  const validId = (destinationId && ["kyrgyzstan", "georgia", "china"].includes(destinationId))
-    ? (destinationId as DestinationId)
-    : "kyrgyzstan";
+  const isValidDestination =
+    destinationId && ["kyrgyzstan", "georgia", "china"].includes(destinationId);
 
+  if (!isValidDestination) {
+    return (
+      <div
+        data-testid="destination-not-found"
+        className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-36 pb-20 px-4 sm:px-8 flex flex-col items-center justify-center text-center"
+      >
+        <GlassPanel className="max-w-md w-full p-8 sm:p-10 flex flex-col items-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <Compass className="w-8 h-8" aria-hidden="true" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="font-display text-2xl font-bold text-white tracking-tight">
+              {dict.destinationNotFound.title}
+            </h1>
+            <p className="text-sm text-[#EDE6DA]/70 font-sans leading-relaxed">
+              {dict.destinationNotFound.description}
+            </p>
+          </div>
+          <Link
+            to="/tours"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-semibold transition-all cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+            <span>{dict.destinationNotFound.backToCatalog}</span>
+          </Link>
+        </GlassPanel>
+      </div>
+    );
+  }
+
+  const validId = destinationId as DestinationId;
   const dest = getDestinationById(validId);
   const countryTours = getToursByDestination(validId);
   const brandAssets = getBrandAssetsByDestination(validId);
@@ -90,6 +120,9 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
               loading="eager"
               fetchPriority="high"
               decoding="sync"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
               className="absolute inset-0 w-full h-full object-cover select-none"
               style={{ objectPosition: dest.media.objectPositionDesktop }}
             />

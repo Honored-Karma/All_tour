@@ -97,6 +97,9 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
             src={currentImage}
             alt={`${tour.title[locale]} — ${selectedImageIdx + 1}`}
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
             className="w-full h-full object-cover"
           />
         </div>
@@ -118,6 +121,9 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
                   src={imgUrl}
                   alt={`${tour.title[locale]} — ${idx + 1}`}
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
                   className="w-full h-full object-cover"
                 />
               </button>

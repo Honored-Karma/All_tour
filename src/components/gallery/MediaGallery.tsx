@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ZoomIn } from "lucide-react";
+import { ZoomIn, Image as ImageIcon } from "lucide-react";
 import type { Locale } from "../../lib/whatsapp";
 import type { Dictionary } from "../../i18n/ru";
 import { getDictionary } from "../../i18n";
@@ -25,6 +25,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
   dict,
 }) => {
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const d = dict || getDictionary(locale);
 
   if (items.length === 0) return null;
@@ -68,21 +69,31 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
                   : "aspect-[4/3]"
               }`}
             >
-              <picture>
-                {item.src.startsWith("/media/") && (
-                  <source srcSet={item.src.replace(/\.jpg$/, ".webp")} type="image/webp" />
-                )}
-                {item.src === "/assets/brand/group-china-tour.png" && (
-                  <source srcSet="/assets/brand/group-china-tour.webp" type="image/webp" />
-                )}
-                <img
-                  src={item.src}
-                  alt={item.alt[locale]}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                />
-              </picture>
+              {!failedImages[item.src] ? (
+                <picture>
+                  {item.src.startsWith("/media/") && (
+                    <source srcSet={item.src.replace(/\.jpg$/, ".webp")} type="image/webp" />
+                  )}
+                  {item.src === "/assets/brand/group-china-tour.png" && (
+                    <source srcSet="/assets/brand/group-china-tour.webp" type="image/webp" />
+                  )}
+                  <img
+                    src={item.src}
+                    alt={item.alt[locale]}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() =>
+                      setFailedImages((prev) => ({ ...prev, [item.src]: true }))
+                    }
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </picture>
+              ) : (
+                <div className="w-full h-full bg-[#111c21] flex flex-col items-center justify-center p-4 text-center text-[#EDE6DA]/50 select-none">
+                  <ImageIcon className="w-6 h-6 mb-1 opacity-40" aria-hidden="true" />
+                  <span className="text-[11px] line-clamp-2">{item.alt[locale]}</span>
+                </div>
+              )}
 
               {/* Gradient scrim */}
               <div

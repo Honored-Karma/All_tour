@@ -79,6 +79,9 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             src={review.storyScreenshot}
             alt={matchingStory?.title?.[locale] || review.author}
             loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
             className="w-5 h-7 rounded object-cover border border-white/20"
           />
           <span>{dict.reviews.viewOriginalScreenshot}</span>
