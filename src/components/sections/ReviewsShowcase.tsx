@@ -28,19 +28,19 @@ export const ReviewsShowcase: React.FC<ReviewsShowcaseProps> = ({
   return (
     <section
       id="reviews"
-      className="py-24 sm:py-32 px-4 sm:px-8 bg-[#0d1518] border-t border-white/10"
+      className="py-24 sm:py-32 px-4 sm:px-8 bg-canvas border-t border-line"
     >
       <div className="max-w-7xl mx-auto space-y-14">
         {/* Section Header + Link to Full Dedicated Page */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-white/10 pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-line pb-8">
           <div className="space-y-3 max-w-2xl">
-            <p className="editorial-kicker text-[#6BAFB3]">
+            <p className="editorial-kicker text-sage-ink">
               {dict.reviews.kicker}
             </p>
-            <h2 className="headline-section font-bold text-white">
+            <h2 className="headline-section font-bold text-ink">
               {dict.reviews.title}
             </h2>
-            <p className="text-base text-[#EDE6DA]/75 leading-relaxed">
+            <p className="text-base text-muted leading-relaxed">
               {dict.reviews.subtitle}
             </p>
           </div>
@@ -77,10 +77,10 @@ export const ReviewsShowcase: React.FC<ReviewsShowcaseProps> = ({
         <div className="pt-6 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="font-display text-lg sm:text-xl font-semibold text-white">
+              <h3 className="font-display text-lg sm:text-xl font-semibold text-ink">
                 {dict.reviews.storiesStripTitle}
               </h3>
-              <p className="text-xs sm:text-sm text-[#EDE6DA]/65">
+              <p className="text-xs sm:text-sm text-muted">
                 {dict.reviews.storiesStripSubtitle}
               </p>
             </div>
@@ -88,7 +88,7 @@ export const ReviewsShowcase: React.FC<ReviewsShowcaseProps> = ({
             <button
               type="button"
               onClick={onOpenReviewsPage}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#6BAFB3] hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-sage-ink hover:text-ink transition-colors whitespace-nowrap shrink-0 cursor-pointer"
             >
               <span>{dict.reviews.openFullPageCta}</span>
               <ArrowRight className="w-4 h-4" />
@@ -102,7 +102,7 @@ export const ReviewsShowcase: React.FC<ReviewsShowcaseProps> = ({
                 type="button"
                 data-testid={`story-card-${story.id}`}
                 onClick={() => onOpenStory(story)}
-                className="group relative aspect-[9/16] rounded-2xl overflow-hidden border border-white/18 bg-black/40 text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-[#6BAFB3]"
+                className="photo-surface group relative aspect-[9/16] rounded-2xl overflow-hidden border border-line bg-black/40 text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-sage"
               >
                 <img
                   src={story.image}
@@ -117,17 +117,17 @@ export const ReviewsShowcase: React.FC<ReviewsShowcaseProps> = ({
                       "linear-gradient(180deg, rgba(9, 15, 18, 0.78) 0%, rgba(9, 15, 18, 0.15) 26%, transparent 45%, rgba(9, 15, 18, 0.94) 100%)",
                   }}
                 />
-                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between px-2.5 py-1 rounded-lg bg-black/55 backdrop-blur-md border border-white/10 text-[11px] font-mono text-white/95">
+                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between px-2.5 py-1 rounded-lg bg-black/55 backdrop-blur-md border border-line text-[11px] font-mono text-ink">
                   <span>0{idx + 1}</span>
-                  <span className="uppercase tracking-wider text-[#6BAFB3]">
+                  <span className="uppercase tracking-wider text-sage-ink">
                     STORY ↗
                   </span>
                 </div>
                 <div className="absolute bottom-3.5 left-3.5 right-3.5 space-y-1">
-                  <div className="text-xs font-semibold text-white leading-snug">
+                  <div className="text-xs font-semibold text-ink leading-snug">
                     {story.title[locale]}
                   </div>
-                  <div className="text-[11px] text-[#EDE6DA]/70 leading-tight">
+                  <div className="text-[11px] text-muted leading-tight">
                     {story.guides[locale]}
                   </div>
                 </div>

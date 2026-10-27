@@ -26,24 +26,24 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
   return (
     <footer
       id="footer"
-      className="bg-[#080d10] border-t border-white/10 text-[#EDE6DA]/80 py-16 px-4 sm:px-8 relative overflow-hidden"
+      className="bg-canvas border-t border-line text-muted py-16 px-4 sm:px-8 relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-line">
         {/* Brand Column */}
         <div className="md:col-span-5 space-y-4">
           <BrandLogo variant="footer" />
-          <p className="text-sm text-[#EDE6DA]/70 max-w-sm leading-relaxed font-sans">
+          <p className="text-sm text-muted max-w-sm leading-relaxed font-sans">
             {dict.footer.tagline}
           </p>
-          <div className="flex items-center gap-2 text-xs text-[#EDE6DA]/55 font-mono">
-            <MapPin className="w-3.5 h-3.5 text-red-400" />
+          <div className="flex items-center gap-2 text-xs text-muted font-mono">
+            <MapPin className="w-3.5 h-3.5 text-accent" />
             <span>{dict.footer.departureInfo}</span>
           </div>
         </div>
 
         {/* Navigation & Destinations */}
         <div className="md:col-span-3 space-y-3">
-          <h3 className="text-xs font-mono tracking-wider uppercase text-white/60">
+          <h3 className="text-xs font-mono tracking-wider uppercase text-muted">
             {dict.footer.directionsTitle}
           </h3>
           <ul className="space-y-2 text-sm">
@@ -51,16 +51,16 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
               <li key={dest.id}>
                 <Link
                   to={`/destinations/${dest.id}`}
-                  className="text-[#EDE6DA]/75 hover:text-white hover:translate-x-1 inline-block transition-all"
+                  className="text-muted hover:text-ink hover:translate-x-1 inline-block transition-all"
                 >
                   {dest.name[locale]}
                 </Link>
               </li>
             ))}
-            <li className="pt-2 border-t border-white/5">
+            <li className="pt-2 border-t border-line">
               <Link
                 to="/tours"
-                className="text-red-400 hover:text-red-300 font-semibold inline-flex items-center gap-1 transition-colors"
+                className="text-accent hover:text-accent font-semibold inline-flex items-center gap-1 transition-colors"
               >
                 <span>{dict.nav.tours}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -71,14 +71,14 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
 
         {/* Company & Info */}
         <div className="md:col-span-2 space-y-3">
-          <h3 className="text-xs font-mono tracking-wider uppercase text-white/60">
+          <h3 className="text-xs font-mono tracking-wider uppercase text-muted">
             {dict.footer.companyTitle}
           </h3>
           <ul className="space-y-2 text-sm">
             <li>
               <Link
                 to="/about"
-                className="text-[#EDE6DA]/75 hover:text-white transition-colors"
+                className="text-muted hover:text-ink transition-colors"
               >
                 {dict.nav.about}
               </Link>
@@ -86,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
             <li>
               <Link
                 to="/reviews"
-                className="text-[#EDE6DA]/75 hover:text-white transition-colors"
+                className="text-muted hover:text-ink transition-colors"
               >
                 {dict.nav.reviews}
               </Link>
@@ -94,7 +94,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
             <li>
               <Link
                 to="/faq"
-                className="text-[#EDE6DA]/75 hover:text-white transition-colors"
+                className="text-muted hover:text-ink transition-colors"
               >
                 {dict.footer.faqKnowledgeBase}
               </Link>
@@ -102,7 +102,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
             <li>
               <Link
                 to="/contacts"
-                className="text-[#EDE6DA]/75 hover:text-white transition-colors"
+                className="text-muted hover:text-ink transition-colors"
               >
                 {dict.nav.contacts}
               </Link>
@@ -112,7 +112,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
 
         {/* Direct Contacts */}
         <div className="md:col-span-2 space-y-3">
-          <h3 className="text-xs font-mono tracking-wider uppercase text-white/60">
+          <h3 className="text-xs font-mono tracking-wider uppercase text-muted">
             {dict.footer.contactsTitle}
           </h3>
           <div className="flex flex-col space-y-2.5 text-sm">
@@ -120,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[#25D366] hover:brightness-125 transition-all w-fit"
+              className="inline-flex items-center gap-2 text-sage-ink hover:brightness-125 transition-all w-fit"
             >
               <MessageCircle className="w-4 h-4" />
               <span>WhatsApp</span>
@@ -129,12 +129,12 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
               href={BUSINESS_CONFIG.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-pink-400 hover:brightness-125 transition-all w-fit"
+              className="inline-flex items-center gap-2 text-accent hover:brightness-125 transition-all w-fit"
             >
               <Instagram className="w-4 h-4" />
               <span>Instagram</span>
             </a>
-            <div className="pt-2 text-[11px] text-[#EDE6DA]/50 leading-relaxed font-sans">
+            <div className="pt-2 text-[11px] text-muted leading-relaxed font-sans">
               {dict.footer.workingHours}
             </div>
           </div>
@@ -142,14 +142,14 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[#EDE6DA]/50">
+      <div className="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-muted">
         <p>
           © {new Date().getFullYear()} {BUSINESS_CONFIG.companyName} {BUSINESS_CONFIG.brandSubline}. {dict.footer.copyright}
         </p>
         <button
           type="button"
           onClick={() => setPrivacyOpen(true)}
-          className="hover:text-white underline underline-offset-4 transition-colors cursor-pointer"
+          className="hover:text-ink underline underline-offset-4 transition-colors cursor-pointer"
         >
           {dict.footer.privacyTrigger}
         </button>
@@ -161,8 +161,8 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
         title={dict.footer.privacyModalTitle}
         closeLabel={dict.tours.modal.closeLabel}
       >
-        <div className="space-y-4 text-sm leading-relaxed text-[#EDE6DA]/85">
-          <h3 className="font-display text-lg text-white font-bold">
+        <div className="space-y-4 text-sm leading-relaxed text-muted">
+          <h3 className="font-display text-lg text-ink font-bold">
             {dict.footer.privacyModalTitle}
           </h3>
           <p>{dict.footer.privacyModalText}</p>

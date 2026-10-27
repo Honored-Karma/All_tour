@@ -45,9 +45,9 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
       ? "liquid-glass-button-primary font-semibold"
       : variant === "secondary"
       ? "liquid-glass-button-secondary font-medium"
-      : "liquid-glass-subtle text-[#EDE6DA] hover:border-white/35 font-medium";
+      : "liquid-glass-subtle text-ink hover:border-line font-medium";
 
-  const baseClasses = `inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6BAFB3] ${variantClasses} ${className}`;
+  const baseClasses = `inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage ${variantClasses} ${className}`;
 
   const style: React.CSSProperties | undefined = magnetic
     ? {

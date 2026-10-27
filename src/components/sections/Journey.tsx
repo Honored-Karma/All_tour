@@ -111,8 +111,11 @@ export const Journey: React.FC<JourneyProps> = ({
         reducedMotion ? "min-h-[100dvh]" : "h-[310dvh]"
       }`}
     >
+      {/* Soft mist bridges the hero and the first scene without a visible edge. */}
+      <div aria-hidden="true" className="journey-entry-mist" />
+
       {/* Sticky Full-Viewport Cinematic Stage */}
-      <div className="sticky top-0 w-full h-[100dvh] overflow-hidden flex flex-col justify-between pt-24 pb-8 px-4 sm:px-8">
+      <div className="photo-surface journey-stage sticky top-0 w-full h-[100dvh] overflow-hidden flex flex-col justify-between pt-24 pb-8 px-4 sm:px-8">
         {/* Three Living Destination Background Worlds */}
         {destinations.map((dest) => (
           <DestinationScene
@@ -126,18 +129,8 @@ export const Journey: React.FC<JourneyProps> = ({
           />
         ))}
 
-        {/* Top Bar inside Stage: Editorial Departure Label + Progress Indicator */}
-        <div className="relative z-10 max-w-7xl w-full mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-xs tracking-[0.18em] uppercase text-white/85 font-medium">
-            <span>{dict.journey.departureLabel}</span>
-            <span aria-hidden="true" className="text-white/40">
-              ·
-            </span>
-            <span className="font-mono text-white/65">
-              {currentDest.coordinates}
-            </span>
-          </div>
-
+        {/* Progress Indicator */}
+        <div className="relative z-10 max-w-7xl w-full mx-auto flex justify-end">
           <ScrollProgress
             activeDestinationId={journeyState.activeDestinationId}
             overallProgress={journeyState.overallProgress}
@@ -152,32 +145,32 @@ export const Journey: React.FC<JourneyProps> = ({
             <div className="lg:col-span-8 space-y-4 sm:space-y-5">
               <p
                 data-testid="journey-active-kicker"
-                className="editorial-kicker text-[#EDE6DA]/85"
+                className="editorial-kicker text-muted"
               >
                 {currentDest.kicker[locale]}
               </p>
 
               <h2
                 data-testid="journey-active-title"
-                className="headline-country font-bold text-white transition-all duration-300"
+                className="headline-country font-bold text-ink transition-all duration-300"
               >
                 {currentDest.name[locale]}
               </h2>
 
-              <p className="text-lg sm:text-2xl text-white/95 font-medium max-w-2xl leading-snug">
+              <p className="text-lg sm:text-2xl text-ink font-medium max-w-2xl leading-snug">
                 «{currentDest.tagline[locale]}»
               </p>
 
-              <p className="text-sm sm:text-base text-[#EDE6DA]/80 max-w-xl leading-relaxed">
+              <p className="text-sm sm:text-base text-muted max-w-xl leading-relaxed">
                 {currentDest.atmosphereNote[locale]}
               </p>
 
               {/* Unboxed location highlights with subtle · separators */}
-              <div className="pt-1 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/75">
+              <div className="pt-1 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-muted">
                 {currentDest.highlights[locale].map((item, idx) => (
                   <React.Fragment key={item}>
                     {idx > 0 && (
-                      <span aria-hidden="true" className="text-white/35">
+                      <span aria-hidden="true" className="text-muted">
                         ·
                       </span>
                     )}
@@ -190,14 +183,14 @@ export const Journey: React.FC<JourneyProps> = ({
             {/* Right Asymmetric Spatial Glass Card */}
             <div className="lg:col-span-4">
               <GlassPanel className="p-6 space-y-5">
-                <div className="flex items-center justify-between border-b border-white/15 pb-3 text-xs text-white/75">
+                <div className="flex items-center justify-between border-b border-line pb-3 text-xs text-muted">
                   <span className="font-mono tabular-nums">
                     {currentDest.indexLabel}
                   </span>
                   <span>{currentDest.elevationOrRegion[locale]}</span>
                 </div>
 
-                <p className="text-sm text-[#EDE6DA]/85 leading-relaxed">
+                <p className="text-sm text-muted leading-relaxed">
                   {currentDest.editorialDescription[locale]}
                 </p>
 
@@ -222,7 +215,7 @@ export const Journey: React.FC<JourneyProps> = ({
             explorerTitle={dict.journey.explorerTitle}
           />
 
-          <span className="hidden md:inline-block text-xs text-white/60">
+          <span className="hidden md:inline-block text-xs text-muted">
             {dict.journey.keyboardHint}
           </span>
         </div>

@@ -1,201 +1,318 @@
-import React, { useState, useMemo } from "react";
-import { Search, Sparkles, ArrowRight, MessageCircle } from "lucide-react";
-import { tours, type Tour, type TourType } from "../../data/tours";
-import { destinations, type DestinationId } from "../../data/destinations";
-import type { Locale } from "../../lib/whatsapp";
-import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
-import { GlassPanel } from "../glass/GlassPanel";
-import { GlassButton } from "../glass/GlassButton";
-import { Link } from "react-router-dom";
-import { matchesTourDuration, type DurationFilter } from "../../lib/tourFilters";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowRight,
+  MapPin,
+  Route,
+  Users,
+  Minus,
+  Plus,
+  SlidersHorizontal,
+  ChevronDown,
+  MessageCircle,
+} from "lucide-react";
+import { tours } from "../../data/tours";
+import { destinations } from "../../data/destinations";
+import { buildWhatsAppBookingUrl, type Locale } from "../../lib/whatsapp";
+import {
+  defaultTourPlan,
+  formatPlanDates,
+  matchesTourPlan,
+  writeTourPlan,
+  type TourPlan,
+} from "../../lib/tourPlanner";
 import type { Dictionary } from "../../i18n/ru";
-import { getDictionary } from "../../i18n";
+import { TravelCalendar } from "./TravelCalendar";
 
-interface SmartTourFinderProps {
+interface Props {
   locale: Locale;
-  dict?: Dictionary;
-  onSelectTour?: (tour: Tour) => void;
+  dict: Dictionary;
+  plan?: TourPlan;
+  onChange?: (plan: TourPlan) => void;
+  resultCount?: number;
 }
 
-export const SmartTourFinder: React.FC<SmartTourFinderProps> = ({ locale, dict, onSelectTour }) => {
-  const t = dict || getDictionary(locale);
-  const [selectedDestination, setSelectedDestination] = useState<"all" | DestinationId>("all");
-  const [selectedDuration, setSelectedDuration] = useState<DurationFilter>("all");
-  const [selectedType, setSelectedType] = useState<"all" | TourType>("all");
-  const [travelers, setTravelers] = useState<number>(2);
-
-  const filteredTours = useMemo(() => {
-    return tours.filter((tour) => {
-      if (selectedDestination !== "all" && tour.destinationId !== selectedDestination) {
-        return false;
-      }
-      if (selectedType !== "all" && tour.tourType !== selectedType) {
-        return false;
-      }
-      return matchesTourDuration(tour, selectedDuration);
-    });
-  }, [selectedDestination, selectedDuration, selectedType]);
-
-  const whatsappInquiryUrl = useMemo(() => {
-    const destName =
-      selectedDestination === "kyrgyzstan"
-        ? (locale === "kz" ? "Қырғызстан" : "Кыргызстан")
-        : selectedDestination === "georgia"
-        ? "Грузия"
-        : selectedDestination === "china"
-        ? (locale === "kz" ? "Қытай" : "Китай")
-        : (locale === "kz" ? "ALL TOUR бағыттары" : "Направления ALL TOUR");
-    return buildWhatsAppBookingUrl({
-      locale,
-      destinationName: destName,
-      travelersCount: travelers,
-      comment: t.finder.whatsappComment,
-    });
-  }, [selectedDestination, travelers, locale, t]);
+export function SmartTourFinder({
+  locale,
+  dict,
+  plan: controlledPlan,
+  onChange,
+  resultCount,
+}: Props) {
+  const [localPlan, setLocalPlan] = useState<TourPlan>(defaultTourPlan);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const navigate = useNavigate();
+  const plan = controlledPlan || localPlan;
+  const update = onChange || setLocalPlan;
+  const t = dict.planner;
+  const availableTours = tours.filter(
+    (tour) =>
+      plan.destination === "all" || tour.destinationId === plan.destination,
+  );
+  const count =
+    resultCount ?? tours.filter((tour) => matchesTourPlan(tour, plan)).length;
+  const selectedTour = tours.find((tour) => tour.slug === plan.tour);
+  const destination = destinations.find((item) => item.id === plan.destination);
+  const whatsappUrl = buildWhatsAppBookingUrl({
+    locale,
+    destinationName: destination?.name[locale] || dict.finder.allDestinations,
+    tourTitle: selectedTour?.title[locale],
+    desiredDate: formatPlanDates(plan, locale),
+    travelersCount: plan.travelers,
+    comment: [
+      dict.finder.whatsappComment,
+      plan.duration !== "all" ? dict.finder.durations[plan.duration] : "",
+      plan.type !== "all"
+        ? plan.type === "multi_day"
+          ? t.multiDay
+          : dict.finder.types[plan.type]
+        : "",
+    ]
+      .filter(Boolean)
+      .join(" · "),
+  });
+  const showResults = () => {
+    if (controlledPlan)
+      document
+        .getElementById("tour-results")
+        ?.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "instant"
+            : "smooth",
+        });
+    else
+      navigate(
+        `/tours?${writeTourPlan(plan, new URLSearchParams({ lang: locale }))}#tour-results`,
+      );
+  };
 
   return (
-    <GlassPanel className="p-6 sm:p-8 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#0786c7] uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{t.finder.badge}</span>
-          </div>
-          <h3 className="font-display text-lg sm:text-xl font-bold text-white">
-            {t.finder.title}
-          </h3>
+    <section
+      id="tour-planner"
+      className="tour-planner"
+      aria-labelledby="planner-title"
+    >
+      <div className="planner-heading">
+        <div>
+          <p className="planner-kicker">{t.kicker}</p>
+          <h2 id="planner-title">{t.title}</h2>
+          <p className="planner-subtitle">{t.subtitle}</p>
         </div>
-        <span className="text-xs font-mono text-[#EDE6DA]/60 tabular-nums">
-          {t.finder.foundCount.replace("{count}", String(filteredTours.length))}
+        <span className="planner-departure">
+          <MapPin size={15} aria-hidden="true" />
+          {t.departure}
         </span>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Destination */}
-        <div className="space-y-1.5">
-          <label htmlFor="finder-destination" className="text-xs font-medium text-[#EDE6DA]/75">
-            {t.finder.destinationLabel}
-          </label>
-          <select
-            id="finder-destination"
-            value={selectedDestination}
-            onChange={(e) => setSelectedDestination(e.target.value as any)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-white/8 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
-          >
-            <option value="all" className="bg-[#121c21] text-white">
-              {t.finder.allDestinations}
-            </option>
-            {destinations.map((dest) => (
-              <option key={dest.id} value={dest.id} className="bg-[#121c21] text-white">
-                {dest.name[locale]}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Duration */}
-        <div className="space-y-1.5">
-          <label htmlFor="finder-duration" className="text-xs font-medium text-[#EDE6DA]/75">
-            {t.finder.durationLabel}
-          </label>
-          <select
-            id="finder-duration"
-            value={selectedDuration}
-            onChange={(e) => setSelectedDuration(e.target.value as DurationFilter)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-white/8 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
-          >
-            <option value="all" className="bg-[#121c21] text-white">
-              {t.finder.durations.all}
-            </option>
-            <option value="short" className="bg-[#121c21] text-white">
-              {t.finder.durations.short}
-            </option>
-            <option value="multi" className="bg-[#121c21] text-white">
-              {t.finder.durations.multi}
-            </option>
-          </select>
-        </div>
-
-        {/* Tour Type */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-[#EDE6DA]/75">
-            {t.finder.typeLabel}
-          </label>
-          <select
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value as any)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-white/8 border border-white/15 text-sm text-white focus:outline-none focus:border-[#0786c7]"
-          >
-            <option value="all" className="bg-[#121c21] text-white">
-              {t.finder.types.all}
-            </option>
-            <option value="content_tour" className="bg-[#121c21] text-white">
-              {t.finder.types.content_tour}
-            </option>
-            <option value="mountain_nature" className="bg-[#121c21] text-white">
-              {t.finder.types.mountain_nature}
-            </option>
-            <option value="cultural_city" className="bg-[#121c21] text-white">
-              {t.finder.types.cultural_city}
-            </option>
-          </select>
-        </div>
-
-        {/* Travelers */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-[#EDE6DA]/75">
-            {t.finder.travelersLabel}
-          </label>
-          <div className="flex items-center gap-2">
-            {[1, 2, 4, 6].map((num) => (
+      <div className="planner-fields">
+        <label className="planner-field" htmlFor="finder-destination">
+          <MapPin size={21} aria-hidden="true" />
+          <span>
+            <span className="planner-field-label">
+              {dict.finder.destinationLabel}
+            </span>
+            <select
+              id="finder-destination"
+              value={plan.destination}
+              onChange={(event) =>
+                update({
+                  ...plan,
+                  destination: event.target.value as TourPlan["destination"],
+                  tour: "",
+                })
+              }
+            >
+              <option value="all">{dict.finder.allDestinations}</option>
+              {destinations.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name[locale]}
+                </option>
+              ))}
+            </select>
+          </span>
+        </label>
+        <label className="planner-field" htmlFor="finder-tour">
+          <Route size={21} aria-hidden="true" />
+          <span>
+            <span className="planner-field-label">{t.tourLabel}</span>
+            <select
+              id="finder-tour"
+              value={plan.tour}
+              onChange={(event) =>
+                update({
+                  ...plan,
+                  tour: event.target.value,
+                  duration: "all",
+                  type: "all",
+                })
+              }
+            >
+              <option value="">{t.anyTour}</option>
+              {availableTours.map((tour) => (
+                <option key={tour.slug} value={tour.slug}>
+                  {tour.title[locale]}
+                </option>
+              ))}
+            </select>
+          </span>
+        </label>
+        <TravelCalendar
+          plan={plan}
+          onChange={update}
+          dict={dict}
+          locale={locale}
+        />
+        <div className="planner-field planner-travelers">
+          <Users size={21} aria-hidden="true" />
+          <div>
+            <label htmlFor="finder-travelers" className="planner-field-label">
+              {t.travelersLabel}
+            </label>
+            <div className="planner-stepper">
               <button
-                key={num}
                 type="button"
-                onClick={() => setTravelers(num)}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-mono font-medium transition-colors cursor-pointer border ${
-                  travelers === num
-                    ? "bg-[#0786c7] text-white border-[#0786c7]"
-                    : "bg-white/5 border-white/15 text-[#EDE6DA]/75 hover:bg-white/10"
-                }`}
+                aria-label={t.fewer}
+                disabled={plan.travelers <= 1}
+                onClick={() =>
+                  update({ ...plan, travelers: plan.travelers - 1 })
+                }
               >
-                {num === 6 ? "6+" : num}
+                <Minus size={15} />
               </button>
-            ))}
+              <input
+                id="finder-travelers"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={50}
+                value={plan.travelers}
+                onChange={(event) => {
+                  const count = Number(event.target.value);
+                  if (Number.isInteger(count) && count >= 1 && count <= 50)
+                    update({ ...plan, travelers: count });
+                }}
+              />
+              <button
+                type="button"
+                aria-label={t.more}
+                disabled={plan.travelers >= 50}
+                onClick={() =>
+                  update({ ...plan, travelers: plan.travelers + 1 })
+                }
+              >
+                <Plus size={15} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Results Strip */}
-      <div className="pt-2 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          {filteredTours.slice(0, 3).map((tour) => (
-            <Link
-              key={tour.id}
-              to={`/tours/${tour.slug}`}
-              className="px-3.5 py-2 rounded-xl bg-white/6 hover:bg-white/12 border border-white/12 text-xs font-medium text-white transition-colors flex items-center gap-2"
-            >
-              <span>{tour.title[locale]}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#0786c7]" />
-            </Link>
-          ))}
-          {filteredTours.length > 3 && (
-            <span className="text-xs text-[#EDE6DA]/60">
-              {t.finder.moreTours.replace("{count}", String(filteredTours.length - 3))}
+      <div className="planner-options-bar">
+        <button
+          type="button"
+          className="planner-settings-toggle"
+          aria-expanded={settingsOpen}
+          aria-controls="planner-settings"
+          onClick={() => setSettingsOpen(!settingsOpen)}
+        >
+          <SlidersHorizontal size={16} aria-hidden="true" />
+          {t.settings}
+          {(plan.duration !== "all" || plan.type !== "all") && (
+            <span className="planner-settings-count">
+              {Number(plan.duration !== "all") + Number(plan.type !== "all")}
             </span>
           )}
-        </div>
-
-        <GlassButton
-          variant="primary"
-          href={whatsappInquiryUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0"
+          <ChevronDown
+            size={15}
+            className={settingsOpen ? "rotate-180" : ""}
+            aria-hidden="true"
+          />
+        </button>
+        <button
+          type="button"
+          className="planner-text-button"
+          onClick={() => update({ ...defaultTourPlan })}
         >
-          <MessageCircle className="w-4 h-4 mr-2" />
-          <span>{t.finder.consultationBtn}</span>
-        </GlassButton>
+          {t.reset}
+        </button>
       </div>
-    </GlassPanel>
+      {settingsOpen && (
+        <div id="planner-settings" className="planner-settings">
+          <label htmlFor="finder-duration">
+            {dict.finder.durationLabel}
+            <select
+              id="finder-duration"
+              value={plan.duration}
+              onChange={(event) =>
+                update({
+                  ...plan,
+                  tour: "",
+                  duration: event.target.value as TourPlan["duration"],
+                })
+              }
+            >
+              {Object.entries(dict.finder.durations).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label htmlFor="finder-type">
+            {dict.finder.typeLabel}
+            <select
+              id="finder-type"
+              value={plan.type}
+              onChange={(event) =>
+                update({
+                  ...plan,
+                  tour: "",
+                  type: event.target.value as TourPlan["type"],
+                })
+              }
+            >
+              {Object.entries(dict.finder.types).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+              <option value="multi_day">{t.multiDay}</option>
+            </select>
+          </label>
+        </div>
+      )}
+      <div className="planner-footer">
+        <p className="planner-date-note">
+          <span className="planner-note-dot" aria-hidden="true" />
+          {t.dateNote}
+        </p>
+        <div className="planner-submit-area">
+          <span
+            className="planner-result-count"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {dict.finder.foundCount.replace("{count}", String(count))}
+          </span>
+          <button
+            type="button"
+            className="planner-submit"
+            onClick={showResults}
+          >
+            {t.showTours}
+            <ArrowRight size={19} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="planner-consultation"
+      >
+        <MessageCircle size={16} aria-hidden="true" />
+        {t.request}
+        <ArrowRight size={14} aria-hidden="true" />
+      </a>
+    </section>
   );
-};
+}

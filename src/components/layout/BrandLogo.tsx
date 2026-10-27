@@ -22,9 +22,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         to="/"
         onClick={onClick}
         aria-label={homeAriaLabel}
-        className={`group inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-[#0786c7] ${className}`}
+        className={`group inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-sage ${className}`}
       >
-        <div className="relative p-1 rounded-xl bg-white/95 shadow-sm transition-transform duration-200 group-hover:scale-105">
+        <div className="relative p-1 rounded-xl bg-surface shadow-sm transition-transform duration-200 group-hover:scale-105">
           <picture>
             <source srcSet="/assets/brand/logo-mark.webp" type="image/webp" />
             <img
@@ -37,10 +37,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </picture>
         </div>
         <div className="flex flex-col leading-none">
-          <span className="font-display text-sm sm:text-base font-bold tracking-wider text-white">
-            ALL <span className="text-[#0786c7]">TOUR</span>
+          <span className="font-display text-sm sm:text-base font-bold tracking-wider text-ink">
+            ALL <span className="text-sage-ink">TOUR</span>
           </span>
-          <span className="text-[9px] font-mono tracking-[0.2em] text-[#d11d35] font-semibold uppercase mt-0.5">
+          <span className="text-[9px] font-mono tracking-[0.2em] text-accent font-semibold uppercase mt-0.5">
             CONTENT TOUR
           </span>
         </div>
@@ -56,7 +56,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         aria-label={homeAriaLabel}
         className={`group inline-flex items-center gap-3 ${className}`}
       >
-        <div className="p-2 rounded-2xl bg-white/95 shadow-md">
+        <div className="p-2 rounded-2xl bg-surface shadow-md">
           <picture>
             <source srcSet="/assets/brand/logo-transparent.webp" type="image/webp" />
             <img
@@ -71,10 +71,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </picture>
         </div>
         <div className="flex flex-col leading-none">
-          <span className="font-display text-lg font-bold tracking-wider text-white">
-            ALL <span className="text-[#0786c7]">TOUR</span>
+          <span className="font-display text-lg font-bold tracking-wider text-ink">
+            ALL <span className="text-sage-ink">TOUR</span>
           </span>
-          <span className="text-[10px] font-mono tracking-[0.22em] text-[#d11d35] font-semibold uppercase mt-1">
+          <span className="text-[10px] font-mono tracking-[0.22em] text-accent font-semibold uppercase mt-1">
             CONTENT TOUR
           </span>
         </div>
@@ -90,7 +90,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         aria-label={homeAriaLabel}
         className={`inline-flex items-center gap-2.5 ${className}`}
       >
-        <div className="p-1.5 rounded-xl bg-white/95 shadow-sm">
+        <div className="p-1.5 rounded-xl bg-surface shadow-sm">
           <picture>
             <source srcSet="/assets/brand/logo-mark.webp" type="image/webp" />
             <img
@@ -103,10 +103,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </picture>
         </div>
         <div className="flex flex-col leading-none">
-          <span className="font-display text-base font-bold text-white tracking-wider">
-            ALL <span className="text-[#0786c7]">TOUR</span>
+          <span className="font-display text-base font-bold text-ink tracking-wider">
+            ALL <span className="text-sage-ink">TOUR</span>
           </span>
-          <span className="text-[9px] font-mono tracking-[0.2em] text-[#d11d35] font-semibold uppercase mt-0.5">
+          <span className="text-[9px] font-mono tracking-[0.2em] text-accent font-semibold uppercase mt-0.5">
             CONTENT TOUR
           </span>
         </div>
@@ -116,7 +116,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 
   if (variant === "full") {
     return (
-      <div className={`p-8 rounded-3xl bg-white/95 shadow-2xl flex flex-col items-center justify-center space-y-4 text-center border border-white/20 ${className}`}>
+      <div className={`p-8 rounded-3xl bg-surface shadow-2xl flex flex-col items-center justify-center space-y-4 text-center border border-line ${className}`}>
         <picture>
           <source srcSet="/assets/brand/logo-transparent.webp" type="image/webp" />
           <img
@@ -130,10 +130,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           />
         </picture>
         <div className="space-y-1">
-          <div className="font-display text-2xl font-bold tracking-wider text-[#0e171a]">
-            ALL <span className="text-[#0786c7]">TOUR</span>
+          <div className="font-display text-2xl font-bold tracking-wider text-ink">
+            ALL <span className="text-sage-ink">TOUR</span>
           </div>
-          <div className="text-xs font-mono tracking-[0.3em] text-[#d11d35] font-bold uppercase">
+          <div className="text-xs font-mono tracking-[0.3em] text-accent font-bold uppercase">
             CONTENT TOUR · ALMATY
           </div>
         </div>
@@ -151,11 +151,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           alt="ALL TOUR"
           width={24}
           height={24}
-          className="w-6 h-6 object-contain rounded-lg bg-white/95 p-0.5"
+          className="w-6 h-6 object-contain rounded-lg bg-surface p-0.5"
         />
       </picture>
-      <span className="font-display text-xs font-bold text-white tracking-wider">
-        ALL <span className="text-[#0786c7]">TOUR</span>
+      <span className="font-display text-xs font-bold text-ink tracking-wider">
+        ALL <span className="text-sage-ink">TOUR</span>
       </span>
     </div>
   );

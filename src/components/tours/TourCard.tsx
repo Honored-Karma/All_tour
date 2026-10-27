@@ -23,6 +23,7 @@ interface TourCardProps {
   onToggleCompare?: (tourId: string) => void;
   directLink?: boolean;
   useCatalogImage?: boolean;
+  search?: string;
 }
 
 export const TourCard: React.FC<TourCardProps> = ({
@@ -39,9 +40,11 @@ export const TourCard: React.FC<TourCardProps> = ({
   onToggleCompare,
   directLink = true,
   useCatalogImage = false,
+  search = "",
 }) => {
   const [imgFailed, setImgFailed] = useState(false);
   const destination = getDestinationById(tour.destinationId);
+  const tourHref = `/tours/${tour.slug}${search ? `?${search}` : ""}`;
 
   const displayImage =
     useCatalogImage && tour.catalogCardImage
@@ -78,7 +81,7 @@ export const TourCard: React.FC<TourCardProps> = ({
   return (
     <GlassPanel
       data-testid={`tour-card-${tour.id}`}
-      className="group overflow-hidden flex flex-col justify-between p-5 sm:p-7 transition-all duration-300 hover:border-white/30"
+      className="@container group overflow-hidden flex flex-col justify-between p-5 sm:p-7 transition-all duration-300 hover:border-line"
     >
       <div>
         {/* Editorial photographic frame */}
@@ -86,11 +89,11 @@ export const TourCard: React.FC<TourCardProps> = ({
           onMouseEnter={onCursorEnter}
           onMouseLeave={onCursorLeave}
           style={{ background: destination.media.fallbackGradient }}
-          className="relative aspect-[16/10] w-full rounded-xl overflow-hidden mb-5 select-none"
+          className="photo-surface relative aspect-[16/10] w-full rounded-xl overflow-hidden mb-5 select-none"
         >
           {directLink ? (
             <Link
-              to={`/tours/${tour.slug}`}
+              to={tourHref}
               className="block w-full h-full"
               aria-label={`${dict.tours.card.detailsBtn}: ${tour.title[locale]}`}
             >
@@ -157,8 +160,8 @@ export const TourCard: React.FC<TourCardProps> = ({
                 title={isCompared ? dict.tours.card.compareRemove : dict.tours.card.compareAdd}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer border ${
                   isCompared
-                    ? "bg-[#0786c7] text-white border-[#0786c7]"
-                    : "bg-black/50 hover:bg-black/75 border-white/20 text-white/80 hover:text-white"
+                    ? "bg-sage text-on-accent border-sage"
+                    : "bg-black/50 hover:bg-black/75 border-line text-muted hover:text-ink"
                 }`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -177,8 +180,8 @@ export const TourCard: React.FC<TourCardProps> = ({
                 title={isFavorite ? dict.tours.card.favoriteIn : dict.tours.card.favoriteAdd}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer border ${
                   isFavorite
-                    ? "bg-[#d11d35] text-white border-[#d11d35]"
-                    : "bg-black/50 hover:bg-black/75 border-white/20 text-white/80 hover:text-white"
+                    ? "bg-accent text-on-accent border-accent"
+                    : "bg-black/50 hover:bg-black/75 border-line text-muted hover:text-ink"
                 }`}
               >
                 <Heart
@@ -188,7 +191,7 @@ export const TourCard: React.FC<TourCardProps> = ({
             )}
           </div>
 
-          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-white/90 pointer-events-none">
+          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-ink pointer-events-none">
             <span className="uppercase tracking-[0.14em] font-medium">
               {destination.name[locale]}
             </span>
@@ -199,7 +202,7 @@ export const TourCard: React.FC<TourCardProps> = ({
         </div>
 
         {/* Unboxed editorial metadata line (Zero-Pill discipline) */}
-        <div className="flex flex-wrap items-center gap-2 text-xs text-[#EDE6DA]/65 mb-2.5">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted mb-2.5">
           <span>{destination.name[locale]}</span>
           <span aria-hidden="true">·</span>
           <span>{durationText}</span>
@@ -208,25 +211,24 @@ export const TourCard: React.FC<TourCardProps> = ({
         </div>
 
         {/* Title & Summary */}
-        <h3 className="font-display text-xl sm:text-2xl font-semibold text-white tracking-tight transition-transform duration-200 group-hover:translate-x-0.5 mb-2">
+        <h3 className="font-display text-xl sm:text-2xl font-semibold text-ink tracking-tight transition-transform duration-200 group-hover:translate-x-0.5 mb-2">
           {directLink ? (
-            <Link to={`/tours/${tour.slug}`} className="hover:text-[#6BAFB3] transition-colors">
+            <Link to={tourHref} className="hover:text-sage-ink transition-colors">
               {tour.title[locale]}
             </Link>
           ) : (
             tour.title[locale]
           )}
         </h3>
-        <p className="text-sm text-[#EDE6DA]/75 leading-relaxed mb-6">
+        <p className="text-sm text-muted leading-relaxed mb-6">
           {tour.summary[locale]}
         </p>
       </div>
 
-      {/* Hairline divider + aligned card footer */}
-      <div className="pt-4 border-t border-white/12 flex items-center justify-between gap-3 min-h-[58px]">
-        {/* Uniform price block with identical height and baseline across all cards */}
-        <div className="flex flex-col justify-center min-w-0 flex-1">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-[#EDE6DA]/50 block leading-none mb-1">
+      {/* Give the price its own row so actions cannot squeeze or overlap it. */}
+      <div className="pt-4 border-t border-line flex flex-col gap-4">
+        <div className="flex flex-col min-w-0">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-muted block leading-none mb-1">
             {dict.tours.card.priceLabel}
           </span>
           <div className="flex items-center leading-tight">
@@ -236,7 +238,7 @@ export const TourCard: React.FC<TourCardProps> = ({
             />
           </div>
           {priceResult.note ? (
-            <span className="text-[11px] text-[#EDE6DA]/60 font-sans tracking-normal block leading-tight mt-0.5">
+            <span className="text-[11px] text-muted font-sans tracking-normal block leading-tight mt-0.5">
               ({priceResult.note})
             </span>
           ) : (
@@ -249,24 +251,24 @@ export const TourCard: React.FC<TourCardProps> = ({
           )}
         </div>
 
-        {/* Action buttons (aligned across row, shrink-0 prevents shrinking) */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Stack actions when the card itself is too narrow for both labels. */}
+        <div className={`grid gap-2 ${onBookTour ? "grid-cols-1 @min-[21rem]:grid-cols-2" : "grid-cols-1"}`}>
           {directLink ? (
             <Link
-              to={`/tours/${tour.slug}`}
-              className="liquid-glass-button-secondary px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-colors"
+              to={tourHref}
+              className="liquid-glass-button-secondary min-w-0 min-h-11 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center justify-center gap-1.5 text-center cursor-pointer transition-colors"
             >
               <span>{dict.tours.card.detailsBtn}</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           ) : (
             <button
               type="button"
               onClick={handleCardClick}
-              className="liquid-glass-button-secondary px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-colors"
+              className="liquid-glass-button-secondary min-w-0 min-h-11 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center justify-center gap-1.5 text-center cursor-pointer transition-colors"
             >
               <span>{dict.tours.card.detailsBtn}</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
           )}
 
@@ -274,10 +276,10 @@ export const TourCard: React.FC<TourCardProps> = ({
             <button
               type="button"
               onClick={() => onBookTour(tour)}
-              className="liquid-glass-button-primary px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer shadow-md shadow-red-900/20"
+              className="liquid-glass-button-primary min-w-0 min-h-11 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center justify-center gap-1.5 text-center cursor-pointer shadow-md shadow-accent/10"
             >
               <span>{dict.tours.card.bookBtn}</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
             </button>
           )}
         </div>

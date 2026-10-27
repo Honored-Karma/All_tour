@@ -72,7 +72,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
     >
       {/* 1 & 2. Header: Country, Title, Subtitle */}
       <div className="space-y-3">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-[#6BAFB3] uppercase tracking-wider">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-sage-ink uppercase tracking-wider">
           <span>{destination.name[locale]}</span>
           <span aria-hidden="true">·</span>
           <span>
@@ -81,17 +81,17 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
           <span aria-hidden="true">·</span>
           <span>{dict.tours.card.statusOnRequest}</span>
         </div>
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
           {tour.title[locale]}
         </h2>
-        <p className="text-base text-[#EDE6DA]/80">{tour.subtitle[locale]}</p>
+        <p className="text-base text-muted">{tour.subtitle[locale]}</p>
       </div>
 
       {/* 3. Interactive Gallery */}
       <div className="space-y-3" aria-label={dict.tours.modal.galleryLabel}>
         <div
           style={{ background: destination.media.fallbackGradient }}
-          className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/15"
+          className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-line"
         >
           <img
             src={currentImage}
@@ -113,8 +113,8 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
                 aria-label={`${dict.tours.modal.photoAria} ${idx + 1}`}
                 className={`relative w-24 h-16 rounded-xl overflow-hidden border transition-all shrink-0 cursor-pointer ${
                   selectedImageIdx === idx
-                    ? "border-white ring-2 ring-white/40"
-                    : "border-white/15 opacity-65 hover:opacity-100"
+                    ? "border-line ring-2 ring-line"
+                    : "border-line opacity-65 hover:opacity-100"
                 }`}
               >
                 <img
@@ -133,21 +133,21 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
       </div>
 
       {/* 4, 5, 6. Key facts row: Duration, Departure Dates, Price */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 px-5 rounded-2xl bg-white/5 border border-white/12">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 px-5 rounded-2xl bg-surface-soft border border-line">
         <div>
-          <span className="block text-xs text-[#EDE6DA]/55">
+          <span className="block text-xs text-muted">
             {dict.tours.card.durationLabel}
           </span>
-          <span className="text-sm font-medium text-white">{durationText}</span>
+          <span className="text-sm font-medium text-ink">{durationText}</span>
         </div>
         <div>
-          <span className="block text-xs text-[#EDE6DA]/55">
+          <span className="block text-xs text-muted">
             {dict.tours.card.nextDateLabel}
           </span>
-          <span className="text-sm font-medium text-white">{datesText}</span>
+          <span className="text-sm font-medium text-ink">{datesText}</span>
         </div>
         <div>
-          <span className="block text-xs text-[#EDE6DA]/55 mb-0.5">
+          <span className="block text-xs text-muted mb-0.5">
             {dict.tours.card.priceLabel}
           </span>
           <PriceDisplay
@@ -155,7 +155,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
             className="text-sm font-semibold"
           />
           {priceResult.note && (
-            <span className="block text-[11px] text-[#EDE6DA]/60 font-sans leading-tight mt-0.5">
+            <span className="block text-[11px] text-muted font-sans leading-tight mt-0.5">
               ({priceResult.note})
             </span>
           )}
@@ -164,10 +164,10 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
 
       {/* 7. Detailed Description */}
       <div className="space-y-2">
-        <h4 className="editorial-kicker text-white/60">
+        <h4 className="editorial-kicker text-muted">
           {dict.tours.modal.overviewLabel}
         </h4>
-        <p className="text-sm sm:text-base text-[#EDE6DA]/85 leading-relaxed">
+        <p className="text-sm sm:text-base text-muted leading-relaxed">
           {tour.description[locale]}
         </p>
       </div>
@@ -182,11 +182,11 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
 
       {/* 9 & 10. Included / Excluded */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-          <h4 className="text-sm font-semibold text-white">
+        <div className="p-5 rounded-2xl bg-surface-soft border border-line space-y-3">
+          <h4 className="text-sm font-semibold text-ink">
             {dict.tours.modal.includedTitle}
           </h4>
-          <ul className="space-y-2 text-sm text-[#EDE6DA]/80">
+          <ul className="space-y-2 text-sm text-muted">
             {tour.included[locale].map((item, idx) => (
               <li key={idx} className="leading-relaxed">
                 — {item}
@@ -195,11 +195,11 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
           </ul>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-          <h4 className="text-sm font-semibold text-white">
+        <div className="p-5 rounded-2xl bg-surface-soft border border-line space-y-3">
+          <h4 className="text-sm font-semibold text-ink">
             {dict.tours.modal.excludedTitle}
           </h4>
-          <ul className="space-y-2 text-sm text-[#EDE6DA]/75">
+          <ul className="space-y-2 text-sm text-muted">
             {tour.excluded[locale].map((item, idx) => (
               <li key={idx} className="leading-relaxed">
                 — {item}
@@ -210,9 +210,9 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
       </div>
 
       {/* Contextual Traveler Reviews inside Tour Details */}
-      <div className="space-y-4 pt-2 border-t border-white/12">
+      <div className="space-y-4 pt-2 border-t border-line">
         <div className="flex items-center justify-between gap-4">
-          <h4 className="text-xs uppercase tracking-wider text-white/60">
+          <h4 className="text-xs uppercase tracking-wider text-muted">
             {dict.tours.modal.reviewsTitle}
           </h4>
           {onOpenAllReviews && (
@@ -222,7 +222,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
                 onClose();
                 onOpenAllReviews();
               }}
-              className="inline-flex items-center gap-1.5 text-xs text-[#6BAFB3] hover:text-white transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs text-sage-ink hover:text-ink transition-colors cursor-pointer"
             >
               <span>{dict.tours.modal.allReviewsLink}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -233,12 +233,12 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
           {contextualReviews.map((rev) => (
             <div
               key={rev.id}
-              className="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2"
+              className="p-4 rounded-2xl bg-surface-soft border border-line space-y-2"
             >
-              <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
+              <p className="text-xs sm:text-sm text-ink leading-relaxed">
                 «{rev.quote}»
               </p>
-              <div className="text-xs text-[#EDE6DA]/60">
+              <div className="text-xs text-muted">
                 {rev.author} · {rev.guideName[locale]}
               </div>
             </div>
@@ -249,10 +249,10 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
       {/* 11 & 12. Important Notes & Documents */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <h4 className="text-xs uppercase tracking-wider text-white/60">
+          <h4 className="text-xs uppercase tracking-wider text-muted">
             {dict.tours.modal.notesTitle}
           </h4>
-          <ul className="space-y-1.5 text-xs sm:text-sm text-[#EDE6DA]/75">
+          <ul className="space-y-1.5 text-xs sm:text-sm text-muted">
             {tour.notes[locale].map((note, idx) => (
               <li key={idx} className="leading-relaxed">
                 • {note}
@@ -261,17 +261,17 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
           </ul>
         </div>
         <div className="space-y-2">
-          <h4 className="text-xs uppercase tracking-wider text-white/60">
+          <h4 className="text-xs uppercase tracking-wider text-muted">
             {dict.tours.modal.documentsTitle}
           </h4>
-          <p className="text-xs sm:text-sm text-[#EDE6DA]/75 leading-relaxed">
+          <p className="text-xs sm:text-sm text-muted leading-relaxed">
             {tour.documentsInfo[locale]}
           </p>
         </div>
       </div>
 
       {/* 13. WhatsApp & Booking Form CTAs */}
-      <div className="pt-4 border-t border-white/15 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+      <div className="pt-4 border-t border-line flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
         <button
           type="button"
           onClick={() => {

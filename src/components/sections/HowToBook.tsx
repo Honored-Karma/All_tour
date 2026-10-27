@@ -21,18 +21,18 @@ export const HowToBook: React.FC<HowToBookProps> = ({
   return (
     <section
       id="how-to-book"
-      className="py-24 sm:py-32 px-4 sm:px-8 bg-[#0d1518] border-t border-white/10"
+      className="py-24 sm:py-32 px-4 sm:px-8 bg-canvas border-t border-line"
     >
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Header */}
         <div className="max-w-3xl space-y-4">
-          <p className="editorial-kicker text-[#6BAFB3]">
+          <p className="editorial-kicker text-sage-ink">
             {dict.howToBook.kicker}
           </p>
-          <h2 className="headline-section font-bold text-white">
+          <h2 className="headline-section font-bold text-ink">
             {dict.howToBook.title}
           </h2>
-          <p className="text-base text-[#EDE6DA]/75 leading-relaxed">
+          <p className="text-base text-muted leading-relaxed">
             {dict.howToBook.subtitle}
           </p>
         </div>
@@ -42,16 +42,16 @@ export const HowToBook: React.FC<HowToBookProps> = ({
           {dict.howToBook.steps.map((step) => (
             <div
               key={step.number}
-              className="p-6 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/12 flex flex-col justify-between space-y-6"
+              className="p-6 sm:p-8 rounded-2xl bg-surface-soft border border-line flex flex-col justify-between space-y-6"
             >
-              <span className="font-display text-3xl font-bold text-[#6BAFB3] tabular-nums">
+              <span className="font-display text-3xl font-bold text-sage-ink tabular-nums">
                 {step.number}
               </span>
               <div className="space-y-2">
-                <h3 className="font-display text-lg font-semibold text-white">
+                <h3 className="font-display text-lg font-semibold text-ink">
                   {step.title}
                 </h3>
-                <p className="text-sm text-[#EDE6DA]/75 leading-relaxed">
+                <p className="text-sm text-muted leading-relaxed">
                   {step.description}
                 </p>
               </div>

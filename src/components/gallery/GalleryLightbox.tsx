@@ -65,15 +65,15 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label={lb.ariaTitle}
-      className="fixed inset-0 z-50 bg-black/92 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6"
+      className="photo-surface fixed inset-0 z-50 bg-black/92 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6"
     >
       {/* Top Controls */}
-      <div className="flex items-center justify-between text-xs font-mono text-white/80 border-b border-white/10 pb-4">
+      <div className="flex items-center justify-between text-xs font-mono text-muted border-b border-line pb-4">
         <div className="flex items-center gap-3">
-          <span className="text-[#0786c7] font-semibold tracking-wider uppercase">
+          <span className="text-sage-ink font-semibold tracking-wider uppercase">
             {activeItem.type === "poster" ? lb.posterBadge : lb.photoBadge}
           </span>
-          <span aria-hidden="true" className="text-white/30">
+          <span aria-hidden="true" className="text-muted">
             ·
           </span>
           <span className="tabular-nums">
@@ -85,7 +85,7 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
           type="button"
           onClick={onClose}
           aria-label={lb.closeAria}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer text-xs font-sans"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-soft hover:bg-surface-hover text-ink transition-colors cursor-pointer text-xs font-sans"
         >
           <span>{lb.closeBtn}</span>
           <X className="w-4 h-4" />
@@ -101,7 +101,7 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
               type="button"
               onClick={handlePrev}
               aria-label={lb.prevAria}
-              className="absolute left-2 sm:left-4 z-10 w-11 h-11 rounded-2xl bg-black/60 hover:bg-black/90 border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"
+              className="absolute left-2 sm:left-4 z-10 w-11 h-11 rounded-2xl bg-black/60 hover:bg-black/90 border border-line text-ink flex items-center justify-center transition-all cursor-pointer shadow-lg"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
@@ -109,7 +109,7 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
               type="button"
               onClick={handleNext}
               aria-label={lb.nextAria}
-              className="absolute right-2 sm:right-4 z-10 w-11 h-11 rounded-2xl bg-black/60 hover:bg-black/90 border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"
+              className="absolute right-2 sm:right-4 z-10 w-11 h-11 rounded-2xl bg-black/60 hover:bg-black/90 border border-line text-ink flex items-center justify-center transition-all cursor-pointer shadow-lg"
             >
               <ChevronRight className="w-6 h-6" />
             </button>
@@ -124,12 +124,12 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
       </div>
 
       {/* Caption & Thumbnail strip */}
-      <div className="max-w-3xl mx-auto w-full text-center space-y-2 border-t border-white/10 pt-4">
-        <p className="text-sm sm:text-base font-semibold text-white">
+      <div className="max-w-3xl mx-auto w-full text-center space-y-2 border-t border-line pt-4">
+        <p className="text-sm sm:text-base font-semibold text-ink">
           {activeItem.alt[locale]}
         </p>
         {activeItem.caption && (
-          <p className="text-xs sm:text-sm text-[#EDE6DA]/75 max-w-xl mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-muted max-w-xl mx-auto leading-relaxed">
             {activeItem.caption[locale]}
           </p>
         )}

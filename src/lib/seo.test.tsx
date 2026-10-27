@@ -217,6 +217,13 @@ before(async () => {
 
   ({ createRoot: createRootFn } = await import("react-dom/client"));
   ({ App: AppComp } = await import("../app/App"));
+  await Promise.all([
+    import("../components/pages/HomePage"),
+    import("../components/pages/ToursCatalogPage"),
+    import("../components/pages/AboutPage"),
+    import("../components/pages/FAQPage"),
+    import("../components/pages/ContactsPage"),
+  ]);
 });
 
 afterEach(async () => {
@@ -229,11 +236,6 @@ afterEach(async () => {
 });
 
 after(async () => {
-  const { default: gsap } = await import("gsap");
-  const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-  ScrollTrigger.killAll();
-  ScrollTrigger.disable();
-  gsap.ticker.sleep();
   appDom.window.close();
 });
 

@@ -16,6 +16,8 @@ interface BookingFormProps {
   locale: Locale;
   preselectedDestinationId?: DestinationId;
   preselectedTour?: Tour | null;
+  initialDesiredDate?: string;
+  initialTravelers?: number;
 }
 
 export const BookingForm: React.FC<BookingFormProps> = ({
@@ -23,14 +25,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   locale,
   preselectedDestinationId,
   preselectedTour,
+  initialDesiredDate = "",
+  initialTravelers = 2,
 }) => {
   const [name, setName] = useState("");
   const [destinationId, setDestinationId] = useState<DestinationId | "">(
     preselectedTour?.destinationId || preselectedDestinationId || "kyrgyzstan"
   );
   const [tourId, setTourId] = useState<string>(preselectedTour?.id || "");
-  const [desiredDate, setDesiredDate] = useState("");
-  const [travelersCount, setTravelersCount] = useState<string>("2");
+  const [desiredDate, setDesiredDate] = useState(initialDesiredDate);
+  const [travelersCount, setTravelersCount] = useState<string>(String(initialTravelers));
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState<{
     name?: string;
@@ -101,10 +105,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   return (
     <GlassPanel id="booking" className="scroll-mt-28 p-6 sm:p-10">
       <div className="mb-8 space-y-2">
-        <h3 className="font-display text-xl sm:text-2xl font-bold text-white">
+        <h3 className="font-display text-xl sm:text-2xl font-bold text-ink">
           {dict.bookingForm.title}
         </h3>
-        <p className="text-sm text-[#EDE6DA]/75 leading-relaxed">
+        <p className="text-sm text-muted leading-relaxed">
           {dict.bookingForm.subtitle}
         </p>
       </div>
@@ -115,7 +119,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           <div>
             <label
               htmlFor="booking-name"
-              className="block text-xs font-medium text-[#EDE6DA]/85 mb-2"
+              className="block text-xs font-medium text-muted mb-2"
             >
               {dict.bookingForm.nameLabel}
             </label>
@@ -128,10 +132,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
               }}
               placeholder={dict.bookingForm.namePlaceholder}
-              className="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/18 text-white placeholder:text-white/35 text-sm focus:outline-none focus:border-[#6BAFB3]"
+              className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink placeholder:text-muted text-sm focus:outline-none focus:border-sage"
             />
             {errors.name && (
-              <p role="alert" className="mt-1.5 text-xs text-[#f28b82]">
+              <p role="alert" className="mt-1.5 text-xs text-accent">
                 {errors.name}
               </p>
             )}
@@ -141,7 +145,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           <div>
             <label
               htmlFor="booking-country"
-              className="block text-xs font-medium text-[#EDE6DA]/85 mb-2"
+              className="block text-xs font-medium text-muted mb-2"
             >
               {dict.bookingForm.countryLabel}
             </label>
@@ -155,7 +159,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 if (errors.destination)
                   setErrors((prev) => ({ ...prev, destination: undefined }));
               }}
-              className="w-full px-4 py-3 rounded-xl bg-[#121e24] border border-white/18 text-white text-sm focus:outline-none focus:border-[#6BAFB3]"
+              className="w-full px-4 py-3 rounded-xl bg-surface border border-line text-ink text-sm focus:outline-none focus:border-sage"
             >
               <option value="">{dict.bookingForm.countryPlaceholder}</option>
               {destinations.map((dest) => (
@@ -165,7 +169,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               ))}
             </select>
             {errors.destination && (
-              <p role="alert" className="mt-1.5 text-xs text-[#f28b82]">
+              <p role="alert" className="mt-1.5 text-xs text-accent">
                 {errors.destination}
               </p>
             )}
@@ -175,7 +179,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           <div>
             <label
               htmlFor="booking-tour"
-              className="block text-xs font-medium text-[#EDE6DA]/85 mb-2"
+              className="block text-xs font-medium text-muted mb-2"
             >
               {dict.bookingForm.tourLabel}
             </label>
@@ -183,7 +187,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               id="booking-tour"
               value={tourId}
               onChange={(e) => setTourId(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-[#121e24] border border-white/18 text-white text-sm focus:outline-none focus:border-[#6BAFB3]"
+              className="w-full px-4 py-3 rounded-xl bg-surface border border-line text-ink text-sm focus:outline-none focus:border-sage"
             >
               <option value="">{dict.bookingForm.tourPlaceholder}</option>
               {availableTours.map((t) => (
@@ -198,7 +202,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           <div>
             <label
               htmlFor="booking-date"
-              className="block text-xs font-medium text-[#EDE6DA]/85 mb-2"
+              className="block text-xs font-medium text-muted mb-2"
             >
               {dict.bookingForm.dateLabel}
             </label>
@@ -212,10 +216,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                   setErrors((prev) => ({ ...prev, desiredDate: undefined }));
               }}
               placeholder={dict.bookingForm.datePlaceholder}
-              className="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/18 text-white placeholder:text-white/35 text-sm focus:outline-none focus:border-[#6BAFB3]"
+              className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink placeholder:text-muted text-sm focus:outline-none focus:border-sage"
             />
             {errors.desiredDate && (
-              <p role="alert" className="mt-1.5 text-xs text-[#f28b82]">
+              <p role="alert" className="mt-1.5 text-xs text-accent">
                 {errors.desiredDate}
               </p>
             )}
@@ -225,7 +229,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           <div>
             <label
               htmlFor="booking-travelers"
-              className="block text-xs font-medium text-[#EDE6DA]/85 mb-2"
+              className="block text-xs font-medium text-muted mb-2"
             >
               {dict.bookingForm.travelersLabel}
             </label>
@@ -240,10 +244,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 if (errors.travelersCount)
                   setErrors((prev) => ({ ...prev, travelersCount: undefined }));
               }}
-              className="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/18 text-white text-sm tabular-nums focus:outline-none focus:border-[#6BAFB3]"
+              className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink text-sm tabular-nums focus:outline-none focus:border-sage"
             />
             {errors.travelersCount && (
-              <p role="alert" className="mt-1.5 text-xs text-[#f28b82]">
+              <p role="alert" className="mt-1.5 text-xs text-accent">
                 {errors.travelersCount}
               </p>
             )}
@@ -253,7 +257,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           <div className="md:col-span-2">
             <label
               htmlFor="booking-comment"
-              className="block text-xs font-medium text-[#EDE6DA]/85 mb-2"
+              className="block text-xs font-medium text-muted mb-2"
             >
               {dict.bookingForm.commentLabel}
             </label>
@@ -263,13 +267,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder={dict.bookingForm.commentPlaceholder}
-              className="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/18 text-white placeholder:text-white/35 text-sm focus:outline-none focus:border-[#6BAFB3]"
+              className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink placeholder:text-muted text-sm focus:outline-none focus:border-sage"
             />
           </div>
         </div>
 
         <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <p className="text-xs text-[#EDE6DA]/55 max-w-md">
+          <p className="text-xs text-muted max-w-md">
             {dict.bookingForm.privacyNote}
           </p>
           <button
@@ -284,16 +288,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({
       {submittedWhatsappUrl && submittedMessagePreview && (
         <div
           data-testid="booking-whatsapp-preview"
-          className="mt-6 p-5 rounded-2xl bg-black/40 border border-[#6BAFB3]/40 space-y-3"
+          className="mt-6 p-5 rounded-2xl bg-surface-soft border border-sage/40 space-y-3"
         >
-          <p className="text-xs text-[#EDE6DA]/90 leading-relaxed">
+          <p className="text-xs text-ink leading-relaxed">
             {dict.bookingForm.readyNotice}
           </p>
           <div className="space-y-1">
-            <span className="block text-[11px] uppercase tracking-wider text-white/50">
+            <span className="block text-[11px] uppercase tracking-wider text-muted">
               {dict.bookingForm.readyPreviewLabel}
             </span>
-            <pre className="text-xs font-mono text-[#EDE6DA]/85 whitespace-pre-wrap bg-black/30 p-3.5 rounded-xl border border-white/10">
+            <pre className="text-xs font-mono text-muted whitespace-pre-wrap bg-surface-soft p-3.5 rounded-xl border border-line">
               {submittedMessagePreview}
             </pre>
           </div>
@@ -301,7 +305,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             href={submittedWhatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#6BAFB3] hover:text-white underline underline-offset-4"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-sage-ink hover:text-ink underline underline-offset-4"
           >
             <span>{dict.bookingForm.openWhatsappManual}</span>
             <ArrowUpRight className="w-4 h-4" />

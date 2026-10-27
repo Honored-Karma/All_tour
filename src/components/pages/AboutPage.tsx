@@ -26,15 +26,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
   }));
 
   return (
-    <div className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-28 pb-24 px-4 sm:px-8">
+    <div className="min-h-screen bg-canvas text-ink pt-28 pb-24 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto space-y-14">
         {/* Header Hero */}
-        <div className="space-y-4 max-w-3xl border-b border-white/10 pb-8">
-          <p className="editorial-kicker text-[#0786c7]">{ap.kicker}</p>
-          <h1 className="headline-section font-bold text-white tracking-tight">
+        <div className="space-y-4 max-w-3xl border-b border-line pb-8">
+          <p className="editorial-kicker text-sage-ink">{ap.kicker}</p>
+          <h1 className="headline-section font-bold text-ink tracking-tight">
             {ap.title}
           </h1>
-          <p className="text-base sm:text-lg text-[#EDE6DA]/85 leading-relaxed">
+          <p className="text-base sm:text-lg text-muted leading-relaxed">
             {ap.subtitle}
           </p>
         </div>
@@ -46,30 +46,30 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
           </div>
 
           <div className="lg:col-span-7 space-y-4">
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
               {ap.philosophyTitle}
             </h2>
-            <p className="text-sm sm:text-base text-[#EDE6DA]/80 leading-relaxed">
+            <p className="text-sm sm:text-base text-muted leading-relaxed">
               {ap.philosophyP1}
             </p>
-            <p className="text-sm text-[#EDE6DA]/70 leading-relaxed">
+            <p className="text-sm text-muted leading-relaxed">
               {ap.philosophyP2}
             </p>
           </div>
         </div>
 
         {/* Real Documentary Group Photo */}
-        <section className="space-y-4 pt-4 border-t border-white/10">
+        <section className="space-y-4 pt-4 border-t border-line">
           <div className="space-y-1">
-            <h2 className="font-display text-xl font-bold text-white">
+            <h2 className="font-display text-xl font-bold text-ink">
               {ap.groupPhotoTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-[#EDE6DA]/70">
+            <p className="text-xs sm:text-sm text-muted">
               {ap.groupPhotoSubtitle}
             </p>
           </div>
 
-          <div className="relative rounded-3xl overflow-hidden border border-white/15 shadow-2xl aspect-[16/9] sm:aspect-[21/9]">
+          <div className="photo-surface relative rounded-3xl overflow-hidden border border-line shadow-2xl aspect-[16/9] sm:aspect-[21/9]">
             <img
               src={OFFICIAL_LOGO.groupChinaPhoto}
               alt={ap.groupPhotoAlt}
@@ -82,16 +82,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
                   "linear-gradient(180deg, transparent 60%, rgba(9, 15, 18, 0.85) 100%)",
               }}
             />
-            <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between text-xs text-white/90">
+            <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between text-xs text-ink">
               <span className="font-medium">{ap.groupPhotoCaption}</span>
-              <span className="font-mono text-white/70">Instagram: @all_tour.kz</span>
+              <span className="font-mono text-muted">Instagram: @all_tour.kz</span>
             </div>
           </div>
         </section>
 
         {/* 4 Core Principles */}
-        <section className="space-y-6 pt-4 border-t border-white/10">
-          <h2 className="font-display text-xl font-bold text-white">
+        <section className="space-y-6 pt-4 border-t border-line">
+          <h2 className="font-display text-xl font-bold text-ink">
             {ap.howWeWorkTitle}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -99,13 +99,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
               const Icon = val.icon;
               return (
                 <GlassPanel key={idx} className="p-6 space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#0786c7]/15 border border-[#0786c7]/30 flex items-center justify-center text-[#0786c7]">
+                  <div className="w-10 h-10 rounded-xl bg-sage/15 border border-sage/30 flex items-center justify-center text-sage-ink">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-display text-base font-semibold text-white leading-snug">
+                  <h3 className="font-display text-base font-semibold text-ink leading-snug">
                     {val.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#EDE6DA]/75 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted leading-relaxed">
                     {val.description}
                   </p>
                 </GlassPanel>
@@ -115,13 +115,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
         </section>
 
         {/* Bottom CTA */}
-        <div className="pt-4 border-t border-white/10">
+        <div className="pt-4 border-t border-line">
           <GlassPanel className="p-8 sm:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
-              <h3 className="font-display text-xl font-bold text-white">
+              <h3 className="font-display text-xl font-bold text-ink">
                 {ap.ctaTitle}
               </h3>
-              <p className="text-sm text-[#EDE6DA]/75 leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 {ap.ctaText}
               </p>
             </div>

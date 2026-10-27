@@ -80,19 +80,19 @@ export class RouteErrorBoundary extends Component<
           aria-live="assertive"
           className="min-h-[70vh] flex flex-col items-center justify-center px-4 sm:px-8 py-20 text-center"
         >
-          <div className="max-w-md w-full p-8 rounded-3xl bg-[#0d161a]/90 backdrop-blur-xl border border-red-500/25 shadow-2xl shadow-red-950/20 space-y-6">
-            <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto text-red-400">
+          <div className="max-w-md w-full p-8 rounded-3xl bg-surface/95 backdrop-blur-xl border border-accent/25 shadow-2xl shadow-accent/10 space-y-6">
+            <div className="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto text-accent">
               <AlertTriangle className="w-8 h-8" aria-hidden="true" />
             </div>
 
             <div className="space-y-2">
-              <div className="inline-block px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-xs font-mono tracking-wider text-red-300 uppercase">
+              <div className="inline-block px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-xs font-mono tracking-wider text-accent uppercase">
                 {eb.badge}
               </div>
-              <h1 className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-display font-bold text-ink tracking-tight">
                 {eb.title}
               </h1>
-              <p className="text-sm text-[#EDE6DA]/75 font-sans leading-relaxed">
+              <p className="text-sm text-muted font-sans leading-relaxed">
                 {eb.description}
               </p>
             </div>
@@ -101,18 +101,18 @@ export class RouteErrorBoundary extends Component<
               <button
                 type="button"
                 onClick={this.handleManualReload}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-red-600/80 hover:bg-red-500 text-white text-xs font-semibold transition-all shadow-md shadow-red-900/30 cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-accent/80 hover:bg-accent text-on-accent text-xs font-semibold transition-all shadow-md shadow-accent/10 cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{eb.reloadBtn}</span>
               </button>
             </div>
 
-            <div className="pt-4 border-t border-white/10 flex items-center justify-center gap-6 text-xs text-[#EDE6DA]/60">
+            <div className="pt-4 border-t border-line flex items-center justify-center gap-6 text-xs text-muted">
               <Link
                 to="/tours"
                 onClick={this.resetError}
-                className="inline-flex items-center gap-1.5 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 hover:text-ink transition-colors"
               >
                 <Compass className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{eb.backToCatalog}</span>
@@ -121,7 +121,7 @@ export class RouteErrorBoundary extends Component<
               <Link
                 to="/"
                 onClick={this.resetError}
-                className="inline-flex items-center gap-1.5 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 hover:text-ink transition-colors"
               >
                 <Home className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{eb.backToHome}</span>

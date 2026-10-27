@@ -12,18 +12,18 @@ export const FAQ: React.FC<FAQProps> = ({ dict }) => {
   return (
     <section
       id="faq"
-      className="py-24 sm:py-32 px-4 sm:px-8 bg-[#101a1e] border-t border-white/10"
+      className="py-24 sm:py-32 px-4 sm:px-8 bg-surface border-t border-line"
     >
       <div className="max-w-4xl mx-auto space-y-12">
         <div className="space-y-3">
-          <p className="editorial-kicker text-[#6BAFB3]">{dict.faq.kicker}</p>
-          <h2 className="headline-section font-bold text-white">
+          <p className="editorial-kicker text-sage-ink">{dict.faq.kicker}</p>
+          <h2 className="headline-section font-bold text-ink">
             {dict.faq.title}
           </h2>
-          <p className="text-base text-[#EDE6DA]/75">{dict.faq.subtitle}</p>
+          <p className="text-base text-muted">{dict.faq.subtitle}</p>
         </div>
 
-        <div className="divide-y divide-white/12 border-t border-b border-white/12">
+        <div className="divide-y divide-line border-t border-b border-line">
           {dict.faq.items.map((item, idx) => {
             const isOpen = openIndex === idx;
             const panelId = `faq-panel-${idx}`;
@@ -38,13 +38,13 @@ export const FAQ: React.FC<FAQProps> = ({ dict }) => {
                     aria-expanded={isOpen}
                     aria-controls={panelId}
                     onClick={() => setOpenIndex(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between gap-4 text-left py-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#6BAFB3]"
+                    className="w-full flex items-center justify-between gap-4 text-left py-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-sage"
                   >
-                    <span className="font-display text-base sm:text-lg font-medium text-white">
+                    <span className="font-display text-base sm:text-lg font-medium text-ink">
                       {item.q}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-[#6BAFB3] shrink-0 transition-transform duration-200 ${
+                      className={`w-5 h-5 text-sage-ink shrink-0 transition-transform duration-200 ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     />
@@ -55,7 +55,7 @@ export const FAQ: React.FC<FAQProps> = ({ dict }) => {
                     id={panelId}
                     role="region"
                     aria-labelledby={buttonId}
-                    className="pt-3 pr-8 text-sm sm:text-base text-[#EDE6DA]/80 leading-relaxed"
+                    className="pt-3 pr-8 text-sm sm:text-base text-muted leading-relaxed"
                   >
                     {item.a}
                   </div>

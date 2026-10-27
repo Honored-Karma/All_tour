@@ -69,27 +69,27 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
         aria-expanded={isOpen}
         className={
           variant === "mobile"
-            ? "flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors cursor-pointer border border-white/10 w-full"
-            : "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/90 hover:text-white transition-colors cursor-pointer border border-white/10 text-xs font-mono"
+            ? "flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-surface-soft hover:bg-surface-hover text-ink transition-colors cursor-pointer border border-line w-full"
+            : "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface-soft hover:bg-surface-hover text-ink hover:text-ink transition-colors cursor-pointer border border-line text-xs font-mono"
         }
       >
         <span className="inline-flex items-center gap-1">
-          <span className="font-bold tracking-wider text-white">
+          <span className="font-bold tracking-wider text-ink">
             {activeMeta.code}
           </span>
           {activeMeta.code === "KGS" ? (
             <span className="inline-flex items-center shrink-0">
-              <SomIcon className="w-3.5 h-3.5 text-white/90 shrink-0" />
+              <SomIcon className="w-3.5 h-3.5 text-ink shrink-0" />
               <span className="sr-only">кыргызских сомов</span>
             </span>
           ) : (
-            <span className="text-white/70 font-sans font-medium">
+            <span className="text-muted font-sans font-medium">
               {activeMeta.symbol}
             </span>
           )}
         </span>
         <ChevronDown
-          className={`w-3 h-3 text-white/60 transition-transform duration-200 ${
+          className={`w-3 h-3 text-muted transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -101,11 +101,11 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
           role="listbox"
           aria-label={isKz ? "Валюталар тізімі" : "Список валют"}
           data-testid="currency-dropdown"
-          className={`absolute mt-2 rounded-2xl bg-[#0f171c]/95 border border-white/15 p-1.5 shadow-2xl backdrop-blur-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150 ${
+          className={`absolute mt-2 rounded-2xl bg-surface/95 border border-line p-1.5 shadow-2xl backdrop-blur-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150 ${
             variant === "mobile" ? "left-0 right-0 w-full" : "right-0 w-64"
           }`}
         >
-          <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#EDE6DA]/50 border-b border-white/10 mb-1">
+          <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-muted border-b border-line mb-1">
             {isKz ? "Валютаны таңдаңыз" : "Выберите валюту"}
           </div>
 
@@ -123,8 +123,8 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
                   onClick={() => handleSelect(item.code)}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all cursor-pointer group ${
                     isSelected
-                      ? "bg-red-500/20 text-white border border-red-500/30"
-                      : "text-white/80 hover:bg-white/10 hover:text-white border border-transparent"
+                      ? "bg-accent/20 text-ink border border-accent/30"
+                      : "text-muted hover:bg-surface-hover hover:text-ink border border-transparent"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -132,8 +132,8 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
                     <span
                       className={`font-mono text-xs px-1.5 py-0.5 rounded font-bold ${
                         isSelected
-                          ? "bg-red-500 text-white"
-                          : "bg-white/10 text-white/90 group-hover:bg-white/20"
+                          ? "bg-accent text-on-accent"
+                          : "bg-surface-soft text-ink group-hover:bg-surface-hover"
                       }`}
                     >
                       {item.code}
@@ -143,22 +143,22 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
                     <div className="flex items-center gap-1.5 text-xs">
                       {item.code === "KGS" ? (
                         <span className="inline-flex items-center shrink-0" title="сом">
-                          <SomIcon className="w-3.5 h-3.5 text-white shrink-0" />
+                          <SomIcon className="w-3.5 h-3.5 text-ink shrink-0" />
                           <span className="sr-only">кыргызских сомов</span>
                         </span>
                       ) : (
-                        <span className="font-semibold text-white">
+                        <span className="font-semibold text-ink">
                           {item.symbol}
                         </span>
                       )}
-                      <span className="text-[#EDE6DA]/70 text-[11px]">
+                      <span className="text-muted text-[11px]">
                         {item.name[locale]}
                       </span>
                     </div>
                   </div>
 
                   {isSelected && (
-                    <Check className="w-4 h-4 text-red-400 shrink-0 ml-2" />
+                    <Check className="w-4 h-4 text-accent shrink-0 ml-2" />
                   )}
                 </button>
               );

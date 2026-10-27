@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "./glass.css";
+@import "./planner.css";
+@import "./home.css";
+
+/* Page atmosphere shares the global palette and motion preferences below. */
 
 /* ==========================================================================
    Montserrat Font Declarations (SIL Open Font License 1.1)
@@ -65,12 +69,39 @@
 }
 
 @theme {
+  --color-canvas: oklch(0.973 0.007 88.6);
+  --color-surface: oklch(0.997 0.005 95.1);
+  --color-surface-soft: oklch(0.948 0.011 95.2);
+  --color-surface-hover: oklch(0.927 0.015 98.3);
+  --color-sage-soft: oklch(0.942 0.014 134.9);
+  --color-sage: oklch(0.503 0.043 161);
+  --color-sage-hover: oklch(0.445 0.041 159.9);
+  --color-accent: oklch(0.560 0.115 34.5);
+  --color-accent-hover: oklch(0.496 0.102 33.6);
+  --color-on-accent: oklch(0.997 0.005 95.1);
+  --color-sand: oklch(0.543 0.063 73.6);
   --font-sans: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+@theme inline {
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+  --color-line: var(--theme-line);
+  --color-sage-ink: var(--theme-sage);
+}
+
 :root {
+  color-scheme: light;
+  --palette-ink: oklch(0.337 0.028 166.8);
+  --palette-muted: oklch(0.525 0.020 153.2);
+  --palette-line: oklch(0.891 0.015 123.1);
+  --palette-sage: oklch(0.503 0.043 161);
+  --theme-ink: var(--palette-ink);
+  --theme-muted: var(--palette-muted);
+  --theme-line: var(--palette-line);
+  --theme-sage: var(--palette-sage);
   --font-display: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-sans: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -87,8 +118,8 @@
 html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
-  background-color: #0d1518;
-  color: #EDE6DA;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -108,8 +139,8 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: clip;
-  background-color: #0d1518;
-  color: #EDE6DA;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
@@ -127,6 +158,27 @@ textarea {
 input::placeholder,
 textarea::placeholder {
   font-family: var(--font-sans);
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+/* Photography retains light captions while the interface uses warm surfaces. */
+.photo-surface {
+  --theme-ink: #fffefa;
+  --theme-muted: #eeeae0;
+  --theme-line: rgb(255 254 250 / 25%);
+  --theme-sage: #d3e0d0;
+  color: var(--theme-ink);
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--palette-sage);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: #dedfce;
+  color: var(--palette-ink);
 }
 
 .font-display {
@@ -176,6 +228,38 @@ textarea::placeholder {
   text-transform: uppercase;
 }
 
+/* Match the hero's closing tone before gradually revealing the next landscape. */
+.journey-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(10rem, 28dvh, 20rem);
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    #0d1518 0%,
+    rgba(13, 21, 24, 0.86) 18%,
+    rgba(13, 21, 24, 0.36) 55%,
+    rgba(13, 21, 24, 0) 100%
+  );
+}
+
+/* A static veil keeps the join soft, including when reduced motion is enabled. */
+.journey-entry-mist {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(10rem, 24dvh, 18rem);
+  transform: translateY(-50%);
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 28% 50%, rgba(145, 170, 172, 0.1), transparent 65%),
+    radial-gradient(ellipse at 76% 48%, rgba(107, 149, 153, 0.08), transparent 60%);
+}
+
 /* Subtle Ken Burns ambient drift when reduced motion is off */
 @keyframes kenBurnsSlow {
   0% {
@@ -207,4 +291,172 @@ textarea::placeholder {
 
 .animate-scroll-indicator {
   animation: scrollPulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Scroll-driven opening: native sticky positioning keeps wheel and touch scrolling natural. */
+.hero-scroll-story {
+  position: relative;
+  height: 360svh;
+  background: #0d1518;
+}
+
+.hero-cinema-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 38rem;
+  overflow: hidden;
+  isolation: isolate;
+  color: white;
+}
+
+.hero-cinema-images,
+.hero-cinema-image,
+.hero-landscape,
+.hero-cinema-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-cinema-image { opacity: 0; }
+.hero-cinema-image-0 { opacity: 1; }
+.hero-landscape picture { display: block; width: 100%; height: 100%; }
+.hero-landscape img { width: 100%; height: 100%; object-fit: cover; }
+
+.hero-cinema-scrim {
+  background:
+    linear-gradient(90deg, rgb(7 17 21 / 38%), transparent 80%),
+    linear-gradient(180deg, rgb(7 17 21 / 26%), transparent 32%, rgb(7 17 21 / 12%) 55%, rgb(7 17 21 / 76%) 100%);
+}
+
+.hero-cinema-intro,
+.hero-static-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  max-width: 86rem;
+  min-height: 100%;
+  margin-inline: auto;
+  padding: 8rem 2rem 10rem;
+}
+
+.hero-intro-content { max-width: 55rem; }
+.hero-intro-content > .editorial-kicker { margin-bottom: 1.5rem; }
+.hero-intro-description {
+  max-width: 40rem;
+  margin-block: 1.5rem 1rem;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.7;
+  color: rgb(237 230 218 / 90%);
+}
+
+.hero-place-caption {
+  position: absolute;
+  inset-inline: max(2rem, calc((100% - 82rem) / 2));
+  bottom: 11rem;
+  z-index: 1;
+  max-width: 65rem;
+  pointer-events: none;
+}
+
+.hero-animated-caption { opacity: 0; }
+.hero-place-caption h2 {
+  font-size: clamp(3.25rem, 9.5vw, 9rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+.hero-place-caption > p:last-child {
+  margin-top: 1.25rem;
+  max-width: 34rem;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  line-height: 1.6;
+  color: rgb(255 255 255 / 85%);
+}
+
+.hero-cinema-bottom {
+  position: absolute;
+  inset-inline: max(2rem, calc((100% - 82rem) / 2));
+  bottom: max(2rem, env(safe-area-inset-bottom));
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr minmax(25rem, 1.4fr);
+  gap: 0.75rem 3rem;
+  align-items: end;
+}
+.hero-scroll-cue,
+.hero-skip-story {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 1rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+  text-align: start;
+  font-size: 0.7rem;
+  color: rgb(255 255 255 / 75%);
+  transition: color 180ms;
+}
+.hero-scroll-cue { text-transform: uppercase; letter-spacing: 0.12em; }
+.hero-skip-story { grid-column: 1 / -1; font-size: 0.75rem; }
+.hero-scroll-cue:hover,
+.hero-skip-story:hover { color: white; }
+.hero-scene-navigation { display: flex; gap: 1.5rem; }
+.hero-scene-navigation button {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+  cursor: pointer;
+  text-align: start;
+  color: rgb(255 255 255 / 60%);
+  transition: color 180ms;
+}
+.hero-scene-navigation button:hover,
+.hero-scene-navigation button[aria-current] { color: white; }
+.hero-scene-button-label { display: flex; gap: 0.75rem; font-size: 0.8rem; }
+.hero-scene-index { font-size: 0.6rem; font-variant-numeric: tabular-nums; opacity: 0.6; }
+.hero-scene-track { display: block; height: 1px; margin-top: 0.75rem; background: rgb(255 255 255 / 25%); }
+.hero-scene-track > span { display: block; height: 100%; background: #ede6da; transform: scaleX(0); transform-origin: left; }
+.hero-cinema-bottom button:focus-visible { outline: 2px solid #ede6da; outline-offset: 6px; border-radius: 2px; }
+
+.hero-static-intro { position: relative; min-height: 100svh; isolation: isolate; }
+.hero-static-content { min-height: 100svh; }
+.hero-static-scene { position: relative; min-height: 70svh; margin: 0; overflow: hidden; }
+.hero-static-scene .hero-place-caption { bottom: 3rem; }
+
+@media (max-width: 700px) {
+  .hero-scroll-story { height: 310svh; }
+  .hero-cinema-stage { min-height: 36rem; }
+  .hero-cinema-intro,
+  .hero-static-content { padding: 7rem 1.25rem 13rem; }
+  .hero-intro-content > .editorial-kicker { font-size: 0.6rem; letter-spacing: 0.1em; }
+  .hero-place-caption { inset-inline: 1.25rem; bottom: 14rem; }
+  .hero-place-caption h2 { font-size: clamp(2.7rem, 11vw, 4.5rem); }
+  .hero-cinema-bottom { inset-inline: 1.25rem; bottom: max(1rem, env(safe-area-inset-bottom)); grid-template-columns: 1fr; gap: 0.5rem; }
+  .hero-scene-navigation { grid-row: 1; gap: 1rem; }
+  .hero-scene-button-label { gap: 0.4rem; font-size: 0.7rem; }
+  .hero-scroll-cue { margin-top: 0.5rem; font-size: 0.6rem; letter-spacing: 0.08em; }
+  .hero-skip-story { font-size: 0.7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-story { height: auto; }
+  .hero-cinema-stage { position: relative; }
+}
+
+@media (max-width: 700px) and (max-height: 740px) {
+  .hero-cinema-stage { min-height: 32rem; }
+  .hero-cinema-intro { padding-block: 7rem 11rem; }
+  .hero-intro-content > .editorial-kicker { margin-bottom: 1rem; }
+  .hero-intro-content .headline-hero { font-size: clamp(1.5rem, 7.3vw, 2rem); line-height: 1.15; }
+  .hero-intro-description { margin-block: 1rem 0.75rem; font-size: 0.875rem; line-height: 1.55; }
+  .hero-intro-content .inline-flex { padding: 0.75rem 1rem; font-size: 0.75rem; }
+  .hero-intro-content .flex { gap: 0.625rem; }
+  .hero-scroll-cue { min-height: 2.5rem; }
+  .hero-cinema-bottom { gap: 0.25rem; }
+  .hero-place-caption { bottom: 12rem; }
 }

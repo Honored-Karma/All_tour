@@ -21,7 +21,7 @@ export const DestinationExplorer: React.FC<DestinationExplorerProps> = ({
       aria-label={explorerTitle}
       className="liquid-glass-panel p-2 sm:p-2.5 inline-flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2"
     >
-      <span className="hidden xl:inline-block px-3 py-1.5 text-[11px] font-medium tracking-[0.16em] uppercase text-white/60 whitespace-nowrap shrink-0">
+      <span className="hidden xl:inline-block px-3 py-1.5 text-[11px] font-medium tracking-[0.16em] uppercase text-muted whitespace-nowrap shrink-0">
         {explorerTitle}
       </span>
       <div className="flex items-center gap-1 sm:gap-1.5" role="tablist">
@@ -36,10 +36,10 @@ export const DestinationExplorer: React.FC<DestinationExplorerProps> = ({
               role="tab"
               aria-selected={isActive}
               onClick={() => onSelectDestination(dest.id)}
-              className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#6BAFB3] ${
+              className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-sage ${
                 isActive
-                  ? "bg-white text-[#111d22] shadow-sm font-semibold"
-                  : "text-white/80 hover:text-white hover:bg-white/10"
+                  ? "bg-surface text-ink shadow-sm font-semibold"
+                  : "text-muted hover:text-ink hover:bg-surface-hover"
               }`}
             >
               <span className="tabular-nums opacity-65 mr-1.5">{dest.stepNumber}</span>

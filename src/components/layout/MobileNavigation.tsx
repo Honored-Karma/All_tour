@@ -60,10 +60,10 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label={dict.nav.mobileMenuOpen}
-      className="fixed inset-0 z-50 xl:hidden bg-[#0a1013]/95 backdrop-blur-2xl flex flex-col justify-between p-5 sm:p-6 text-[#EDE6DA] overflow-y-auto animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 xl:hidden bg-canvas backdrop-blur-2xl flex flex-col justify-between p-5 sm:p-6 text-ink overflow-y-auto animate-in fade-in duration-200"
     >
       {/* Top Bar: Brand Logo & Controls */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-4">
+      <div className="flex items-center justify-between border-b border-line pb-4">
         <BrandLogo variant="mobile" onClick={onClose} />
         <div className="flex items-center gap-2">
           <CurrencySwitcher locale={locale} variant="header" />
@@ -71,13 +71,13 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             type="button"
             onClick={() => onToggleLocale(locale === "ru" ? "kz" : "ru")}
             aria-label={dict.nav.langSwitchAria}
-            className="px-2.5 py-1.5 rounded-lg bg-white/10 text-xs font-mono text-white cursor-pointer"
+            className="px-2.5 py-1.5 rounded-lg bg-surface-soft text-xs font-mono text-ink cursor-pointer"
           >
-            <span className={locale === "ru" ? "font-bold text-red-400" : "opacity-60"}>
+            <span className={locale === "ru" ? "font-bold text-accent" : "opacity-60"}>
               RU
             </span>{" "}
             /{" "}
-            <span className={locale === "kz" ? "font-bold text-red-400" : "opacity-60"}>
+            <span className={locale === "kz" ? "font-bold text-accent" : "opacity-60"}>
               KZ
             </span>
           </button>
@@ -85,7 +85,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             type="button"
             onClick={onClose}
             aria-label={dict.nav.mobileMenuClose}
-            className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors"
+            className="w-9 h-9 rounded-xl bg-surface-soft flex items-center justify-center text-ink cursor-pointer hover:bg-surface-hover transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -99,67 +99,67 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
           <Link
             to="/"
             onClick={onClose}
-            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
+            className="p-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line transition-colors"
           >
-            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">
+            <span className="block text-xs font-mono text-muted uppercase">
               {dict.mobileNav.homeSub}
             </span>
-            <span className="text-white font-semibold">{dict.nav.home}</span>
+            <span className="text-ink font-semibold">{dict.nav.home}</span>
           </Link>
 
           <Link
             to="/tours"
             onClick={onClose}
-            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
+            className="p-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line transition-colors"
           >
-            <span className="block text-xs font-mono text-red-400 uppercase">
+            <span className="block text-xs font-mono text-accent uppercase">
               {dict.mobileNav.catalogSub}
             </span>
-            <span className="text-white font-semibold">{dict.nav.tours}</span>
+            <span className="text-ink font-semibold">{dict.nav.tours}</span>
           </Link>
 
           <Link
             to="/about"
             onClick={onClose}
-            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
+            className="p-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line transition-colors"
           >
-            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">
+            <span className="block text-xs font-mono text-muted uppercase">
               {dict.mobileNav.aboutSub}
             </span>
-            <span className="text-white font-semibold">{dict.nav.about}</span>
+            <span className="text-ink font-semibold">{dict.nav.about}</span>
           </Link>
 
           <Link
             to="/reviews"
             onClick={onClose}
-            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
+            className="p-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line transition-colors"
           >
-            <span className="block text-xs font-mono text-amber-400 uppercase">
+            <span className="block text-xs font-mono text-sand uppercase">
               {dict.mobileNav.storiesSub}
             </span>
-            <span className="text-white font-semibold">{dict.nav.reviews}</span>
+            <span className="text-ink font-semibold">{dict.nav.reviews}</span>
           </Link>
 
           <Link
             to="/faq"
             onClick={onClose}
-            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
+            className="p-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line transition-colors"
           >
-            <span className="block text-xs font-mono text-[#EDE6DA]/40 uppercase">
+            <span className="block text-xs font-mono text-muted uppercase">
               {dict.mobileNav.infoSub}
             </span>
-            <span className="text-white font-semibold">{dict.mobileNav.faqLabel}</span>
+            <span className="text-ink font-semibold">{dict.mobileNav.faqLabel}</span>
           </Link>
 
           <Link
             to="/contacts"
             onClick={onClose}
-            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors"
+            className="p-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line transition-colors"
           >
-            <span className="block text-xs font-mono text-cyan-400 uppercase">
+            <span className="block text-xs font-mono text-sage-ink uppercase">
               {dict.mobileNav.contactsSub}
             </span>
-            <span className="text-white font-semibold">{dict.nav.contacts}</span>
+            <span className="text-ink font-semibold">{dict.nav.contacts}</span>
           </Link>
         </div>
 
@@ -167,26 +167,26 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
         <Link
           to="/tours?favorites=true"
           onClick={onClose}
-          className="flex items-center justify-between p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-white"
+          className="flex items-center justify-between p-3.5 rounded-2xl bg-accent/10 border border-accent/20 text-ink"
         >
           <div className="flex items-center gap-2.5">
             <Heart
               className={`w-4 h-4 ${
-                favoritesCount > 0 ? "fill-red-500 text-red-500" : "text-white/70"
+                favoritesCount > 0 ? "fill-accent text-accent" : "text-muted"
               }`}
             />
             <span className="text-sm font-semibold">
               {dict.mobileNav.favoritesLabel}
             </span>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-red-600 text-xs font-bold text-white">
+          <span className="px-2 py-0.5 rounded-full bg-accent text-xs font-bold text-on-accent">
             {favoritesCount}
           </span>
         </Link>
 
         {/* Destinations Group */}
         <div className="space-y-2">
-          <p className="text-[11px] font-mono tracking-wider uppercase text-[#EDE6DA]/50">
+          <p className="text-[11px] font-mono tracking-wider uppercase text-muted">
             {dict.journey.explorerTitle}
           </p>
           <div className="grid grid-cols-1 gap-2">
@@ -195,17 +195,17 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
                 key={dest.id}
                 to={`/destinations/${dest.id}`}
                 onClick={onClose}
-                className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-left transition-colors"
+                className="flex items-center justify-between px-4 py-3 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line text-left transition-colors"
               >
                 <div>
-                  <div className="font-display text-sm font-semibold text-white">
+                  <div className="font-display text-sm font-semibold text-ink">
                     {dest.name[locale]}
                   </div>
-                  <div className="text-[11px] text-[#EDE6DA]/60">
+                  <div className="text-[11px] text-muted">
                     {dest.tagline[locale]}
                   </div>
                 </div>
-                <span className="font-mono text-[10px] text-white/50 px-2 py-0.5 rounded bg-white/5">
+                <span className="font-mono text-[10px] text-muted px-2 py-0.5 rounded bg-surface-soft">
                   {dest.indexLabel}
                 </span>
               </Link>
@@ -215,11 +215,11 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
       </nav>
 
       {/* Action Buttons */}
-      <div className="space-y-2.5 border-t border-white/10 pt-4">
+      <div className="space-y-2.5 border-t border-line pt-4">
         <Link
-          to="/tours"
+          to="/tours#tour-planner"
           onClick={onClose}
-          className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white text-sm font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-red-900/30"
+          className="w-full py-3.5 px-5 rounded-xl bg-accent hover:bg-accent-hover text-on-accent text-sm font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-accent/10"
         >
           <Sparkles className="w-4 h-4" />
           <span>{dict.nav.cta}</span>
@@ -229,7 +229,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full py-3.5 px-5 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#25D366] text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+          className="w-full py-3.5 px-5 rounded-xl bg-sage/15 hover:bg-sage/25 border border-sage/30 text-sage-ink text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
         >
           <MessageCircle className="w-4 h-4" />
           <span>{dict.hero.whatsappCta}</span>

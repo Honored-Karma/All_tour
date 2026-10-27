@@ -33,20 +33,20 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
     >
       <div className="space-y-4">
         {/* Unboxed editorial metadata line (Zero-Pill discipline) */}
-        <div className="flex flex-wrap items-center gap-2 text-xs text-[#6BAFB3]">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-sage-ink">
           <span className="uppercase tracking-wider font-medium">
             {review.tourBadge[locale]}
           </span>
-          <span aria-hidden="true" className="text-white/35">
+          <span aria-hidden="true" className="text-muted">
             ·
           </span>
-          <span className="text-[#EDE6DA]/75">{review.guideName[locale]}</span>
+          <span className="text-muted">{review.guideName[locale]}</span>
           {review.dateNote && (
             <>
-              <span aria-hidden="true" className="text-white/35">
+              <span aria-hidden="true" className="text-muted">
                 ·
               </span>
-              <span className="font-mono tabular-nums text-[#EDE6DA]/60">
+              <span className="font-mono tabular-nums text-muted">
                 {review.dateNote}
               </span>
             </>
@@ -54,18 +54,18 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
         </div>
 
         {/* Authentic review quote */}
-        <blockquote className="text-sm sm:text-base text-white/95 leading-relaxed font-normal">
+        <blockquote className="text-sm sm:text-base text-ink leading-relaxed font-normal">
           «{review.quote}»
         </blockquote>
       </div>
 
       {/* Footer: Author attribution + link to original story screenshot */}
-      <div className="pt-4 border-t border-white/12 flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-line flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <div className="text-sm font-semibold text-white truncate">
+          <div className="text-sm font-semibold text-ink truncate">
             {review.author}
           </div>
-          <div className="text-xs text-[#EDE6DA]/55 truncate">
+          <div className="text-xs text-muted truncate">
             {review.handleOrSource[locale]}
           </div>
         </div>
@@ -73,7 +73,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
         <button
           type="button"
           onClick={() => onOpenStory(matchingStory)}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-xs text-[#EDE6DA]/90 hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line text-xs text-ink hover:text-ink transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           <img
             src={review.storyScreenshot}
@@ -82,7 +82,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             onError={(e) => {
               e.currentTarget.style.display = "none";
             }}
-            className="w-5 h-7 rounded object-cover border border-white/20"
+            className="w-5 h-7 rounded object-cover border border-line"
           />
           <span>{dict.reviews.viewOriginalScreenshot}</span>
           <ArrowUpRight className="w-3.5 h-3.5 opacity-75" />

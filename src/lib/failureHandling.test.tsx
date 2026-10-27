@@ -64,6 +64,10 @@ before(async () => {
 
   ({ createRoot } = await import("react-dom/client"));
   ({ App } = await import("../app/App"));
+  await Promise.all([
+    import("../components/pages/NotFoundPage"),
+    import("../components/pages/DestinationPage"),
+  ]);
 });
 
 afterEach(async () => {
@@ -76,12 +80,6 @@ afterEach(async () => {
 });
 
 after(async () => {
-  try {
-    const { default: gsap } = await import("gsap");
-    const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-    ScrollTrigger.killAll();
-    gsap.ticker.sleep();
-  } catch {}
   dom.window.close();
 });
 

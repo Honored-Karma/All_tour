@@ -22,23 +22,23 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({
   return (
     <div
       aria-label="Scene progress"
-      className="liquid-glass-subtle rounded-2xl px-4 py-3 flex items-center gap-4 text-xs text-white/85"
+      className="liquid-glass-subtle rounded-2xl px-4 py-3 flex items-center gap-4 text-xs text-muted"
     >
       <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
-        <span className="font-mono tabular-nums font-semibold text-white">
+        <span className="font-mono tabular-nums font-semibold text-ink">
           {activeDest.indexLabel}
         </span>
-        <span aria-hidden="true" className="text-white/35">
+        <span aria-hidden="true" className="text-muted">
           ·
         </span>
-        <span className="uppercase tracking-wider text-white/90 font-medium">
+        <span className="uppercase tracking-wider text-ink font-medium">
           {activeDest.name[locale]}
         </span>
       </div>
 
-      <div className="w-24 sm:w-32 h-1 bg-white/15 rounded-full overflow-hidden shrink-0">
+      <div className="w-24 sm:w-32 h-1 bg-surface-soft rounded-full overflow-hidden shrink-0">
         <div
-          className="h-full bg-white transition-transform duration-150 ease-out origin-left"
+          className="h-full bg-surface transition-transform duration-150 ease-out origin-left"
           style={{
             transform: `scaleX(${Math.max(0.06, overallProgress).toFixed(3)})`,
           }}
@@ -56,8 +56,8 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({
               aria-label={`${dest.stepNumber} ${dest.name[locale]}`}
               className={`w-6 h-6 rounded-md text-[11px] font-mono tabular-nums transition-colors cursor-pointer ${
                 active
-                  ? "bg-white/25 text-white font-semibold"
-                  : "text-white/55 hover:text-white hover:bg-white/10"
+                  ? "bg-surface-soft text-ink font-semibold"
+                  : "text-muted hover:text-ink hover:bg-surface-hover"
               }`}
             >
               {dest.stepNumber}
@@ -66,7 +66,7 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({
         })}
       </div>
 
-      <span className="font-mono tabular-nums text-[11px] text-white/65 hidden md:inline-block w-9 text-right">
+      <span className="font-mono tabular-nums text-[11px] text-muted hidden md:inline-block w-9 text-right">
         {percentage}%
       </span>
     </div>

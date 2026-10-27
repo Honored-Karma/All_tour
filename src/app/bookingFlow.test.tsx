@@ -5,6 +5,7 @@ import type { Root } from "react-dom/client";
 import { JSDOM } from "jsdom";
 import { ru } from "../i18n/ru";
 import { tours } from "../data/tours";
+import { formatPlanDates } from "../lib/tourPlanner";
 
 let dom: JSDOM;
 let root: Root | undefined;
@@ -42,6 +43,15 @@ before(async () => {
   };
   ({ createRoot } = await import("react-dom/client"));
   ({ App } = await import("./App"));
+  await Promise.all([
+    import("../components/pages/HomePage"),
+    import("../components/pages/ToursCatalogPage"),
+    import("../components/pages/DestinationPage"),
+    import("../components/pages/TourDetailPage"),
+    import("../components/pages/ContactsPage"),
+    import("../components/pages/AboutPage"),
+    import("../components/pages/FAQPage"),
+  ]);
 });
 
 afterEach(async () => {
@@ -50,11 +60,6 @@ afterEach(async () => {
 });
 
 after(async () => {
-  const { default: gsap } = await import("gsap");
-  const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-  ScrollTrigger.killAll();
-  ScrollTrigger.disable();
-  gsap.ticker.sleep();
   dom.window.close();
 });
 
@@ -67,6 +72,14 @@ async function mount(path: string, favorites: string[] = []) {
   scrolledIds.length = 0;
   root = createRoot(document.getElementById("root")!);
   await act(async () => { root!.render(<App />); });
+  await settleRoute();
+}
+
+async function settleRoute() {
+  for (let attempt = 0; document.querySelector('main [role="status"]') && attempt < 100; attempt++) {
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
+  }
+  assert.equal(document.querySelector('main [role="status"]'), null, "Route should finish loading");
 }
 
 function button(text: string, scope: ParentNode = document): HTMLButtonElement {
@@ -77,6 +90,7 @@ function button(text: string, scope: ParentNode = document): HTMLButtonElement {
 
 async function click(element: HTMLElement) {
   await act(async () => { element.click(); });
+  await settleRoute();
 }
 
 function field(id: string): HTMLInputElement | HTMLSelectElement {
@@ -106,7 +120,7 @@ test("catalog booking selects the correct country and tour, surviving a reload",
   const card = document.querySelector('[data-testid="tour-card-china-content-3d"]');
   assert.ok(card);
   await click(button(ru.tours.card.bookBtn, card));
-  assert.equal(dom.window.location.pathname, "/");
+  assert.equal(dom.window.location.pathname, "/contacts");
   assert.equal(dom.window.location.hash, "#booking");
   assert.equal(field("booking-country").value, "china");
   assert.equal(field("booking-tour").value, "china-content-3d");
@@ -119,15 +133,25 @@ test("catalog booking selects the correct country and tour, surviving a reload",
   assert.equal(field("booking-tour").value, "china-content-3d");
 });
 
-test("home preview closes and opens the booking form with the chosen tour", async () => {
+test("home introduces the service without duplicating dedicated pages", async () => {
   await mount("/");
-  const card = document.querySelector('[data-testid="tour-card-china-urumqi-6d"]');
-  assert.ok(card);
-  await click(button(ru.tours.card.detailsBtn, card));
-  const dialog = document.querySelector('[role="dialog"]');
-  assert.ok(dialog);
-  await click(button(ru.tours.modal.fillFormCta, dialog));
-  assert.equal(document.querySelector('[role="dialog"]'), null);
+  assert.ok(document.getElementById("service"));
+  assert.ok(document.querySelector('main a[href="/tours"]'));
+  assert.ok(document.querySelector('main a[href="/about"]'));
+  assert.equal(document.querySelector('[data-testid^="tour-card-"]'), null);
+  assert.equal(document.querySelector("main form"), null);
+  assert.equal(document.getElementById("journey"), null);
+  assert.equal(document.getElementById("faq"), null);
+  assert.equal(document.querySelector("main blockquote"), null);
+  await click(button(ru.hero.exploreCta));
+  assert.ok(scrolledIds.includes("tour-planner"));
+});
+
+test("legacy home booking links redirect to contacts with the chosen tour", async () => {
+  await mount("/?lang=ru&tour=china-urumqi#booking");
+  assert.equal(dom.window.location.pathname, "/contacts");
+  assert.equal(dom.window.location.hash, "#booking");
+  assert.equal(new URLSearchParams(dom.window.location.search).get("tour"), "china-urumqi");
   assert.equal(field("booking-tour").value, "china-urumqi-6d");
   assert.equal(field("booking-country").value, "china");
 });
@@ -156,15 +180,63 @@ test("favorites link filters the catalog and toggling updates the URL", async ()
   assert.equal(document.querySelectorAll('[data-testid^="tour-card-"]').length, tours.length);
 });
 
-test("Smart Tour Finder renders only confirmed matching durations", async () => {
+test("visible trip planner filters the same catalog by confirmed durations", async () => {
   await mount("/tours");
-  await click(button("Открыть Smart Tour Finder"));
+  assert.ok(document.getElementById("tour-planner"));
+  await click(button(ru.planner.settings));
   await fill("finder-duration", "multi");
-  const finder = document.getElementById("finder-duration")!.closest(".liquid-glass-panel");
-  assert.ok(finder);
-  assert.match(finder.textContent!, /Подходит: 1 предложений/);
-  assert.equal(finder.querySelectorAll('a[href="/tours/china-urumqi"]').length, 1);
-  assert.equal(finder.querySelectorAll('a[href="/tours/china-content-3d"]').length, 0);
+  assert.equal(document.querySelectorAll('[data-testid^="tour-card-"]').length, 1);
+  assert.ok(document.querySelector('[data-testid="tour-card-china-urumqi-6d"]'));
+  assert.equal(new URLSearchParams(dom.window.location.search).get("duration"), "multi");
+});
+
+test("home planner transfers selection into the catalog, details and booking message", async () => {
+  await mount("/");
+  await fill("finder-destination", "china");
+  await fill("finder-tour", "china-content-3d");
+  await fill("finder-travelers", "7");
+  await click(button(ru.planner.showTours));
+  assert.equal(dom.window.location.pathname, "/tours");
+  assert.equal(dom.window.location.hash, "#tour-results");
+  assert.equal(document.querySelectorAll('[data-testid^="tour-card-"]').length, 1);
+  assert.equal(field("finder-tour").value, "china-content-3d");
+  const details = document.querySelector('[data-testid="tour-card-china-content-3d"] a') as HTMLAnchorElement;
+  assert.ok(details);
+  await click(details);
+  assert.equal(field("booking-travelers").value, "7");
+  await fill("booking-name", "Алия");
+  await fill("booking-date", "Июнь 2099");
+  await submitBooking();
+  assert.match(new URL(openedWhatsAppUrls[0]).searchParams.get("text")!, /Количество человек: 7/);
+});
+
+test("calendar selects a departure period, preserves focus and transfers dates to booking", async () => {
+  await mount("/tours?destination=china&from=2099-06-12&travelers=4");
+  await click(document.querySelector('.planner-date-trigger') as HTMLElement);
+  const endDay = document.querySelector('[data-day="2099-06-18"]') as HTMLElement;
+  assert.ok(endDay);
+  await click(endDay);
+  assert.equal(new URLSearchParams(dom.window.location.search).get("to"), "2099-06-18");
+  const flexible = document.querySelector('#travel-calendar input[type="checkbox"]') as HTMLElement;
+  await click(flexible);
+  const inquiry = document.querySelector('.planner-consultation') as HTMLAnchorElement;
+  const text = new URL(inquiry.href).searchParams.get("text")!;
+  const desiredDate = formatPlanDates({ from: "2099-06-12", to: "2099-06-18", flexible: true }, "ru");
+  assert.ok(text.includes(desiredDate));
+  assert.match(text, /Количество человек: 4/);
+  await act(async () => { endDay.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true })); });
+  assert.equal(document.getElementById("travel-calendar"), null);
+  assert.equal(document.activeElement, document.querySelector('.planner-date-trigger'));
+  const card = document.querySelector('[data-testid="tour-card-china-content-3d"]')!;
+  await click(button(ru.tours.card.bookBtn, card));
+  assert.equal(field("booking-date").value, desiredDate);
+  assert.equal(field("booking-travelers").value, "4");
+  const path = dom.window.location.pathname + dom.window.location.search + dom.window.location.hash;
+  await act(async () => { root!.unmount(); });
+  root = undefined;
+  await mount(path);
+  assert.equal(field("booking-date").value, desiredDate);
+  assert.equal(field("booking-travelers").value, "4");
 });
 
 test("tour detail form rejects incomplete requests and formats the chosen tour", async () => {
@@ -269,7 +341,7 @@ test("lang, favorites, tour and hash parameters are fully preserved when languag
   await click(langBtn);
 
   assert.equal(document.documentElement.lang, "ru");
-  assert.equal(dom.window.location.pathname, "/");
+  assert.equal(dom.window.location.pathname, "/contacts");
   assert.equal(dom.window.location.hash, "#booking");
 
   const params = new URLSearchParams(dom.window.location.search);

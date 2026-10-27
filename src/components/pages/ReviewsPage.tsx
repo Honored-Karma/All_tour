@@ -61,16 +61,16 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
   return (
     <div
       data-testid="reviews-dedicated-page"
-      className="min-h-screen bg-[#0d1518] text-[#EDE6DA]"
+      className="min-h-screen bg-canvas text-ink"
     >
       {/* Hero Banner of the Dedicated Reviews Page */}
-      <section className="relative isolate pt-32 pb-20 px-4 sm:px-8 overflow-hidden border-b border-white/10">
+      <section className="relative isolate pt-32 pb-20 px-4 sm:px-8 overflow-hidden border-b border-line">
         <div
           style={{
             background:
               "radial-gradient(circle at 65% 30%, #2a637c 0%, #163E54 48%, #0d1518 100%)",
           }}
-          className="absolute inset-0 -z-20"
+          className="absolute inset-0 -z-20 opacity-25"
         >
           <img
             src="/media/editorial-travel.jpg"
@@ -82,7 +82,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
           className="absolute inset-0 -z-10 pointer-events-none"
           style={{
             background:
-              "linear-gradient(180deg, rgba(13, 21, 24, 0.72) 0%, rgba(13, 21, 24, 0.65) 55%, rgba(13, 21, 24, 1) 100%)",
+              "linear-gradient(180deg, rgba(248, 246, 241, 0.85) 0%, rgba(248, 246, 241, 0.75) 55%, rgba(248, 246, 241, 1) 100%)",
           }}
         />
 
@@ -91,27 +91,27 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
             type="button"
             data-testid="reviews-back-home-btn"
             onClick={handleBack}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#6BAFB3] hover:text-white transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-sage-ink hover:text-ink transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{dict.reviews.backToHome}</span>
           </button>
 
           <div className="max-w-3xl space-y-4">
-            <p className="editorial-kicker text-[#6BAFB3]">
+            <p className="editorial-kicker text-sage-ink">
               {dict.reviews.pageKicker}
             </p>
-            <h1 className="headline-section font-bold text-white">
+            <h1 className="headline-section font-bold text-ink">
               {dict.reviews.pageTitle}
             </h1>
-            <p className="text-base sm:text-lg text-[#EDE6DA]/85 leading-relaxed">
+            <p className="text-base sm:text-lg text-muted leading-relaxed">
               {dict.reviews.pageSubtitle}
             </p>
           </div>
 
           {/* Unboxed Team & Guides Attribution Bar */}
-          <div className="pt-2 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-[#EDE6DA]/75 border-t border-white/15 pt-5">
-            <span className="text-white font-medium">
+          <div className="pt-2 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-muted border-t border-line pt-5">
+            <span className="text-ink font-medium">
               {dict.reviews.guidesLabel}
             </span>
             <span>{dict.reviews.guidesList}</span>
@@ -120,13 +120,13 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
       </section>
 
       {/* Original Story Screenshots Showcase */}
-      <section className="py-16 px-4 sm:px-8 bg-[#101a1e] border-b border-white/10">
+      <section className="py-16 px-4 sm:px-8 bg-surface border-b border-line">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="space-y-2">
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
               {dict.reviews.storiesStripTitle}
             </h2>
-            <p className="text-sm text-[#EDE6DA]/70">
+            <p className="text-sm text-muted">
               {dict.reviews.storiesStripSubtitle}
             </p>
           </div>
@@ -137,7 +137,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
                 key={story.id}
                 type="button"
                 onClick={() => onOpenStory(story)}
-                className="group relative aspect-[9/16] rounded-2xl overflow-hidden border border-white/20 bg-black/50 text-left cursor-pointer shadow-xl focus-visible:outline-2 focus-visible:outline-[#6BAFB3]"
+                className="photo-surface group relative aspect-[9/16] rounded-2xl overflow-hidden border border-line bg-black/50 text-left cursor-pointer shadow-xl focus-visible:outline-2 focus-visible:outline-sage"
               >
                 <img
                   src={story.image}
@@ -151,15 +151,15 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
                       "linear-gradient(180deg, rgba(9, 15, 18, 0.78) 0%, rgba(9, 15, 18, 0.15) 26%, transparent 45%, rgba(9, 15, 18, 0.95) 100%)",
                   }}
                 />
-                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between px-2.5 py-1 rounded-lg bg-black/55 backdrop-blur-md border border-white/10 text-[11px] font-mono text-white/95">
+                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between px-2.5 py-1 rounded-lg bg-black/55 backdrop-blur-md border border-line text-[11px] font-mono text-ink">
                   <span>0{idx + 1} / 05</span>
-                  <span className="text-[#6BAFB3]">{locale === "kz" ? "АШУ ↗" : "ОТКРЫТЬ ↗"}</span>
+                  <span className="text-sage-ink">{locale === "kz" ? "АШУ ↗" : "ОТКРЫТЬ ↗"}</span>
                 </div>
                 <div className="absolute bottom-3.5 left-3.5 right-3.5 space-y-1">
-                  <div className="text-xs sm:text-sm font-semibold text-white leading-snug">
+                  <div className="text-xs sm:text-sm font-semibold text-ink leading-snug">
                     {story.title[locale]}
                   </div>
-                  <div className="text-[11px] text-[#EDE6DA]/75">
+                  <div className="text-[11px] text-muted">
                     {story.guides[locale]}
                   </div>
                 </div>
@@ -173,7 +173,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
       <section className="py-20 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto space-y-10">
           {/* Interactive Category Filter Control */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-6">
             <div
               role="group"
               aria-label="Filter reviews by category"
@@ -190,8 +190,8 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
                     onClick={() => setSelectedCategory(btn.id)}
                     className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       active
-                        ? "bg-[#EDE6DA] text-[#111d22] font-semibold shadow-sm"
-                        : "text-[#EDE6DA]/75 hover:text-white hover:bg-white/5"
+                        ? "bg-surface text-ink font-semibold shadow-sm"
+                        : "text-muted hover:text-ink hover:bg-surface-hover"
                     }`}
                   >
                     {btn.label}
@@ -200,7 +200,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
               })}
             </div>
 
-            <span className="text-xs font-mono text-[#EDE6DA]/60 tabular-nums">
+            <span className="text-xs font-mono text-muted tabular-nums">
               {filteredReviews.length} / {realReviews.length}
             </span>
           </div>
@@ -225,10 +225,10 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
           <div className="pt-10">
             <GlassPanel className="p-8 sm:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
               <div className="space-y-2 max-w-2xl">
-                <h3 className="font-display text-xl sm:text-2xl font-bold text-white">
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-ink">
                   {dict.reviews.ctaTitle}
                 </h3>
-                <p className="text-sm sm:text-base text-[#EDE6DA]/80 leading-relaxed">
+                <p className="text-sm sm:text-base text-muted leading-relaxed">
                   {dict.reviews.ctaSubtitle}
                 </p>
               </div>

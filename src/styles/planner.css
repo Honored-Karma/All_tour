@@ -1,0 +1,605 @@
+.home-planner-wrap {
+  padding: 4rem 2rem 5rem;
+  background: var(--color-canvas);
+}
+.tour-planner {
+  --planner-accent: var(--palette-sage);
+  position: relative;
+  scroll-margin-top: 7rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--palette-line);
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 36px -28px rgb(58 72 53 / 18%);
+  background: var(--color-sage-soft);
+  color: var(--palette-ink);
+}
+.planner-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.planner-kicker {
+  margin-bottom: 0.7rem;
+  color: var(--planner-accent);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+.planner-heading h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 650;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+}
+.planner-subtitle {
+  margin-top: 0.8rem;
+  max-width: 38rem;
+  color: var(--palette-muted);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+.planner-departure {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.35rem;
+  color: var(--palette-muted);
+  font-size: 0.75rem;
+}
+.planner-fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.3fr 0.85fr;
+  gap: 0.6rem;
+  align-items: start;
+}
+.planner-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 5.25rem;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #b7c3b3;
+  border-radius: 0.8rem;
+  background: var(--color-surface);
+  text-align: left;
+  transition:
+    border-color 160ms,
+    background 160ms;
+}
+.planner-field > svg {
+  flex-shrink: 0;
+  color: var(--planner-accent);
+}
+.planner-field > span,
+.planner-field > div {
+  min-width: 0;
+  flex: 1;
+}
+.planner-field-label {
+  display: block;
+  color: var(--palette-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  margin-bottom: 0.35rem;
+}
+.planner-field select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0.15rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--palette-ink);
+  font-size: 0.875rem;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.planner-field option,
+.planner-settings option {
+  color: var(--palette-ink);
+  background: var(--color-surface);
+}
+.planner-field:focus-within,
+.planner-field:hover {
+  border-color: var(--palette-sage);
+}
+.planner-field-value {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 550;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.planner-date-trigger {
+  cursor: pointer;
+}
+.planner-date-trigger > svg:last-child {
+  width: 1rem;
+  color: var(--palette-muted);
+}
+.planner-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+}
+.planner-stepper button {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.4rem;
+  color: var(--palette-ink);
+  cursor: pointer;
+}
+.planner-stepper button:hover {
+  background: var(--palette-line);
+}
+.planner-stepper input {
+  width: 2.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--palette-ink);
+  font-size: 1rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.planner-stepper input::-webkit-inner-spin-button {
+  appearance: none;
+}
+.planner-options-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+.planner-settings-toggle,
+.planner-text-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.1rem;
+  font-size: 0.75rem;
+  color: var(--palette-muted);
+  cursor: pointer;
+}
+.planner-settings-toggle:hover,
+.planner-text-button:hover {
+  color: var(--palette-ink);
+}
+.planner-settings-toggle svg {
+  color: var(--planner-accent);
+}
+.planner-settings-count {
+  display: grid;
+  place-items: center;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.3rem;
+  background: var(--palette-sage);
+  color: var(--color-on-accent);
+  font-weight: 700;
+}
+.planner-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 0 1.5rem;
+}
+.planner-settings label,
+.travel-date-inputs label {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--palette-muted);
+  font-size: 0.75rem;
+}
+.planner-settings select,
+.travel-date-inputs input {
+  min-width: 0;
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #b7c3b3;
+  border-radius: 0.6rem;
+  color: var(--palette-ink);
+  background: var(--color-surface);
+  font-size: 0.875rem;
+  color-scheme: light;
+}
+.planner-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--palette-line);
+}
+.planner-date-note {
+  display: flex;
+  align-items: start;
+  gap: 0.65rem;
+  max-width: 34rem;
+  color: var(--palette-muted);
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.planner-note-dot {
+  flex-shrink: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-top: 0.45rem;
+  border-radius: 50%;
+  background: var(--planner-accent);
+}
+.planner-submit-area {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+.planner-result-count {
+  max-width: 11rem;
+  color: var(--palette-muted);
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+.planner-submit {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 3.5rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 0.7rem;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 0.875rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 160ms,
+    transform 160ms;
+}
+.planner-submit:hover {
+  background: var(--color-accent-hover);
+}
+.planner-submit:active {
+  transform: translateY(1px);
+}
+.planner-consultation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  margin-top: 0.8rem;
+  color: var(--palette-muted);
+  font-size: 0.75rem;
+}
+.planner-consultation:hover {
+  color: var(--palette-ink);
+}
+.tour-planner :is(button, input, select, a):focus-visible {
+  outline: 2px solid var(--palette-sage);
+  outline-offset: 4px;
+}
+.tour-planner button:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+.travel-date-control {
+  display: contents;
+}
+.planner-date-trigger {
+  grid-column: 3;
+  grid-row: 1;
+}
+.planner-travelers {
+  grid-column: 4;
+  grid-row: 1;
+}
+.travel-calendar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  scroll-margin-top: 7rem;
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 1.5rem;
+  border-block: 1px solid #b7c3b3;
+  background: var(--color-sage-soft);
+}
+.travel-calendar-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.travel-calendar-heading h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.travel-calendar-heading p {
+  max-width: 28rem;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--palette-muted);
+  line-height: 1.7;
+}
+.travel-month-navigation {
+  display: flex;
+  gap: 0.35rem;
+}
+.travel-month-navigation button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid #b7c3b3;
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+.travel-month-navigation button:hover:not(:disabled) {
+  background: var(--palette-line);
+}
+.travel-date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.travel-months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 48rem;
+  margin: 1.5rem auto 0;
+}
+.travel-month h4 {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.travel-weekdays,
+.travel-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+}
+.travel-weekdays {
+  margin-bottom: 0.5rem;
+  font-size: 0.65rem;
+  color: var(--palette-muted);
+}
+.travel-days {
+  row-gap: 0.2rem;
+}
+.travel-days button {
+  min-height: 2.65rem;
+  width: 100%;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.travel-days button:hover:not(:disabled) {
+  background: var(--palette-line);
+}
+.travel-days button[aria-current="date"] {
+  text-decoration: underline;
+  text-underline-offset: 0.35rem;
+}
+.travel-days button.is-in-range {
+  border-radius: 0;
+  background: rgb(78 108 92 / 10%);
+}
+.travel-days button.is-selected,
+.travel-days button.is-selected:hover {
+  background: var(--palette-sage);
+  color: var(--color-on-accent);
+  font-weight: 700;
+}
+.travel-calendar-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--palette-line);
+}
+.planner-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: var(--palette-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.planner-checkbox input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--palette-sage);
+}
+.travel-calendar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.planner-calendar-done {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  background: var(--palette-sage);
+  color: var(--color-on-accent);
+  font-weight: 600;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+@media (max-width: 70rem) {
+  .planner-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .planner-date-trigger {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .planner-travelers {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .travel-calendar {
+    grid-row: 3;
+  }
+  .planner-footer {
+    align-items: start;
+  }
+  .planner-submit-area {
+    flex-direction: column;
+    align-items: end;
+    gap: 0.6rem;
+  }
+  .planner-travelers {
+    min-height: 5.5rem;
+  }
+}
+@media (max-width: 42rem) {
+  .home-planner-wrap {
+    padding: 2.5rem 1rem 3rem;
+  }
+  .planner-heading {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .planner-kicker {
+    font-size: 0.6rem;
+  }
+  .planner-departure {
+    font-size: 0.7rem;
+  }
+  .planner-fields {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  .planner-date-trigger {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .planner-travelers {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .planner-fields:has(.is-open) .planner-travelers {
+    grid-row: 5;
+  }
+  .planner-field {
+    padding: 0.8rem 1rem;
+    min-height: 5.2rem;
+  }
+  .planner-field select,
+  .planner-field-value,
+  .planner-settings select,
+  .travel-date-inputs input {
+    font-size: 1rem;
+  }
+  .planner-stepper {
+    justify-content: start;
+    gap: 0.9rem;
+  }
+  .planner-stepper button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    background: var(--palette-line);
+  }
+  .planner-travelers {
+    align-items: start;
+  }
+  .planner-travelers > svg {
+    margin-top: 0.2rem;
+  }
+  .planner-settings {
+    grid-template-columns: 1fr;
+  }
+  .planner-footer {
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+  }
+  .planner-submit-area {
+    width: 100%;
+    align-items: start;
+    gap: 0.75rem;
+  }
+  .planner-result-count {
+    max-width: none;
+  }
+  .planner-submit {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .planner-consultation {
+    margin-top: 0.75rem;
+  }
+  .travel-calendar {
+    grid-row: 4;
+    margin-top: 0.25rem;
+    padding: 1rem 0;
+    width: 100%;
+  }
+  .travel-calendar-heading {
+    flex-wrap: wrap;
+  }
+  .travel-month-navigation {
+    margin-left: auto;
+  }
+  .travel-months {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .travel-month-secondary {
+    display: none;
+  }
+  .travel-days button {
+    min-height: 2.75rem;
+  }
+  .travel-date-inputs {
+    gap: 0.5rem;
+  }
+  .travel-date-inputs input {
+    padding: 0.6rem 0.35rem;
+  }
+  .travel-date-inputs label {
+    font-size: 0.65rem;
+  }
+  .travel-calendar-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+@media (forced-colors: active) {
+  .tour-planner :is(button, input, select, a):focus-visible {
+    outline-color: Highlight;
+  }
+  .travel-days button.is-selected {
+    outline: 2px solid Highlight;
+  }
+}

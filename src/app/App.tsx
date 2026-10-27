@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
-import type { DestinationId } from "../data/destinations";
 import type { Tour } from "../data/tours";
 import type { StoryScreenshotAsset } from "../data/reviews";
 import { getDictionary } from "../i18n";
@@ -112,8 +111,6 @@ function AppContent() {
     [location.pathname, location.search, location.hash, navigate]
   );
 
-  const [activeDestinationId, setActiveDestinationId] =
-    useState<DestinationId>("kyrgyzstan");
   const [activeTourDetails, setActiveTourDetails] = useState<Tour | null>(null);
   const [activeStoryModal, setActiveStoryModal] =
     useState<StoryScreenshotAsset | null>(null);
@@ -126,7 +123,7 @@ function AppContent() {
   const { favorites, toggleFavorite, favoritesCount } = useFavorites();
   const { comparedTours, toggleCompare } = useTourComparison(3);
 
-  useSyncSceneTheme(activeDestinationId);
+  useSyncSceneTheme("kyrgyzstan");
 
   useSEO({
     pathname: location.pathname,
@@ -140,14 +137,19 @@ function AppContent() {
       const search = new URLSearchParams();
       search.set("lang", locale);
       search.set("tour", tour.slug);
-      navigate({ pathname: "/", search: `?${search.toString()}`, hash: "#booking" });
+      const current = new URLSearchParams(location.search);
+      for (const key of ["from", "to", "travelers", "flexible"]) {
+        const value = current.get(key);
+        if (value) search.set(key, value);
+      }
+      navigate({ pathname: "/contacts", search: `?${search.toString()}`, hash: "#booking" });
     },
-    [navigate, locale]
+    [navigate, locale, location.search]
   );
 
   return (
     <CurrencyProvider locale={locale}>
-      <div className="min-h-screen flex flex-col bg-[#0a1013] text-[#EDE6DA] relative selection:bg-red-500/30 selection:text-white">
+      <div className="min-h-screen flex flex-col bg-canvas text-ink relative selection:bg-accent/30 selection:text-ink">
         {/* Scroll Progress Bar at the very top */}
         <ScrollProgressIndicator />
 
@@ -186,15 +188,6 @@ function AppContent() {
                       dict={dict}
                       locale={locale}
                       reducedMotion={reducedMotion}
-                      activeDestinationId={activeDestinationId}
-                      onActiveDestinationChange={setActiveDestinationId}
-                      onBookTour={handleBookTour}
-                      onOpenTourDetails={(tour) => setActiveTourDetails(tour)}
-                      onOpenStory={(story) => setActiveStoryModal(story)}
-                      favorites={favorites}
-                      onToggleFavorite={toggleFavorite}
-                      comparedTours={comparedTours}
-                      onToggleCompare={toggleCompare}
                     />
                   }
                 />

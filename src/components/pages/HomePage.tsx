@@ -1,113 +1,86 @@
-import React, { useState } from "react";
-import type { DestinationId } from "../../data/destinations";
-import { getTourBySlug, type Tour } from "../../data/tours";
-import type { StoryScreenshotAsset } from "../../data/reviews";
+import React from "react";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import { ArrowUpRight, Compass, MapPin } from "lucide-react";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
 import { Hero } from "../sections/Hero";
-import { Journey } from "../sections/Journey";
-import { FeaturedTours } from "../sections/FeaturedTours";
-import { WhyTravel } from "../sections/WhyTravel";
-import { ReviewsShowcase } from "../sections/ReviewsShowcase";
-import { HowToBook } from "../sections/HowToBook";
-import { FAQ } from "../sections/FAQ";
+import { SmartTourFinder } from "../tours/SmartTourFinder";
 import { FinalCTA } from "../sections/FinalCTA";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { destinations } from "../../data/destinations";
 
 interface HomePageProps {
   dict: Dictionary;
   locale: Locale;
   reducedMotion: boolean;
-  activeDestinationId: DestinationId;
-  onActiveDestinationChange: (id: DestinationId) => void;
-  onBookTour: (tour: Tour) => void;
-  onOpenTourDetails: (tour: Tour) => void;
-  onOpenStory: (story: StoryScreenshotAsset) => void;
-  favorites: string[];
-  onToggleFavorite: (id: string) => void;
-  comparedTours: string[];
-  onToggleCompare: (id: string) => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({
-  dict,
-  locale,
-  reducedMotion,
-  activeDestinationId,
-  onActiveDestinationChange,
-  onBookTour,
-  onOpenTourDetails,
-  onOpenStory,
-  favorites,
-  onToggleFavorite,
-  comparedTours,
-  onToggleCompare,
-}) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const bookingTourSlug = searchParams.get("tour");
-  const bookingTour = bookingTourSlug ? getTourBySlug(bookingTourSlug) : undefined;
-  const [selectedFilter, setSelectedFilter] = useState<"all" | DestinationId>("all");
-  const [cursorVisible, setCursorVisible] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
+export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion }) => {
+  const { search, hash } = useLocation();
 
-  const handleExploreCountryTours = (destId: DestinationId) => {
-    navigate(`/destinations/${destId}`);
-  };
-
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  // Keep previously shared booking links working after moving the form.
+  if (new URLSearchParams(search).has("tour") || hash === "#booking" || hash === "#how-to-book") {
+    return <Navigate to={{ pathname: "/contacts", search, hash: "#booking" }} replace />;
+  }
 
   return (
-    <>
+    <div className="home-page">
       <Hero
         dict={dict}
         locale={locale}
         reducedMotion={reducedMotion}
-        onExploreClick={() => scrollToSection("journey")}
+        onExploreClick={() => document.getElementById("tour-planner")?.scrollIntoView({ behavior: reducedMotion ? "instant" : "smooth" })}
       />
 
-      <Journey
-        dict={dict}
-        locale={locale}
-        reducedMotion={reducedMotion}
-        activeDestinationId={activeDestinationId}
-        onActiveDestinationChange={onActiveDestinationChange}
-        onExploreCountryTours={handleExploreCountryTours}
-      />
+      <div className="home-planner-wrap">
+        <div className="max-w-7xl mx-auto"><SmartTourFinder dict={dict} locale={locale} /></div>
+      </div>
 
-      <FeaturedTours
-        dict={dict}
-        locale={locale}
-        selectedFilter={selectedFilter}
-        onFilterChange={setSelectedFilter}
-        onOpenTourDetails={onOpenTourDetails}
-        onBookTour={onBookTour}
-        onCursorEnter={() => setCursorVisible(true)}
-        onCursorLeave={() => setCursorVisible(false)}
-      />
-
-      <WhyTravel dict={dict} />
-
-      <ReviewsShowcase
-        dict={dict}
-        locale={locale}
-        onOpenReviewsPage={() => navigate("/reviews")}
-        onOpenStory={onOpenStory}
-      />
-
-      <HowToBook
-        dict={dict}
-        locale={locale}
-        preselectedDestinationId={activeDestinationId}
-        preselectedTour={bookingTour}
-      />
-
-      <FAQ dict={dict} />
+      <section id="service" aria-labelledby="service-title" className="home-editorial scroll-mt-24">
+        <div className="home-editorial-grid">
+          <div className="space-y-6">
+            <p className="editorial-kicker text-sage-ink">{dict.homeIntro.kicker}</p>
+            <h2 id="service-title" className="headline-section font-bold text-ink">{dict.homeIntro.title}</h2>
+            <p className="max-w-xl text-base sm:text-lg text-muted leading-relaxed">{dict.homeIntro.description}</p>
+            <div className="flex flex-wrap items-center gap-6 pt-2">
+              <Link to="/tours" className="liquid-glass-button-primary inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sage">
+                {dict.homeIntro.toursCta}<ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+              <Link to="/about" className="inline-flex items-center gap-2 py-3 text-sm font-medium text-muted hover:text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sage">
+                {dict.homeIntro.aboutCta}<ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+          <div className="destination-sketches">
+            <p className="destination-sketches-label"><Compass size={18} strokeWidth={1.5} aria-hidden="true" />{dict.homeAtmosphere.destinationsLabel}</p>
+            <div className="destination-sketches-photos">
+              {destinations.map((destination) => (
+                <Link key={destination.id} to={`/destinations/${destination.id}`} className="destination-sketch">
+                  <div className="destination-sketch-image">
+                    <picture>
+                      <source srcSet={destination.media.heroImage.replace(/\.jpg$/, ".webp")} type="image/webp" />
+                      <img src={destination.media.heroImage} alt={destination.tagline[locale]} loading="lazy" decoding="async" />
+                    </picture>
+                    <ArrowUpRight size={18} aria-hidden="true" />
+                  </div>
+                  <span className="destination-sketch-name">{destination.name[locale]}</span>
+                  <span className="destination-sketch-coordinate">{destination.coordinates}</span>
+                </Link>
+              ))}
+            </div>
+            <p className="destination-sketches-origin"><MapPin size={14} aria-hidden="true" />{dict.homeAtmosphere.departure}</p>
+          </div>
+        </div>
+        <dl className="home-service-notes">
+            {dict.homeIntro.items.map((item) => (
+              <div key={item.title}>
+                <dt className="font-display text-lg font-semibold text-ink">{item.title}</dt>
+                <dd className="max-w-lg text-sm text-muted leading-relaxed">{item.text}</dd>
+              </div>
+            ))}
+        </dl>
+      </section>
 
       <FinalCTA dict={dict} locale={locale} reducedMotion={reducedMotion} />
-    </>
+    </div>
   );
 };

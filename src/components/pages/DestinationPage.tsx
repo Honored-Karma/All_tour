@@ -40,23 +40,23 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
     return (
       <div
         data-testid="destination-not-found"
-        className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-36 pb-20 px-4 sm:px-8 flex flex-col items-center justify-center text-center"
+        className="min-h-screen bg-canvas text-ink pt-36 pb-20 px-4 sm:px-8 flex flex-col items-center justify-center text-center"
       >
         <GlassPanel className="max-w-md w-full p-8 sm:p-10 flex flex-col items-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-16 h-16 rounded-2xl bg-sand/10 border border-sand/20 flex items-center justify-center text-sand">
             <Compass className="w-8 h-8" aria-hidden="true" />
           </div>
           <div className="space-y-2">
-            <h1 className="font-display text-2xl font-bold text-white tracking-tight">
+            <h1 className="font-display text-2xl font-bold text-ink tracking-tight">
               {dict.destinationNotFound.title}
             </h1>
-            <p className="text-sm text-[#EDE6DA]/70 font-sans leading-relaxed">
+            <p className="text-sm text-muted font-sans leading-relaxed">
               {dict.destinationNotFound.description}
             </p>
           </div>
           <Link
             to="/tours"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-semibold transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line text-ink text-xs font-semibold transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>{dict.destinationNotFound.backToCatalog}</span>
@@ -88,23 +88,23 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
   });
 
   return (
-    <div className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-28 pb-24 px-4 sm:px-8">
+    <div className="min-h-screen bg-canvas text-ink pt-28 pb-24 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Top Back Link */}
-        <div className="border-b border-white/10 pb-4 flex items-center justify-between">
+        <div className="border-b border-line pb-4 flex items-center justify-between">
           <Link
             to="/tours"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm text-[#0786c7] hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm text-sage-ink hover:text-ink transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{dp.allDestinations}</span>
           </Link>
 
-          <span className="font-mono text-xs text-white/50">{dest.coordinates}</span>
+          <span className="font-mono text-xs text-muted">{dest.coordinates}</span>
         </div>
 
         {/* Hero Section of the Country */}
-        <div className="relative rounded-3xl overflow-hidden min-h-[380px] sm:min-h-[460px] flex flex-col justify-end p-6 sm:p-12 border border-white/15 shadow-2xl">
+        <div className="photo-surface relative rounded-3xl overflow-hidden min-h-[380px] sm:min-h-[460px] flex flex-col justify-end p-6 sm:p-12 border border-line shadow-2xl">
           <picture>
             <source
               media="(max-width: 640px)"
@@ -138,16 +138,16 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
           />
 
           <div className="relative z-10 space-y-4 max-w-3xl">
-            <span className="editorial-kicker text-[#6BAFB3]">
+            <span className="editorial-kicker text-sage-ink">
               {dest.kicker[locale]}
             </span>
-            <h1 className="headline-country font-bold text-white tracking-tight">
+            <h1 className="headline-country font-bold text-ink tracking-tight">
               {dest.name[locale]}
             </h1>
-            <p className="text-base sm:text-xl text-white font-medium leading-snug">
+            <p className="text-base sm:text-xl text-ink font-medium leading-snug">
               «{dest.tagline[locale]}»
             </p>
-            <p className="text-xs sm:text-sm text-[#EDE6DA]/85 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted max-w-2xl leading-relaxed">
               {dest.atmosphereNote[locale]}
             </p>
 
@@ -166,36 +166,36 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
         </div>
 
         {/* Unboxed Key Highlights */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-5 rounded-2xl bg-white/[0.04] border border-white/10 text-xs sm:text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-5 rounded-2xl bg-surface-soft border border-line text-xs sm:text-sm">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-white/60">{dp.highlightsLabel}</span>
+            <span className="text-muted">{dp.highlightsLabel}</span>
             {dest.highlights[locale].map((hl, idx) => (
               <React.Fragment key={idx}>
-                {idx > 0 && <span aria-hidden="true" className="text-white/30">·</span>}
-                <span className="font-medium text-white">{hl}</span>
+                {idx > 0 && <span aria-hidden="true" className="text-muted">·</span>}
+                <span className="font-medium text-ink">{hl}</span>
               </React.Fragment>
             ))}
           </div>
 
-          <span className="font-mono text-xs text-[#EDE6DA]/60">
+          <span className="font-mono text-xs text-muted">
             {dest.elevationOrRegion[locale]}
           </span>
         </div>
 
         {/* Available Tours in This Destination */}
-        <section className="space-y-6 pt-4 border-t border-white/10">
+        <section className="space-y-6 pt-4 border-t border-line">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-1">
-              <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
                 {dp.toursTitle.replace("{name}", dest.name[locale])}
               </h2>
-              <p className="text-xs sm:text-sm text-[#EDE6DA]/70">
+              <p className="text-xs sm:text-sm text-muted">
                 {validId === "china"
                   ? dp.toursSubtitleChina
                   : dp.toursSubtitleDefault}
               </p>
             </div>
-            <span className="text-xs font-mono text-[#EDE6DA]/60">
+            <span className="text-xs font-mono text-muted">
               {dp.availableCount.replace("{count}", String(countryTours.length))}
             </span>
           </div>
@@ -220,7 +220,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
 
         {/* Original Brand Posters & Photos Gallery */}
         {galleryItems.length > 0 && (
-          <section className="space-y-4 pt-6 border-t border-white/10">
+          <section className="space-y-4 pt-6 border-t border-line">
             <MediaGallery
               items={galleryItems}
               locale={locale}
@@ -231,13 +231,13 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
         )}
 
         {/* Conversion & Consultation Panel */}
-        <section className="pt-4 border-t border-white/10">
+        <section className="pt-4 border-t border-line">
           <GlassPanel className="p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
-              <h3 className="font-display text-lg sm:text-xl font-bold text-white">
+              <h3 className="font-display text-lg sm:text-xl font-bold text-ink">
                 {dp.consultationTitle.replace("{name}", dest.name[locale])}
               </h3>
-              <p className="text-sm text-[#EDE6DA]/75 leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 {dp.consultationText}
               </p>
             </div>

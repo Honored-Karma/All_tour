@@ -14,10 +14,10 @@ export const PageFallback: React.FC<PageFallbackProps> = ({ locale = "ru" }) => 
       role="status"
       aria-live="polite"
       aria-label={label}
-      className="min-h-[70vh] w-full flex flex-col items-center justify-center p-8 bg-[#0a1013]"
+      className="min-h-[70vh] w-full flex flex-col items-center justify-center p-8 bg-canvas"
     >
-      <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-[#6BAFB3] animate-spin mb-4" />
-      <span className="text-sm font-medium tracking-wider uppercase text-[#EDE6DA]/70 font-sans">
+      <div className="w-10 h-10 rounded-full border-2 border-line border-t-sage animate-spin mb-4" />
+      <span className="text-sm font-medium tracking-wider uppercase text-muted font-sans">
         {label}
       </span>
     </div>

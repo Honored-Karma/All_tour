@@ -24,7 +24,7 @@ export const ScrollProgressIndicator: React.FC = () => {
       className="fixed top-0 left-0 right-0 h-[2px] z-50 pointer-events-none bg-transparent"
     >
       <div
-        className="h-full bg-gradient-to-r from-[#0786c7] via-[#6BAFB3] to-[#d11d35] transition-all duration-150 ease-out"
+        className="h-full bg-sage transition-all duration-150 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

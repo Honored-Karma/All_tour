@@ -23,12 +23,16 @@ export const PriceDisplay: React.FC<PriceDisplayProps> = ({
 }) => {
   const isKgs = priceResult.currencyCode === "KGS";
 
+  if (priceResult.rawConverted === null) {
+    return <span className={`font-medium text-ink ${className}`}>{priceResult.formatted}</span>;
+  }
+
   return (
     <span
-      className={`inline-flex items-center gap-1 font-mono tabular-nums whitespace-nowrap text-white ${className}`}
+      className={`inline-flex items-center gap-1 font-mono tabular-nums whitespace-nowrap text-ink ${className}`}
     >
       {priceResult.prefix && (
-        <span className="text-white/60 text-[0.85em] font-normal select-none">
+        <span className="text-muted text-[0.85em] font-normal select-none">
           {priceResult.prefix.trim()}
         </span>
       )}
@@ -39,7 +43,7 @@ export const PriceDisplay: React.FC<PriceDisplayProps> = ({
 
       {isKgs ? (
         <span
-          className="inline-flex items-center ml-0.5 shrink-0 select-none text-white"
+          className="inline-flex items-center ml-0.5 shrink-0 select-none text-ink"
           title="сом"
         >
           <SomIcon className="w-[0.78em] h-[1.1em] shrink-0" />

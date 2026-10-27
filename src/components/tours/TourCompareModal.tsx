@@ -42,7 +42,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
     >
       {comparedTours.length === 0 ? (
         <div className="py-12 text-center space-y-3">
-          <p className="text-sm text-[#EDE6DA]/70">
+          <p className="text-sm text-muted">
             {t.compare.emptyNotice}
           </p>
         </div>
@@ -60,18 +60,18 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
               return (
                 <div
                   key={tour.id}
-                  className="p-5 rounded-2xl bg-white/5 border border-white/12 flex flex-col justify-between space-y-4"
+                  className="p-5 rounded-2xl bg-surface-soft border border-line flex flex-col justify-between space-y-4"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#0786c7]">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-sage-ink">
                         {dest.name[locale]}
                       </span>
                       <button
                         type="button"
                         onClick={() => onRemoveTour(tour.id)}
                         aria-label={t.compare.removeAria}
-                        className="text-white/40 hover:text-white transition-colors cursor-pointer"
+                        className="text-muted hover:text-ink transition-colors cursor-pointer"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -83,21 +83,21 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                       className="w-full aspect-[16/10] object-cover rounded-xl"
                     />
 
-                    <h4 className="font-display text-base font-semibold text-white leading-snug">
+                    <h4 className="font-display text-base font-semibold text-ink leading-snug">
                       {tour.title[locale]}
                     </h4>
 
                     {/* Criteria */}
-                    <div className="space-y-2 text-xs border-t border-white/10 pt-3">
+                    <div className="space-y-2 text-xs border-t border-line pt-3">
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">{t.compare.duration}</span>
-                        <span className="text-white font-medium">
+                        <span className="text-muted block">{t.compare.duration}</span>
+                        <span className="text-ink font-medium">
                           {tour.duration ? tour.duration[locale] : t.compare.onRequest}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">{t.compare.format}</span>
-                        <span className="text-white font-medium">
+                        <span className="text-muted block">{t.compare.format}</span>
+                        <span className="text-ink font-medium">
                           {tour.tourType === "content_tour"
                             ? t.compare.types.content_tour
                             : tour.tourType === "mountain_nature"
@@ -106,7 +106,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                         </span>
                       </div>
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">{t.compare.priceRef}</span>
+                        <span className="text-muted block">{t.compare.priceRef}</span>
                         {(() => {
                           const pRes = formatTourPrice(
                             tour,
@@ -116,10 +116,10 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                             <div>
                               <PriceDisplay
                                 priceResult={pRes}
-                                className="text-white font-mono font-bold text-sm"
+                                className="text-ink font-mono font-bold text-sm"
                               />
                               {pRes.note && (
-                                <span className="text-[10px] text-[#EDE6DA]/60 font-sans block leading-tight mt-0.5">
+                                <span className="text-[10px] text-muted font-sans block leading-tight mt-0.5">
                                   ({pRes.note})
                                 </span>
                               )}
@@ -128,11 +128,11 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                         })()}
                       </div>
                       <div>
-                        <span className="text-[#EDE6DA]/50 block">{t.compare.included}</span>
-                        <ul className="text-[11px] text-[#EDE6DA]/80 space-y-1 mt-1">
+                        <span className="text-muted block">{t.compare.included}</span>
+                        <ul className="text-[11px] text-muted space-y-1 mt-1">
                           {tour.included[locale].slice(0, 3).map((item, idx) => (
                             <li key={idx} className="flex items-start gap-1.5">
-                              <Check className="w-3 h-3 text-[#0786c7] shrink-0 mt-0.5" />
+                              <Check className="w-3 h-3 text-sage-ink shrink-0 mt-0.5" />
                               <span className="line-clamp-2">{item}</span>
                             </li>
                           ))}
@@ -141,11 +141,11 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-white/10 space-y-2">
+                  <div className="pt-3 border-t border-line space-y-2">
                     <Link
                       to={`/tours/${tour.slug}`}
                       onClick={onClose}
-                      className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white text-center font-medium block transition-colors"
+                      className="w-full py-2 rounded-xl bg-surface-soft hover:bg-surface-hover text-xs text-ink text-center font-medium block transition-colors"
                     >
                       {t.compare.detailsLink}
                     </Link>

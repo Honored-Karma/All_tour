@@ -52,27 +52,27 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
   const whatsappUrl = buildWhatsAppBookingUrl({ locale });
 
   return (
-    <div className="min-h-screen bg-[#0d1518] text-[#EDE6DA] pt-28 pb-24 px-4 sm:px-8">
+    <div className="min-h-screen bg-canvas text-ink pt-28 pb-24 px-4 sm:px-8">
       <div className="max-w-4xl mx-auto space-y-12">
         {/* Header */}
-        <div className="space-y-4 border-b border-white/10 pb-8">
-          <p className="editorial-kicker text-[#0786c7]">{fp.kicker}</p>
-          <h1 className="headline-section font-bold text-white tracking-tight">
+        <div className="space-y-4 border-b border-line pb-8">
+          <p className="editorial-kicker text-sage-ink">{fp.kicker}</p>
+          <h1 className="headline-section font-bold text-ink tracking-tight">
             {fp.title}
           </h1>
-          <p className="text-base sm:text-lg text-[#EDE6DA]/85 leading-relaxed">
+          <p className="text-base sm:text-lg text-muted leading-relaxed">
             {fp.subtitle}
           </p>
 
           {/* Search Box */}
           <div className="relative pt-2">
-            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={fp.searchPlaceholder}
-              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white/6 border border-white/15 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#0786c7]"
+              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-surface-soft border border-line text-sm text-ink placeholder-muted focus:outline-none focus:border-sage"
             />
           </div>
         </div>
@@ -86,8 +86,8 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer border ${
                 selectedCategory === cat.id
-                  ? "bg-[#0786c7] text-white border-[#0786c7]"
-                  : "bg-white/5 border-white/12 text-[#EDE6DA]/75 hover:bg-white/10"
+                  ? "bg-sage text-on-accent border-sage"
+                  : "bg-surface-soft border-line text-muted hover:bg-surface-hover"
               }`}
             >
               {cat.label}
@@ -98,7 +98,7 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
         {/* Accordion List */}
         <div className="space-y-3">
           {filteredItems.length === 0 ? (
-            <GlassPanel className="p-8 text-center text-sm text-white/70">
+            <GlassPanel className="p-8 text-center text-sm text-muted">
               {fp.emptyResult}
             </GlassPanel>
           ) : (
@@ -109,7 +109,7 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-white/12 bg-white/[0.03] overflow-hidden transition-colors"
+                  className="rounded-2xl border border-line bg-surface-soft overflow-hidden transition-colors"
                 >
                   <button
                     id={buttonId}
@@ -117,13 +117,13 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
                     aria-expanded={isOpen}
                     aria-controls={panelId}
                     onClick={() => toggleItem(idx)}
-                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-white/[0.02]"
+                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-surface-hover"
                   >
-                    <span className="font-display text-sm sm:text-base font-semibold text-white leading-snug">
+                    <span className="font-display text-sm sm:text-base font-semibold text-ink leading-snug">
                       {item.q}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-[#0786c7] shrink-0 transition-transform duration-200 ${
+                      className={`w-5 h-5 text-sage-ink shrink-0 transition-transform duration-200 ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     />
@@ -134,7 +134,7 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
                       id={panelId}
                       role="region"
                       aria-labelledby={buttonId}
-                      className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-[#EDE6DA]/80 leading-relaxed border-t border-white/5"
+                      className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-muted leading-relaxed border-t border-line"
                     >
                       {item.a}
                     </div>
@@ -146,13 +146,13 @@ export const FAQPage: React.FC<FAQPageProps> = ({ dict, locale }) => {
         </div>
 
         {/* Bottom Contact Help */}
-        <div className="pt-4 border-t border-white/10">
+        <div className="pt-4 border-t border-line">
           <GlassPanel className="p-8 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="space-y-1">
-              <h3 className="font-display text-base sm:text-lg font-bold text-white">
+              <h3 className="font-display text-base sm:text-lg font-bold text-ink">
                 {fp.unresolvedTitle}
               </h3>
-              <p className="text-xs sm:text-sm text-[#EDE6DA]/75">
+              <p className="text-xs sm:text-sm text-muted">
                 {fp.unresolvedText}
               </p>
             </div>

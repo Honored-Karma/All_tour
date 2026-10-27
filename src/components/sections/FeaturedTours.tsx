@@ -41,17 +41,17 @@ export const FeaturedTours: React.FC<FeaturedToursProps> = ({
   return (
     <section
       id="tours"
-      className="relative py-24 sm:py-32 px-4 sm:px-8 bg-[#0d1518] border-t border-white/10"
+      className="relative py-24 sm:py-32 px-4 sm:px-8 bg-canvas border-t border-line"
     >
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Editorial Header & Interactive Filter Segmented Control */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-white/10 pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-line pb-8">
           <div className="space-y-3 max-w-2xl">
-            <p className="editorial-kicker text-[#6BAFB3]">{dict.tours.kicker}</p>
-            <h2 className="headline-section font-bold text-white">
+            <p className="editorial-kicker text-sage-ink">{dict.tours.kicker}</p>
+            <h2 className="headline-section font-bold text-ink">
               {dict.tours.title}
             </h2>
-            <p className="text-base text-[#EDE6DA]/75 leading-relaxed">
+            <p className="text-base text-muted leading-relaxed">
               {dict.tours.subtitle}
             </p>
           </div>
@@ -73,8 +73,8 @@ export const FeaturedTours: React.FC<FeaturedToursProps> = ({
                   onClick={() => onFilterChange(option.id)}
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                     active
-                      ? "bg-[#EDE6DA] text-[#111d22] font-semibold shadow-sm"
-                      : "text-[#EDE6DA]/75 hover:text-white hover:bg-white/5"
+                      ? "bg-surface text-ink font-semibold shadow-sm"
+                      : "text-muted hover:text-ink hover:bg-surface-hover"
                   }`}
                 >
                   {option.label}
