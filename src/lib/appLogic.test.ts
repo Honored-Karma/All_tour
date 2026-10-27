@@ -287,3 +287,129 @@ test("Montserrat typography & Kazakh character glyph support in font file", asyn
   assert.ok(!indexHtml.includes("Unbounded"), "index.html must not contain Unbounded");
 });
 
+test("Montserrat WOFF2 delivery & complete Kazakh character glyph support in generated WOFF2 files", async () => {
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  // @ts-expect-error wawoff2 lacks bundled type definitions
+  const wawoff2Mod = await import("wawoff2");
+  const wawoff2 = (wawoff2Mod as any).default || wawoff2Mod;
+
+  const woff2RegularPath = path.resolve("public/fonts/montserrat/Montserrat-Variable.woff2");
+  const woff2ItalicPath = path.resolve("public/fonts/montserrat/Montserrat-Italic-Variable.woff2");
+
+  assert.ok(fs.existsSync(woff2RegularPath), "Montserrat-Variable.woff2 must exist in public/fonts/montserrat");
+  assert.ok(fs.existsSync(woff2ItalicPath), "Montserrat-Italic-Variable.woff2 must exist in public/fonts/montserrat");
+
+  const kazakhChars = ["Ә", "ә", "Ғ", "ғ", "Қ", "қ", "Ң", "ң", "Ө", "ө", "Ү", "ү", "Ұ", "ұ", "Һ", "һ", "І", "і", "₸"];
+  const testSentences = [
+    "«Әсем әлемге саяхат. Ғажайып Қытай, Қырғызстан және Грузия. Кең дүниені бірге көрейік! Үлкен әсер, ұмытылмас сапар. Һәм жаңа мүмкіндіктер. Ізгі тілектер!»",
+    "«ALL TOUR — 25 000 ₸ · 1–3 күн»",
+  ];
+
+  for (const fontFile of [woff2RegularPath, woff2ItalicPath]) {
+    const woff2Buf = fs.readFileSync(fontFile);
+    const buf = Buffer.from(await wawoff2.decompress(woff2Buf));
+
+    // Verify format and numTables
+    const numTables = buf.readUInt16BE(4);
+    assert.ok(numTables > 0, "Decompressed WOFF2 must contain valid SFNT tables");
+
+    let cmapOffset = 0;
+    let fvarOffset = 0;
+    for (let i = 0; i < numTables; i++) {
+      const tag = buf.toString("ascii", 12 + i * 16, 16 + i * 16);
+      if (tag === "cmap") cmapOffset = buf.readUInt32BE(12 + i * 16 + 8);
+      if (tag === "fvar") fvarOffset = buf.readUInt32BE(12 + i * 16 + 8);
+    }
+    assert.ok(cmapOffset > 0, "cmap table must exist in WOFF2");
+    assert.ok(fvarOffset > 0, "fvar variable font table must exist in WOFF2");
+
+    // Check variable weight axis range 100-900
+    const axesArrayOffset = fvarOffset + buf.readUInt16BE(fvarOffset + 4);
+    const axisTag = buf.toString("ascii", axesArrayOffset, axesArrayOffset + 4);
+    const minWght = buf.readInt32BE(axesArrayOffset + 4) / 65536;
+    const maxWght = buf.readInt32BE(axesArrayOffset + 12) / 65536;
+    assert.equal(axisTag, "wght", "Must contain wght variable axis");
+    assert.equal(minWght, 100, "Min weight must be 100");
+    assert.equal(maxWght, 900, "Max weight must be 900");
+
+    // Check Format 4 cmap subtable
+    const subtableCount = buf.readUInt16BE(cmapOffset + 2);
+    let chosenOffset = 0;
+    for (let i = 0; i < subtableCount; i++) {
+      const offset = cmapOffset + buf.readUInt32BE(cmapOffset + 4 + i * 8 + 4);
+      if (buf.readUInt16BE(offset) === 4) {
+        chosenOffset = offset;
+        break;
+      }
+    }
+    assert.ok(chosenOffset > 0, "Format 4 subtable must exist in WOFF2 font");
+
+    const segCountX2 = buf.readUInt16BE(chosenOffset + 6);
+    const segCount = segCountX2 / 2;
+    const endCodeOffset = chosenOffset + 14;
+    const startCodeOffset = endCodeOffset + segCountX2 + 2;
+    const idDeltaOffset = startCodeOffset + segCountX2;
+    const idRangeOffsetOffset = idDeltaOffset + segCountX2;
+
+    function hasGlyph(ch: string): boolean {
+      const code = ch.codePointAt(0)!;
+      let found = 0;
+      for (let s = 0; s < segCount; s++) {
+        const start = buf.readUInt16BE(startCodeOffset + s * 2);
+        const end = buf.readUInt16BE(endCodeOffset + s * 2);
+        if (code >= start && code <= end) {
+          const delta = buf.readInt16BE(idDeltaOffset + s * 2);
+          const rangeOffset = buf.readUInt16BE(idRangeOffsetOffset + s * 2);
+          if (rangeOffset === 0) {
+            found = (code + delta) & 0xffff;
+          } else {
+            const glyphAddr = idRangeOffsetOffset + s * 2 + rangeOffset + (code - start) * 2;
+            found = buf.readUInt16BE(glyphAddr);
+            if (found !== 0) found = (found + delta) & 0xffff;
+          }
+          break;
+        }
+      }
+      return found > 0;
+    }
+
+    for (const ch of kazakhChars) {
+      assert.ok(
+        hasGlyph(ch),
+        `Character ${ch} (U+${ch.codePointAt(0)!.toString(16).toUpperCase()}) must be present in ${path.basename(fontFile)}`
+      );
+    }
+
+    for (const sentence of testSentences) {
+      for (const ch of sentence) {
+        assert.ok(
+          hasGlyph(ch),
+          `Character '${ch}' in test sentence must be present in ${path.basename(fontFile)}`
+        );
+      }
+    }
+  }
+
+  // Preload and CSS declarations verification
+  const indexHtml = fs.readFileSync(path.resolve("index.html"), "utf8");
+  const globalsCss = fs.readFileSync(path.resolve("src/styles/globals.css"), "utf8");
+
+  assert.ok(
+    indexHtml.includes('href="/fonts/montserrat/Montserrat-Variable.woff2" as="font" type="font/woff2"'),
+    "index.html must preload Montserrat-Variable.woff2 with font/woff2 type"
+  );
+  assert.ok(
+    !indexHtml.includes("Montserrat-Italic-Variable.woff2"),
+    "index.html must not preload italic font to avoid unnecessary initial bytes"
+  );
+  assert.ok(
+    !indexHtml.includes("Montserrat-Variable.ttf"),
+    "index.html must not preload TTF when WOFF2 is available"
+  );
+  assert.ok(
+    globalsCss.includes("format('woff2-variations')") || globalsCss.includes("format('woff2')"),
+    "globals.css must specify WOFF2 formats"
+  );
+});
+
