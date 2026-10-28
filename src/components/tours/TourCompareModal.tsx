@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React from "react";
 import { X, Check, ArrowRight, MessageCircle } from "lucide-react";
 import { tours, type Tour } from "../../data/tours";
@@ -83,7 +84,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                     </div>
 
                     <img
-                      src={tour.image}
+                      src={tour.image} srcSet={responsiveMedia(tour.image)} sizes="(min-width: 768px) 260px, calc(100vw - 96px)" loading="lazy" decoding="async"
                       alt={tour.title[locale]}
                       className="w-full aspect-[16/10] object-cover rounded-xl"
                     />

@@ -22,7 +22,7 @@ export function UpcomingDepartures({ dict, locale, tourId }: { dict: Dictionary;
         {upcoming.map((departure) => {
           const tour = tours.find((item) => item.id === departure.tourId);
           if (!tour) return null;
-          const params = new URLSearchParams({ lang: locale, tour: tour.slug, from: departure.startDate, to: departure.startDate, travelers: "2" });
+          const params = new URLSearchParams({ lang: locale, tour: tour.slug, from: departure.startDate, to: departure.endDate, travelers: "2" });
           return (
             <article key={departure.id} className="rounded-2xl border border-line bg-surface p-5 sm:p-6 space-y-4">
               <p className="flex gap-2 items-center text-sm font-semibold text-sage-ink"><CalendarDays size={18} aria-hidden="true" />{formatDepartureDates(departure, locale)}</p>

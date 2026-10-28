@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React, { useState } from "react";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import {
@@ -73,7 +74,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
           className="absolute inset-0 -z-20 opacity-25"
         >
           <img
-            src="/media/editorial-travel.jpg"
+            src="/media/editorial-travel.webp" srcSet={responsiveMedia("/media/editorial-travel.jpg")} sizes="100vw" fetchPriority="high" decoding="async"
             alt="Mountain Panorama"
             className="w-full h-full object-cover opacity-45"
           />
@@ -140,7 +141,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({
                 className="photo-surface group relative aspect-[9/16] rounded-2xl overflow-hidden border border-line bg-black/50 text-left cursor-pointer shadow-xl focus-visible:outline-2 focus-visible:outline-sage"
               >
                 <img
-                  src={story.image}
+                  src={story.image} loading="lazy" decoding="async"
                   alt={story.title[locale]}
                   className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                 />

@@ -25,10 +25,12 @@ import { useSEO } from "../hooks/useSEO";
 import { rememberCampaign, trackEvent } from "../lib/analytics";
 import { getTourBySlug } from "../data/tours";
 
+import { LazyModal } from "../components/common/LazyModal";
+
 // Modals
-import { TourDetails } from "../components/tours/TourDetails";
-import { StoryLightboxModal } from "../components/reviews/StoryLightboxModal";
-import { TourCompareModal } from "../components/tours/TourCompareModal";
+const TourDetails = lazy(() => import("../components/tours/TourDetails").then(m => ({ default: m.TourDetails })));
+const StoryLightboxModal = lazy(() => import("../components/reviews/StoryLightboxModal").then(m => ({ default: m.StoryLightboxModal })));
+const TourCompareModal = lazy(() => import("../components/tours/TourCompareModal").then(m => ({ default: m.TourCompareModal })));
 
 // Route views - code split at route boundaries
 const HomePage = lazy(() =>
@@ -320,6 +322,7 @@ function AppContent() {
         <Footer dict={dict} locale={locale} />
 
         {/* Modals & Overlays */}
+        {activeTourDetails && <LazyModal dict={dict} locale={locale} onClose={() => setActiveTourDetails(null)}>
         <TourDetails
           tour={activeTourDetails}
           onClose={() => setActiveTourDetails(null)}
@@ -327,7 +330,9 @@ function AppContent() {
           dict={dict}
           locale={locale}
         />
+        </LazyModal>}
 
+        {activeStoryModal && <LazyModal dict={dict} onClose={() => setActiveStoryModal(null)}>
         <StoryLightboxModal
           activeStory={activeStoryModal}
           onClose={() => setActiveStoryModal(null)}
@@ -335,7 +340,9 @@ function AppContent() {
           dict={dict}
           locale={locale}
         />
+        </LazyModal>}
 
+        {compareModalOpen && <LazyModal dict={dict} onClose={() => setCompareModalOpen(false)}>
         <TourCompareModal
           open={compareModalOpen}
           onClose={() => setCompareModalOpen(false)}
@@ -346,9 +353,10 @@ function AppContent() {
           limitReached={compareLimitReached}
           search={location.search.slice(1)}
         />
+        </LazyModal>}
 
-        {comparedTours.length > 0 && !compareModalOpen && (
-          <div className="fixed bottom-24 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-4 max-w-[calc(100vw-1.5rem)] z-40 flex items-center gap-2 rounded-2xl bg-surface border border-line p-2 shadow-lg">
+        {comparedTours.length > 0 && (
+          <div hidden={compareModalOpen} style={compareModalOpen ? { display: "none" } : undefined} className="fixed bottom-24 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-4 max-w-[calc(100vw-1.5rem)] z-40 flex items-center gap-2 rounded-2xl bg-surface border border-line p-2 shadow-lg">
             <button type="button" onClick={() => { setCompareLimitReached(false); setCompareModalOpen(true); }} className="min-h-11 min-w-0 flex-1 px-3 rounded-xl bg-sage text-on-accent text-sm font-semibold">
               {dict.compare.open.replace("{count}", String(comparedTours.length))}
             </button>

@@ -18,7 +18,7 @@ interface HeroProps {
   onExploreClick: () => void;
 }
 
-function SceneImage({ index, alt }: { index: number; alt: string }) {
+function SceneImage({ index, alt, onReady }: { index: number; alt: string; onReady?: () => void }) {
   const [failed, setFailed] = useState(false);
   const scene = scenes[index];
   return (
@@ -32,8 +32,15 @@ function SceneImage({ index, alt }: { index: number; alt: string }) {
             loading="eager"
             fetchPriority={index === 0 ? "high" : "low"}
             decoding="async"
+            width={1600}
+            height={1000}
             style={{ objectPosition: scene.position }}
-            onError={() => setFailed(true)}
+            onLoad={(event) => {
+              const image = event.currentTarget;
+              if (image.decode) void image.decode().catch(() => {}).then(() => onReady?.());
+              else onReady?.();
+            }}
+            onError={() => { setFailed(true); onReady?.(); }}
           />
         </picture>
       )}
@@ -49,7 +56,16 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
   const captionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const progressRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [activeScene, setActiveScene] = useState(-1);
+  const readyScenes = useRef([true, false, false]);
+  const refreshImages = useRef<() => void>(() => {});
   const copy = dict.heroPlaces;
+  const [loadedScenes, setLoadedScenes] = useState(1);
+  const loadedCount = useRef(1);
+  const prepareScenes = (count: number) => {
+    if (count <= loadedCount.current) return;
+    loadedCount.current = count;
+    setLoadedScenes(count);
+  };
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -65,6 +81,8 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
       frame = 0;
       const progress = clamp((window.scrollY - start) / distance);
       stage.style.setProperty("--cloud-play-state", progress < 1 && !document.hidden ? "running" : "paused");
+      // Start the next request before its crossfade, including restored scroll positions.
+      prepareScenes(progress >= 0.50 ? 3 : progress >= 0.17 ? 2 : 1);
       const exit = clamp((progress - 0.88) / 0.12);
       const softExit = exit * exit * (3 - 2 * exit);
       stage.style.setProperty("--hero-exit", String(softExit));
@@ -82,7 +100,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
         const caption = captionRefs.current[index];
         const bar = progressRefs.current[index];
         const entry = index === 0 ? 0 : index === 1 ? 0.29 : 0.62;
-        const reveal = index === 0 ? 1 : clamp((progress - entry) / 0.13);
+        const reveal = index === 0 ? 1 : readyScenes.current[index] ? clamp((progress - entry) / 0.13) : 0;
         const local = clamp((progress - entry) / 0.38);
         if (image) {
           image.style.opacity = String(reveal);
@@ -101,6 +119,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
     const queueUpdate = () => {
       if (!frame) frame = window.requestAnimationFrame(update);
     };
+    refreshImages.current = queueUpdate;
     const measure = () => {
       start = section.getBoundingClientRect().top + window.scrollY;
       distance = Math.max(1, section.offsetHeight - stage.offsetHeight);
@@ -113,6 +132,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
     const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measure);
     observer?.observe(section);
     return () => {
+      refreshImages.current = () => {};
       window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", queueUpdate);
       window.removeEventListener("resize", measure);
@@ -122,6 +142,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
   }, [reducedMotion]);
 
   const selectScene = (index: number) => {
+    prepareScenes(Math.min(3, index + 2));
     if (reducedMotion) {
       setActiveScene(index);
       return;
@@ -171,7 +192,11 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
     return (
       <section id="hero" className="photo-surface hero-static" aria-label={copy.label}>
         <div className="hero-static-intro">
-          <SceneImage key={scenes[sceneIndex].id} index={sceneIndex} alt={copy.scenes[sceneIndex].alt} />
+          <SceneImage key={scenes[sceneIndex].id} index={sceneIndex} alt={copy.scenes[sceneIndex].alt} onReady={() => prepareScenes(Math.min(3, sceneIndex + 2))} />
+          {scenes.map((scene, index) => index > sceneIndex && index < loadedScenes && <picture key={scene.id} style={{ display: "none" }} aria-hidden="true">
+            <source srcSet={responsiveMedia(scene.image + ".jpg")} sizes="100vw" type="image/webp" />
+            <img src={scene.image + ".jpg"} alt="" fetchPriority="low" decoding="async" />
+          </picture>)}
           <div className="hero-cinema-scrim" />
           {activeScene === -1 && <div className="hero-static-content">{introduction}</div>}
           <div className="hero-place-caption" aria-live="polite" aria-atomic="true">
@@ -191,8 +216,8 @@ export const Hero: React.FC<HeroProps> = ({ dict, locale, reducedMotion, onExplo
       <div ref={stageRef} className="hero-cinema-stage">
         <div className="hero-cinema-images" aria-hidden="true">
           {scenes.map((scene, index) => (
-            <div key={scene.id} ref={(node) => { imageRefs.current[index] = node; }} className={`hero-cinema-image hero-cinema-image-${index}`}>
-              <SceneImage index={index} alt="" />
+            <div key={scene.id} ref={(node) => { imageRefs.current[index] = node; }} className={`hero-cinema-image hero-cinema-image-${index}`} style={{ transition: "opacity 180ms ease-out" }}>
+              {index < loadedScenes && <SceneImage index={index} alt="" onReady={() => { readyScenes.current[index] = true; refreshImages.current(); }} />}
             </div>
           ))}
         </div>
