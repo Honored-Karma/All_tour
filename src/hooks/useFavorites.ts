@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { tours } from "../data/tours";
 
 const STORAGE_KEY = "all_tour_favorites_v1";
 
@@ -7,7 +8,8 @@ export function useFavorites() {
     if (typeof window === "undefined") return [];
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
+      const parsed: unknown = stored ? JSON.parse(stored) : [];
+      return Array.isArray(parsed) ? [...new Set(parsed.filter((id) => typeof id === "string" && tours.some((tour) => tour.id === id)))] : [];
     } catch {
       return [];
     }

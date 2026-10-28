@@ -7,6 +7,7 @@ import type { Locale } from "../../lib/whatsapp";
 import { destinations } from "../../data/destinations";
 import { GlassModal } from "../glass/GlassModal";
 import { BrandLogo } from "./BrandLogo";
+import { isLeadCaptureEnabled } from "../../lib/leads";
 
 interface FooterProps {
   dict: Dictionary;
@@ -31,7 +32,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-line">
         {/* Brand Column */}
         <div className="md:col-span-5 space-y-4">
-          <BrandLogo variant="footer" />
+          <BrandLogo locale={locale} variant="footer" />
           <p className="text-sm text-muted max-w-sm leading-relaxed font-sans">
             {dict.footer.tagline}
           </p>
@@ -165,7 +166,8 @@ export const Footer: React.FC<FooterProps> = ({ dict, locale }) => {
           <h3 className="font-display text-lg text-ink font-bold">
             {dict.footer.privacyModalTitle}
           </h3>
-          <p>{dict.footer.privacyModalText}</p>
+          <p>{isLeadCaptureEnabled() ? dict.bookingForm.captureNotice : dict.footer.privacyModalText}</p>
+          <p>{dict.bookingForm.preferenceNotice}</p>
         </div>
       </GlassModal>
     </footer>

@@ -9,3 +9,5 @@ coverage/
 .playwright-cli/
 .cache/
 .aistudio/
+public/media/optimized/
+.data/

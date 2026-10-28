@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { X, ArrowUpRight, Heart, MessageCircle, Sparkles } from "lucide-react";
 import type { Dictionary } from "../../i18n/ru";
@@ -7,6 +7,7 @@ import { BUSINESS_CONFIG } from "../../config/business";
 import { destinations } from "../../data/destinations";
 import { BrandLogo } from "./BrandLogo";
 import { CurrencySwitcher } from "../common/CurrencySwitcher";
+import { useDialog } from "../../hooks/useDialog";
 
 interface MobileNavigationProps {
   open: boolean;
@@ -25,26 +26,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
   onToggleLocale,
   favoritesCount = 0,
 }) => {
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, onClose]);
-
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(open, dialogRef, onClose);
 
   if (!open) return null;
 
@@ -57,6 +40,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label={dict.nav.mobileMenuOpen}
@@ -64,7 +49,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
     >
       {/* Top Bar: Brand Logo & Controls */}
       <div className="flex items-center justify-between border-b border-line pb-4">
-        <BrandLogo variant="mobile" onClick={onClose} />
+        <BrandLogo locale={locale} variant="mobile" onClick={onClose} />
         <div className="flex items-center gap-2">
           <CurrencySwitcher locale={locale} variant="header" />
           <button

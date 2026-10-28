@@ -4,6 +4,7 @@ import React, { act } from "react";
 import type { Root } from "react-dom/client";
 import { JSDOM } from "jsdom";
 import { ru } from "../i18n/ru";
+import { kz } from "../i18n/kz";
 import { tours } from "../data/tours";
 import { formatPlanDates } from "../lib/tourPlanner";
 
@@ -76,10 +77,10 @@ async function mount(path: string, favorites: string[] = []) {
 }
 
 async function settleRoute() {
-  for (let attempt = 0; document.querySelector('main [role="status"]') && attempt < 100; attempt++) {
+  for (let attempt = 0; document.querySelector('[data-testid="route-loading"]') && attempt < 100; attempt++) {
     await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
   }
-  assert.equal(document.querySelector('main [role="status"]'), null, "Route should finish loading");
+  assert.equal(!!document.querySelector('[data-testid="route-loading"]'), false, "Route should finish loading");
 }
 
 function button(text: string, scope: ParentNode = document): HTMLButtonElement {
@@ -424,7 +425,7 @@ test("booking carries current language parameter to booking form in both KZ and 
   // Test KZ mode
   await mount("/tours?lang=kz");
   const cardKZ = document.querySelector('[data-testid="tour-card-china-content-3d"]')!;
-  const bookBtnKZ = Array.from(cardKZ.querySelectorAll("button")).find(b => b.textContent?.includes("Брондау"))!;
+  const bookBtnKZ = Array.from(cardKZ.querySelectorAll("button")).find(b => b.textContent?.includes(kz.tours.card.bookBtn))!;
   await click(bookBtnKZ);
   assert.match(dom.window.location.search, /lang=kz/);
   assert.match(dom.window.location.search, /tour=china-content-3d/);
@@ -433,9 +434,92 @@ test("booking carries current language parameter to booking form in both KZ and 
   // Test RU mode
   await mount("/tours?lang=ru");
   const cardRU = document.querySelector('[data-testid="tour-card-china-content-3d"]')!;
-  const bookBtnRU = Array.from(cardRU.querySelectorAll("button")).find(b => b.textContent?.includes("Забронировать"))!;
+  const bookBtnRU = Array.from(cardRU.querySelectorAll("button")).find(b => b.textContent?.includes(ru.tours.card.bookBtn))!;
   await click(bookBtnRU);
   assert.match(dom.window.location.search, /lang=ru/);
   assert.match(dom.window.location.search, /tour=china-content-3d/);
   assert.equal(dom.window.location.hash, "#booking");
+});
+
+
+test("consultation uses the shared accessible form without requiring a tour or date", async () => {
+  await mount("/contacts");
+  assert.equal(document.querySelectorAll("main form").length, 1);
+  assert.equal(field("booking-country").value, "");
+  for (const input of document.querySelectorAll<HTMLInputElement>("main input, main select, main textarea")) {
+    assert.ok(input.labels?.length, "Every field must have an associated label");
+  }
+  await fill("booking-name", "Алия");
+  await fill("booking-contact", "not a phone");
+  await submitBooking();
+  assert.equal(openedWhatsAppUrls.length, 0);
+  assert.equal(document.activeElement?.id, "booking-contact");
+  assert.equal(field("booking-contact").getAttribute("aria-invalid"), "true");
+  await fill("booking-contact", "+7 700 123 45 67");
+  await submitBooking();
+  assert.equal(openedWhatsAppUrls.length, 1);
+  assert.match(new URL(openedWhatsAppUrls[0]).searchParams.get("text")!, /Контакт: \+7 700 123 45 67/);
+});
+
+test("modal moves and traps focus, isolates the background and restores its trigger", async () => {
+  await mount("/contacts");
+  const trigger = button(ru.footer.privacyTrigger);
+  trigger.focus();
+  await click(trigger);
+  const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+  assert.ok(dialog.contains(document.activeElement));
+  assert.ok(document.querySelector('header')?.closest('[inert]'));
+  const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button, a[href]'));
+  controls[controls.length - 1].focus();
+  await act(async () => { document.activeElement!.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true })); });
+  assert.equal(document.activeElement, controls[0]);
+  await act(async () => { document.activeElement!.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true })); });
+  assert.equal(document.querySelector('[role="dialog"]'), null);
+  assert.equal(document.activeElement, trigger);
+  assert.equal(document.querySelector('[inert]'), null);
+});
+
+test("comparison limit preserves existing choices and can be opened from tour details", async () => {
+  await mount("/tours");
+  for (const tour of tours.slice(0,4)) {
+    const card = document.querySelector(`[data-testid="tour-card-${tour.id}"]`)!;
+    const compare = card.querySelector<HTMLButtonElement>(`button[aria-label="${ru.tours.card.compareAdd}"]`)!;
+    await click(compare);
+  }
+  assert.match(document.querySelector('[role="dialog"]')!.textContent!, /Можно сравнить до 3 туров/);
+  const saved = JSON.parse(dom.window.localStorage.getItem("alltour_comparison_v1")!);
+  assert.deepEqual(saved, tours.slice(0,3).map(tour => tour.id));
+  await click(document.querySelector<HTMLButtonElement>(`[role="dialog"] button[aria-label="${ru.compare.close}"]`)!);
+  await click(document.querySelector<HTMLAnchorElement>(`[data-testid="tour-card-${tours[0].id}"] a[href^="/tours/"]`)!);
+  assert.ok(Array.from(document.querySelectorAll('button')).some(item => item.textContent === ru.compare.open.replace("{count}", "3")));
+  const back = document.querySelector<HTMLAnchorElement>('main a[href^="/tours?"]')!;
+  assert.ok(back);
+});
+
+
+test("lead capture opens WhatsApp only after a saved acknowledgment and keeps a stable retry key", async () => {
+  await mount("/contacts");
+  const { BookingForm } = await import("../components/booking/BookingForm");
+  await act(async () => { root!.render(<BookingForm dict={ru} locale="ru" mode="consultation" captureLeads />); });
+  await fill("booking-name", "Тестовая заявка");
+  await fill("booking-contact", "+7 700 000 00 00");
+  const originalFetch = globalThis.fetch;
+  const keys: string[] = [];
+  let successful = false;
+  globalThis.fetch = (async (_url: unknown, options?: RequestInit) => {
+    keys.push((options!.headers as Record<string,string>)["Idempotency-Key"]);
+    if (!successful) throw new Error("Offline");
+    return new Response(JSON.stringify({ id: "AT-20261028-ABCDEF01" }), { status: 201, headers: { "Content-Type": "application/json" } });
+  }) as typeof fetch;
+  try {
+    await submitBooking();
+    assert.equal(openedWhatsAppUrls.length, 0);
+    assert.ok(document.querySelector('[role="alert"]')?.textContent?.includes(ru.bookingForm.saveError));
+    successful = true;
+    await submitBooking();
+    assert.equal(keys.length, 2);
+    assert.equal(keys[0], keys[1], "Retrying an uncertain save must not create a second lead");
+    assert.equal(openedWhatsAppUrls.length, 1);
+    assert.ok(document.body.textContent?.includes("AT-20261028-ABCDEF01"));
+  } finally { globalThis.fetch = originalFetch; }
 });

@@ -16,9 +16,13 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
   variant = "header",
   className = "",
 }) => {
-  const { currency, setCurrency } = useCurrency();
+  const { currency, setCurrency, isLiveRates } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (isOpen) containerRef.current?.querySelector<HTMLElement>('[role="option"][aria-selected="true"]')?.focus();
+  }, [isOpen]);
 
   // Close on outside click
   useEffect(() => {
@@ -34,8 +38,11 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
   // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !e.defaultPrevented) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
         setIsOpen(false);
+        triggerRef.current?.focus();
       }
     };
     if (isOpen) {
@@ -49,6 +56,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
   const handleSelect = (code: CurrencyCode) => {
     setCurrency(code);
     setIsOpen(false);
+    triggerRef.current?.focus();
   };
 
   const isKz = locale === "kz";
@@ -57,6 +65,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
     <div className={`relative ${className}`} ref={containerRef}>
       {/* Trigger Button: Shows code and symbol to avoid ambiguity */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         data-testid="currency-switcher-btn"
@@ -99,6 +108,14 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
       {isOpen && (
         <div
           role="listbox"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setIsOpen(false); triggerRef.current?.focus(); return; }
+            const options = Array.from(containerRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]') || []);
+            const current = options.indexOf(document.activeElement as HTMLButtonElement);
+            const next = event.key === "ArrowDown" ? (current + 1) % options.length : event.key === "ArrowUp" ? (current - 1 + options.length) % options.length : event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : null;
+            if (next !== null) { event.preventDefault(); options[next]?.focus(); }
+            if (event.key === "Tab") setIsOpen(false);
+          }}
           aria-label={isKz ? "Валюталар тізімі" : "Список валют"}
           data-testid="currency-dropdown"
           className={`absolute mt-2 rounded-2xl bg-surface/95 border border-line p-1.5 shadow-2xl backdrop-blur-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150 ${
@@ -117,6 +134,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
                   key={item.code}
                   type="button"
                   role="option"
+                  tabIndex={isSelected ? 0 : -1}
                   aria-selected={isSelected}
                   data-testid={`currency-option-${item.code}`}
                   data-currency={item.code}
@@ -164,6 +182,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
               );
             })}
           </div>
+          <p className="px-3 pt-2 text-[11px] text-muted">{locale === "kz" ? (isLiveRates ? "Онлайн курс бойынша шамамен есептеу." : "Анықтамалық курс бойынша шамамен есептеу.") : (isLiveRates ? "Приблизительный пересчёт по онлайн-курсу." : "Приблизительный пересчёт по справочному курсу.")}</p>
         </div>
       )}
     </div>

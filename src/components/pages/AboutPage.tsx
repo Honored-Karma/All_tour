@@ -8,6 +8,7 @@ import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
 import { BrandLogo } from "../layout/BrandLogo";
 import { GlassPanel } from "../glass/GlassPanel";
 import { GlassButton } from "../glass/GlassButton";
+import instagramResearch from "../../data/instagramResearch.json";
 
 interface AboutPageProps {
   dict: Dictionary;
@@ -90,6 +91,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
         </section>
 
         {/* 4 Core Principles */}
+        <section className="space-y-3 border-t border-line pt-6">
+          <h2 className="text-xl font-semibold">{dict.departures.aboutSourceTitle}</h2>
+          <p className="text-sm text-muted max-w-3xl leading-relaxed">{dict.departures.aboutSourceText}</p>
+          <div className="flex flex-wrap gap-5 text-sm">
+            <a href={instagramResearch.profileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Instagram @all_tour.kz</a>
+            <a href={instagramResearch.reviewHighlightsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">{dict.nav.reviews} · Instagram</a>
+            <a href={instagramResearch.telegramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Telegram ALL TOUR</a>
+          </div>
+        </section>
         <section className="space-y-6 pt-4 border-t border-line">
           <h2 className="font-display text-xl font-bold text-ink">
             {ap.howWeWorkTitle}

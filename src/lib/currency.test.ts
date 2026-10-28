@@ -11,6 +11,7 @@ import {
   formatAmountNumber,
   formatTourPrice,
   fetchLiveExchangeRates,
+  fetchExchangeRateSnapshot,
   ALLTOUR_CURRENCY_STORAGE_KEY,
 } from "./currency";
 
@@ -317,3 +318,22 @@ test("storage key constant is defined", () => {
   assert.equal(ALLTOUR_CURRENCY_STORAGE_KEY, "alltour_selected_currency");
 });
 
+
+
+test("failed exchange-rate requests remain explicitly marked as fallback", async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = (async () => { throw new Error("Offline"); }) as typeof fetch;
+  try {
+    const snapshot = await fetchExchangeRateSnapshot();
+    assert.equal(snapshot.source, "fallback");
+    assert.equal(snapshot.updatedAt, null);
+    assert.deepEqual(snapshot.rates, DEFAULT_EXCHANGE_RATES);
+  } finally { globalThis.fetch = original; }
+});
+
+test("an unpriced announced departure cannot inherit the previous campaign price", () => {
+  const price = formatTourPrice({ id: "china-content-3d", posterReferencePriceKzt: 85000 }, "KZT", "ru", DEFAULT_EXCHANGE_RATES, "Стоимость по запросу", "2026-10-28");
+  assert.equal(price.rawConverted, null);
+  assert.equal(price.formatted, "Стоимость по запросу");
+  assert.equal(price.isPosterReference, false);
+});

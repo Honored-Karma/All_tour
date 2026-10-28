@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
+import { useDialog } from "../../hooks/useDialog";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { LocalizedText } from "../../data/destinations";
 import type { Locale } from "../../lib/whatsapp";
@@ -34,6 +35,8 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
   const d = dict || getDictionary(locale);
   const lb = d.lightbox;
   const isOpen = currentIndex !== null && currentIndex >= 0 && currentIndex < items.length;
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(isOpen, dialogRef, onClose);
 
   const handlePrev = useCallback(() => {
     if (currentIndex === null) return;
@@ -62,6 +65,8 @@ export const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label={lb.ariaTitle}

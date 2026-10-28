@@ -22,6 +22,8 @@ import { BackToTop } from "../components/common/BackToTop";
 import { PageFallback } from "../components/common/PageFallback";
 import { RouteErrorBoundary } from "../components/common/RouteErrorBoundary";
 import { useSEO } from "../hooks/useSEO";
+import { rememberCampaign, trackEvent } from "../lib/analytics";
+import { getTourBySlug } from "../data/tours";
 
 // Modals
 import { TourDetails } from "../components/tours/TourDetails";
@@ -117,6 +119,7 @@ function AppContent() {
     useState<StoryScreenshotAsset | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [compareModalOpen, setCompareModalOpen] = useState(false);
+  const [compareLimitReached, setCompareLimitReached] = useState(false);
 
   const reducedMotion = useReducedMotion();
   const mainRef = useRef<HTMLElement>(null);
@@ -124,7 +127,16 @@ function AppContent() {
   const dict = getDictionary(locale);
 
   const { favorites, toggleFavorite, favoritesCount } = useFavorites();
-  const { comparedTours, toggleCompare } = useTourComparison(3);
+  const { comparedTours, toggleCompare, clearCompare } = useTourComparison(3);
+  const handleToggleCompare = (tourId: string) => {
+    if (!comparedTours.includes(tourId) && comparedTours.length >= 3) {
+      setCompareLimitReached(true);
+      setCompareModalOpen(true);
+      return;
+    }
+    setCompareLimitReached(false);
+    toggleCompare(tourId);
+  };
 
   useSyncSceneTheme("kyrgyzstan");
 
@@ -133,6 +145,23 @@ function AppContent() {
     search: location.search,
     locale,
   });
+
+  useEffect(() => {
+    rememberCampaign(location.search);
+    trackEvent("page_view", { route: location.pathname, locale });
+    const slug = location.pathname.match(/^\/tours\/([^/]+)$/)?.[1];
+    const tour = slug ? getTourBySlug(slug) : undefined;
+    if (tour) trackEvent("tour_view", { tourId: tour.id, locale });
+  }, [location.pathname, locale]);
+
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target.closest("a[href]") as HTMLAnchorElement | null : null;
+      if (target && new URL(target.href, window.location.href).hostname === "wa.me") trackEvent("whatsapp_open", { source: "link", locale });
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [locale]);
 
   const handleBookTour = useCallback(
     (tour: Tour) => {
@@ -153,6 +182,9 @@ function AppContent() {
   return (
     <CurrencyProvider locale={locale}>
       <div className="min-h-screen flex flex-col bg-canvas text-ink relative selection:bg-accent/30 selection:text-ink">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-xl focus:bg-surface focus:p-4">
+          {locale === "kz" ? "Негізгі мазмұнға өту" : "Перейти к содержимому"}
+        </a>
         {/* Scroll Progress Bar at the very top */}
         <ScrollProgressIndicator />
 
@@ -176,7 +208,7 @@ function AppContent() {
         />
 
         {/* Route Views */}
-        <main ref={mainRef} className="flex-1">
+        <main id="main-content" tabIndex={-1} ref={mainRef} className="flex-1">
           <RouteErrorBoundary
             dict={dict}
             locale={locale}
@@ -204,7 +236,7 @@ function AppContent() {
                       favorites={favorites}
                       onToggleFavorite={toggleFavorite}
                       comparedTours={comparedTours}
-                      onToggleCompare={toggleCompare}
+                      onToggleCompare={handleToggleCompare}
                       onBookTour={handleBookTour}
                       onOpenCompareModal={() => setCompareModalOpen(true)}
                     />
@@ -220,7 +252,7 @@ function AppContent() {
                       favorites={favorites}
                       onToggleFavorite={toggleFavorite}
                       comparedTours={comparedTours}
-                      onToggleCompare={toggleCompare}
+                      onToggleCompare={handleToggleCompare}
                       onBookTour={handleBookTour}
                       onOpenStory={(story: StoryScreenshotAsset) => setActiveStoryModal(story)}
                     />
@@ -236,7 +268,7 @@ function AppContent() {
                       favorites={favorites}
                       onToggleFavorite={toggleFavorite}
                       comparedTours={comparedTours}
-                      onToggleCompare={toggleCompare}
+                      onToggleCompare={handleToggleCompare}
                       onBookTour={handleBookTour}
                       onOpenTourDetails={(tour: Tour) => setActiveTourDetails(tour)}
                     />
@@ -308,10 +340,21 @@ function AppContent() {
           open={compareModalOpen}
           onClose={() => setCompareModalOpen(false)}
           selectedTourIds={comparedTours}
-          onRemoveTour={toggleCompare}
+          onRemoveTour={handleToggleCompare}
           locale={locale}
           dict={dict}
+          limitReached={compareLimitReached}
+          search={location.search.slice(1)}
         />
+
+        {comparedTours.length > 0 && !compareModalOpen && (
+          <div className="fixed bottom-24 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-4 max-w-[calc(100vw-1.5rem)] z-40 flex items-center gap-2 rounded-2xl bg-surface border border-line p-2 shadow-lg">
+            <button type="button" onClick={() => { setCompareLimitReached(false); setCompareModalOpen(true); }} className="min-h-11 min-w-0 flex-1 px-3 rounded-xl bg-sage text-on-accent text-sm font-semibold">
+              {dict.compare.open.replace("{count}", String(comparedTours.length))}
+            </button>
+            <button type="button" onClick={clearCompare} className="min-h-11 min-w-0 flex-1 px-3 text-sm text-muted">{dict.compare.clear}</button>
+          </div>
+        )}
 
         {/* Floating Back to Top Button */}
         <BackToTop />

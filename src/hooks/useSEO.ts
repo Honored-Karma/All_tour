@@ -104,7 +104,8 @@ export function useSEO({ pathname, search, locale }: UseSEOOptions): PageSEOMeta
     // 3. Open Graph Tags
     const ogTitle = seo.ogTitle || seo.title;
     const ogDescription = seo.ogDescription || seo.description;
-    const ogImage = seo.ogImage || DEFAULT_OG_IMAGE;
+    const imagePath = seo.ogImage || DEFAULT_OG_IMAGE;
+    const ogImage = getCanonicalUrl(imagePath) || imagePath;
     const ogWidth = String(seo.ogImageWidth || DEFAULT_OG_IMAGE_WIDTH);
     const ogHeight = String(seo.ogImageHeight || DEFAULT_OG_IMAGE_HEIGHT);
     const ogLocale = locale === "kz" ? "kk_KZ" : "ru_KZ";
@@ -128,9 +129,22 @@ export function useSEO({ pathname, search, locale }: UseSEOOptions): PageSEOMeta
     setMetaTag("name", "twitter:image", ogImage);
 
     // 5. Canonical URL & og:url (Strictly avoided when domain is unconfirmed)
-    const canonical = getCanonicalUrl(seo.canonicalPath || pathname);
+    const canonicalPath = seo.canonicalPath || pathname;
+    const canonical = getCanonicalUrl(`${canonicalPath}${locale === "kz" ? "?lang=kz" : ""}`);
     setLinkTag("canonical", canonical);
     setMetaTag("property", "og:url", canonical);
+    setMetaTag("name", "robots", seo.noIndex ? "noindex, follow" : "index, follow");
+    document.head.querySelectorAll('link[data-alltour-language]').forEach((element) => element.remove());
+    for (const [language, query] of [["ru", ""], ["kk", "?lang=kz"], ["x-default", ""]]) {
+      const href = getCanonicalUrl(canonicalPath + query);
+      if (!href) continue;
+      const link = document.createElement("link");
+      link.rel = "alternate";
+      link.hreflang = language;
+      link.href = href;
+      link.dataset.alltourLanguage = "true";
+      document.head.appendChild(link);
+    }
   }, [seo, locale, pathname]);
 
   return seo;

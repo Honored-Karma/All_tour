@@ -23,6 +23,7 @@ import {
 } from "../../lib/tourPlanner";
 import type { Dictionary } from "../../i18n/ru";
 import { TravelCalendar } from "./TravelCalendar";
+import { trackEvent } from "../../lib/analytics";
 
 interface Props {
   locale: Locale;
@@ -72,6 +73,7 @@ export function SmartTourFinder({
       .join(" · "),
   });
   const showResults = () => {
+    trackEvent("planner_search", { locale, source: "finder", count });
     if (controlledPlan)
       document
         .getElementById("tour-results")
@@ -238,6 +240,10 @@ export function SmartTourFinder({
       </div>
       {settingsOpen && (
         <div id="planner-settings" className="planner-settings">
+          <label className="flex items-center gap-3">
+            <input type="checkbox" checked={plan.publishedOnly} onChange={(event) => update({ ...plan, publishedOnly: event.target.checked })} />
+            {t.publishedOnly}
+          </label>
           <label htmlFor="finder-duration">
             {dict.finder.durationLabel}
             <select

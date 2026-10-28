@@ -1,0 +1,35 @@
+[
+  {
+    "id": "kg-2026-10-31",
+    "tourId": "kyrgyzstan-content-tour",
+    "startDate": "2026-10-31",
+    "endDate": "2026-10-31",
+    "publishedPriceKzt": 25000,
+    "status": "announced",
+    "sourceUrl": "https://www.instagram.com/all_tour.kz/p/DcQ93ZgCIkZ/",
+    "sourcePublishedAt": "2026-08-20",
+    "checkedAt": "2026-10-28"
+  },
+  {
+    "id": "yining-2026-11-06",
+    "tourId": "china-content-3d",
+    "startDate": "2026-11-06",
+    "endDate": "2026-11-08",
+    "publishedPriceKzt": null,
+    "status": "announced",
+    "sourceUrl": "https://www.instagram.com/all_tour.kz/",
+    "sourcePublishedAt": null,
+    "checkedAt": "2026-10-28"
+  },
+  {
+    "id": "urumqi-2026-10-27",
+    "tourId": "china-urumqi-6d",
+    "startDate": "2026-10-27",
+    "endDate": "2026-11-01",
+    "publishedPriceKzt": 145000,
+    "status": "announced",
+    "sourceUrl": "https://www.instagram.com/all_tour.kz/reel/DewNvLOI8hB/",
+    "sourcePublishedAt": "2026-10-21",
+    "checkedAt": "2026-10-28"
+  }
+]

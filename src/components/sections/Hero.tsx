@@ -3,6 +3,7 @@ import { ArrowDown } from "lucide-react";
 import type { Dictionary } from "../../i18n/ru";
 import { buildWhatsAppBookingUrl, type Locale } from "../../lib/whatsapp";
 import { GlassButton } from "../glass/GlassButton";
+import { responsiveMedia } from "../../lib/media";
 
 const scenes = [
   { id: "kyrgyzstan", image: "/media/kyrgyzstan-2", mobile: "/media/kyrgyzstan-2-sm.webp", position: "50% 50%", gradient: "#183f48" },
@@ -24,8 +25,7 @@ function SceneImage({ index, alt }: { index: number; alt: string }) {
     <div className="hero-landscape" style={{ background: scene.gradient }}>
       {!failed && (
         <picture>
-          {"mobile" in scene && <source media="(max-width: 640px)" srcSet={scene.mobile} type="image/webp" />}
-          <source srcSet={`${scene.image}.webp`} type="image/webp" />
+          <source srcSet={responsiveMedia(`${scene.image}.jpg`)} sizes="100vw" type="image/webp" />
           <img
             src={`${scene.image}.jpg`}
             alt={alt}

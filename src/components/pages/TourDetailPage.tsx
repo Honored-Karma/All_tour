@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
+  ArrowUpRight,
   Share2,
   Heart,
   Check,
@@ -27,6 +28,11 @@ import { useCurrency } from "../../context/CurrencyContext";
 import { PriceDisplay } from "../common/PriceDisplay";
 import type { StoryScreenshotAsset } from "../../data/reviews";
 import { readTourPlan, formatPlanDates } from "../../lib/tourPlanner";
+import { UpcomingDepartures } from "../tours/UpcomingDepartures";
+import { realReviews } from "../../data/reviews";
+import { ReviewCard } from "../reviews/ReviewCard";
+import { responsiveMedia } from "../../lib/media";
+import instagramResearch from "../../data/instagramResearch.json";
 
 interface TourDetailPageProps {
   dict: Dictionary;
@@ -46,14 +52,28 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
   onToggleFavorite,
   comparedTours,
   onToggleCompare,
+  onOpenStory,
 }) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const plan = readTourPlan(searchParams);
   const [copiedShare, setCopiedShare] = useState(false);
+  const { formatTourPrice } = useCurrency();
+  const returnParams = new URLSearchParams(searchParams);
+  returnParams.delete("tour");
+  returnParams.set("lang", locale);
+  const resultsHref = `/tours?${returnParams.toString()}#tour-results`;
 
   const tour = slug ? getTourBySlug(slug) : undefined;
+  const [bookingVisible, setBookingVisible] = useState(false);
+  useEffect(() => {
+    const element = document.getElementById("booking");
+    if (!element || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setBookingVisible(entry.isIntersecting));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [tour?.id]);
 
   if (!tour) {
     return (
@@ -63,7 +83,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           {dict.tourDetail.notFoundSubtitle}
         </p>
         <Link
-          to="/tours"
+          to={resultsHref}
           className="liquid-glass-button-primary px-5 py-2.5 rounded-xl text-sm font-semibold"
         >
           {dict.tourDetail.backToCatalog}
@@ -75,6 +95,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
   const destination = getDestinationById(tour.destinationId);
   const isFav = favorites.includes(tour.id);
   const isCmp = comparedTours.includes(tour.id);
+  const programSource = instagramResearch.programSources[tour.id as keyof typeof instagramResearch.programSources];
 
   const directWhatsAppUrl = buildWhatsAppBookingUrl({
     locale,
@@ -99,9 +120,11 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
       }
     }
     if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
-      setCopiedShare(true);
-      setTimeout(() => setCopiedShare(false), 2500);
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopiedShare(true);
+        setTimeout(() => setCopiedShare(false), 2500);
+      } catch { /* Sharing can be cancelled or denied by the browser. */ }
     }
   };
 
@@ -113,7 +136,6 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
     type: m.type,
   }));
 
-  const { formatTourPrice } = useCurrency();
   const priceResult = formatTourPrice(
     tour,
     dict.tourDetail.priceFallback
@@ -125,11 +147,11 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
         {/* Breadcrumb Navigation & Top Action Bar */}
         <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
           <Link
-            to="/tours"
+            to={resultsHref}
             className="inline-flex items-center gap-2 text-xs sm:text-sm text-sage-ink hover:text-ink transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>{dict.tourDetail.allTours}</span>
+            <span>{dict.tourDetail.backToResults}</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -146,6 +168,8 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
             <button
               type="button"
               onClick={() => onToggleCompare(tour.id)}
+              aria-label={isCmp ? dict.tourDetail.compareRemove : dict.tourDetail.compareAdd}
+              aria-pressed={isCmp}
               className={`p-2 rounded-xl text-xs transition-colors cursor-pointer border ${
                 isCmp
                   ? "bg-sage text-on-accent border-sage"
@@ -236,10 +260,10 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
           <div className="photo-surface lg:col-span-5 relative aspect-[16/11] sm:aspect-[4/3] rounded-3xl overflow-hidden border border-line shadow-2xl">
             <picture>
               {tour.image.startsWith("/media/") && (
-                <source srcSet={tour.image.replace(/\.jpg$/, ".webp")} type="image/webp" />
+                <source srcSet={responsiveMedia(tour.image)} sizes="(min-width: 1024px) 520px, 100vw" type="image/webp" />
               )}
               {tour.image === "/assets/brand/group-china-tour.png" && (
-                <source srcSet="/assets/brand/group-china-tour.webp" type="image/webp" />
+                <source srcSet={responsiveMedia(tour.image)} sizes="(min-width: 1024px) 520px, 100vw" type="image/webp" />
               )}
               <img
                 src={tour.image}
@@ -264,6 +288,7 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
         </div>
 
         {/* Media & Original Posters Gallery */}
+        <UpcomingDepartures dict={dict} locale={locale} tourId={tour.id} />
         {galleryItems.length > 0 && (
           <section className="space-y-4 pt-4 border-t border-line">
             <MediaGallery
@@ -301,6 +326,10 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                   {step.image && (
                     <img
                       src={step.image}
+                      srcSet={responsiveMedia(step.image)}
+                      sizes="(min-width: 768px) 400px, 100vw"
+                      loading="lazy"
+                      decoding="async"
                       alt={step.title[locale]}
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
@@ -373,6 +402,12 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
         )}
 
         {/* Useful to know before departure / Documents */}
+        {programSource && (
+          <aside className="rounded-2xl border border-line bg-surface-soft p-5 text-sm text-muted space-y-2">
+            <p>{dict.departures.programSourceNotice}</p>
+            <a href={programSource} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 text-sage-ink underline underline-offset-4">{dict.departures.source}<ArrowUpRight className="w-4 h-4" aria-hidden="true" /></a>
+          </aside>
+        )}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-line">
           <div className="space-y-3">
             <h3 className="font-display text-base font-semibold text-ink flex items-center gap-2">
@@ -400,10 +435,21 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
         </section>
 
         {/* Shared booking form keeps validation and WhatsApp messages consistent. */}
+        {onOpenStory && realReviews.some((review) => review.destinationId === tour.destinationId) && (
+          <section className="space-y-5 pt-6 border-t border-line">
+            <h2 className="text-xl font-semibold">{dict.reviews.title}</h2>
+            <div className="grid gap-5 md:grid-cols-2">{realReviews.filter((review) => review.destinationId === tour.destinationId).slice(0, 2).map((review) => (
+              <ReviewCard key={review.id} review={review} dict={dict} locale={locale} onOpenStory={onOpenStory} />
+            ))}</div>
+          </section>
+        )}
         <section className="pt-8 border-t border-line">
           <BookingForm key={tour.id} dict={dict} locale={locale} preselectedTour={tour}
             initialDesiredDate={formatPlanDates(plan, locale)} initialTravelers={plan.travelers} />
         </section>
+      </div>
+      <div hidden={bookingVisible} className="sm:hidden fixed bottom-0 inset-x-0 z-30 border-t border-line bg-surface/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md">
+        <a href="#booking" className="liquid-glass-button-primary min-h-12 flex items-center justify-center rounded-xl text-sm font-semibold">{dict.tours.card.bookBtn}</a>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ export type Locale = "ru" | "kz";
 
 export interface BookingRequestPayload {
   name: string;
+  contact?: string;
   destinationName?: string;
   destinationId?: DestinationId | "";
   tourTitle?: string;
@@ -18,6 +19,7 @@ export interface BookingValidationResult {
   valid: boolean;
   errors: {
     name?: string;
+    contact?: string;
     destination?: string;
     desiredDate?: string;
     travelersCount?: string;
@@ -26,7 +28,8 @@ export interface BookingValidationResult {
 
 export function validateBookingPayload(
   payload: BookingRequestPayload,
-  locale: Locale = "ru"
+  locale: Locale = "ru",
+  requirements: { destination?: boolean; date?: boolean; contact?: boolean } = {},
 ): BookingValidationResult {
   const errors: BookingValidationResult["errors"] = {};
 
@@ -38,7 +41,14 @@ export function validateBookingPayload(
         : "Атыңызды енгізіңіз (кемінде 2 таңба)";
   }
 
-  if (!payload.destinationId && !payload.destinationName) {
+  if (requirements.contact && !payload.contact?.trim()) {
+    errors.contact = locale === "ru" ? "Укажите телефон для ответа менеджера" : "Менеджердің жауабы үшін телефонды көрсетіңіз";
+  } else if (payload.contact?.trim() && !/^\+?[\d\s()\-]+$/.test(payload.contact.trim()) ||
+      payload.contact?.trim() && !/^\d{7,15}$/.test(payload.contact.replace(/\D/g, ""))) {
+    errors.contact = locale === "ru" ? "Укажите телефон с кодом страны, например +7 700 123 45 67" : "Телефонды ел кодымен енгізіңіз, мысалы +7 700 123 45 67";
+  }
+
+  if (requirements.destination !== false && !payload.destinationId && !payload.destinationName) {
     errors.destination =
       locale === "ru"
         ? "Выберите страну направления"
@@ -46,7 +56,7 @@ export function validateBookingPayload(
   }
 
   const trimmedDate = payload.desiredDate.trim();
-  if (!trimmedDate) {
+  if (requirements.date !== false && !trimmedDate) {
     errors.desiredDate =
       locale === "ru"
         ? "Укажите желаемую дату или период поездки"
@@ -54,7 +64,7 @@ export function validateBookingPayload(
   }
 
   const countNum = Number(payload.travelersCount);
-  if (!Number.isFinite(countNum) || countNum < 1 || countNum > 50) {
+  if (!Number.isInteger(countNum) || countNum < 1 || countNum > 50) {
     errors.travelersCount =
       locale === "ru"
         ? "Укажите количество путешественников (от 1 до 50)"
@@ -96,6 +106,7 @@ export function formatWhatsAppMessage(payload?: Partial<BookingRequestPayload>):
     if (payload.name?.trim()) {
       lines.push(`Есімі: ${payload.name.trim()}`);
     }
+    if (payload.contact?.trim()) lines.push(`Байланыс: ${payload.contact.trim()}`);
     if (payload.comment?.trim()) {
       lines.push(`Пікір: ${payload.comment.trim()}`);
     }
@@ -119,6 +130,7 @@ export function formatWhatsAppMessage(payload?: Partial<BookingRequestPayload>):
     if (payload.name?.trim()) {
       lines.push(`Имя: ${payload.name.trim()}`);
     }
+    if (payload.contact?.trim()) lines.push(`Контакт: ${payload.contact.trim()}`);
     if (payload.comment?.trim()) {
       lines.push(`Комментарий: ${payload.comment.trim()}`);
     }

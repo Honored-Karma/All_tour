@@ -1,19 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { businessConfig } from "../../config/business";
+import type { Locale } from "../../lib/whatsapp";
 
 interface BrandLogoProps {
   variant?: "header" | "footer" | "mobile" | "card" | "full";
   className?: string;
   onClick?: () => void;
+  locale?: Locale;
 }
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
   variant = "header",
   className = "",
   onClick,
+  locale,
 }) => {
-  const isKz = typeof document !== "undefined" && document.documentElement.lang === "kk";
+  const isKz = locale ? locale === "kz" : typeof document !== "undefined" && document.documentElement.lang === "kk";
   const homeAriaLabel = isKz ? "ALL TOUR — Басты бет" : "ALL TOUR — Главная";
 
   if (variant === "header") {

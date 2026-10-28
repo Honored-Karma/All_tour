@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useRef } from "react";
 import { X } from "lucide-react";
+import { useDialog } from "../../hooks/useDialog";
 
 interface GlassModalProps {
   open: boolean;
@@ -16,29 +17,15 @@ export const GlassModal: React.FC<GlassModalProps> = ({
   closeLabel,
   children,
 }) => {
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [open, onClose]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(open, dialogRef, onClose);
 
   if (!open) return null;
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label={title}

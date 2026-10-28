@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AlertTriangle, RefreshCw, Compass, Home } from "lucide-react";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
+import { trackEvent } from "../../lib/analytics";
 
 interface RouteErrorBoundaryProps {
   children: ReactNode;
@@ -36,6 +37,7 @@ export class RouteErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    trackEvent("app_error", { locale: this.props.locale, source: "route" });
     // Log error for diagnostics without exposing sensitive details in DOM
     if (process.env.NODE_ENV !== "production") {
       console.error("[RouteErrorBoundary caught error]:", error, errorInfo);

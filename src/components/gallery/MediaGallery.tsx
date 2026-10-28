@@ -4,6 +4,7 @@ import type { Locale } from "../../lib/whatsapp";
 import type { Dictionary } from "../../i18n/ru";
 import { getDictionary } from "../../i18n";
 import { GalleryLightbox, type GalleryMediaItem } from "./GalleryLightbox";
+import { responsiveMedia } from "../../lib/media";
 
 interface MediaGalleryProps {
   items: GalleryMediaItem[];
@@ -72,10 +73,10 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
               {!failedImages[item.src] ? (
                 <picture>
                   {item.src.startsWith("/media/") && (
-                    <source srcSet={item.src.replace(/\.jpg$/, ".webp")} type="image/webp" />
+                    <source srcSet={responsiveMedia(item.src)} sizes="(min-width: 1024px) 300px, 50vw" type="image/webp" />
                   )}
                   {item.src === "/assets/brand/group-china-tour.png" && (
-                    <source srcSet="/assets/brand/group-china-tour.webp" type="image/webp" />
+                    <source srcSet={responsiveMedia(item.src)} sizes="(min-width: 1024px) 300px, 50vw" type="image/webp" />
                   )}
                   <img
                     src={item.src}

@@ -13,8 +13,9 @@ import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
 import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
 import { TourCard } from "../tours/TourCard";
+import { compareTourPrices } from "../../lib/tourFilters";
+import { UpcomingDepartures } from "../tours/UpcomingDepartures";
 import { SmartTourFinder } from "../tours/SmartTourFinder";
-import { TourCompareModal } from "../tours/TourCompareModal";
 import { GlassPanel } from "../glass/GlassPanel";
 import { GlassButton } from "../glass/GlassButton";
 
@@ -38,6 +39,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
   comparedTours,
   onToggleCompare,
   onBookTour,
+  onOpenCompareModal,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,7 +52,6 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
       return next;
     });
   };
-  const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"default" | "price_asc" | "price_desc">(
     "default",
   );
@@ -82,16 +83,9 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
     }
 
     if (sortBy === "price_asc") {
-      list.sort(
-        (a, b) =>
-          (a.posterReferencePriceKzt || 999999) -
-          (b.posterReferencePriceKzt || 999999),
-      );
+      list.sort((a, b) => compareTourPrices(a, b, "asc"));
     } else if (sortBy === "price_desc") {
-      list.sort(
-        (a, b) =>
-          (b.posterReferencePriceKzt || 0) - (a.posterReferencePriceKzt || 0),
-      );
+      list.sort((a, b) => compareTourPrices(a, b, "desc"));
     }
 
     return list;
@@ -118,7 +112,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => setCompareModalOpen(true)}
+                onClick={onOpenCompareModal}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sage text-on-accent text-xs font-semibold transition-transform hover:scale-105 cursor-pointer shadow-md"
               >
                 <span>
@@ -138,6 +132,12 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
         />
 
         <div id="tour-results" className="scroll-mt-28 space-y-4">
+          {plan.from && !plan.publishedOnly && filteredTours.some((tour) => tour.departureDates.length === 0) && (
+            <p role="status" className="rounded-xl bg-sage-soft p-4 text-sm text-ink">{dict.catalog.datesUnconfirmed}</p>
+          )}
+          {sortBy !== "default" && filteredTours.some((tour) => !tour.priceKzt && tour.posterReferencePriceKzt) && (
+            <p className="text-xs text-muted">{dict.catalog.sortNote}</p>
+          )}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
             <div className="flex flex-wrap items-center gap-4">
               <h2
@@ -240,6 +240,7 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
         )}
 
         {/* Bottom Conversion & WhatsApp consultation block */}
+        <UpcomingDepartures dict={dict} locale={locale} />
         <div data-reveal className="pt-8">
           <GlassPanel className="p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
@@ -264,14 +265,6 @@ export const ToursCatalogPage: React.FC<ToursCatalogPageProps> = ({
         </div>
       </div>
 
-      <TourCompareModal
-        open={compareModalOpen}
-        onClose={() => setCompareModalOpen(false)}
-        selectedTourIds={comparedTours}
-        onRemoveTour={onToggleCompare}
-        locale={locale}
-        dict={dict}
-      />
     </div>
   );
 };

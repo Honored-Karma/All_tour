@@ -16,6 +16,7 @@ export interface PageSEOMetadata {
   ogImageHeight?: number;
   ogImageAlt?: string;
   canonicalPath?: string;
+  noIndex?: boolean;
 }
 
 /**
@@ -29,12 +30,18 @@ export interface PageSEOMetadata {
 const rawBaseUrl =
   typeof import.meta !== "undefined" && import.meta.env
     ? (import.meta.env.VITE_SITE_URL as string | undefined)
-    : undefined;
+    : typeof process !== "undefined" ? process.env.VITE_SITE_URL : undefined;
 
-export const SITE_BASE_URL: string | null =
-  rawBaseUrl && rawBaseUrl.trim().length > 0
-    ? rawBaseUrl.trim().replace(/\/+$/, "")
-    : null;
+export function validateSiteUrl(value: string | undefined): string | null {
+  if (!value?.trim()) return null;
+  try {
+    const url = new URL(value.trim());
+    if (!/^https?:$/.test(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== "/") return null;
+    return url.origin;
+  } catch { return null; }
+}
+
+export const SITE_BASE_URL = validateSiteUrl(rawBaseUrl);
 
 /**
  * Returns an absolute URL only when a verified production domain is configured.
@@ -326,6 +333,7 @@ export function resolveTourSEO(slug: string, locale: Locale): PageSEOMetadata {
       ogImageHeight: DEFAULT_OG_IMAGE_HEIGHT,
       ogImageAlt: fallback.ogImageAlt,
       canonicalPath: `/tours/${slug}`,
+      noIndex: true,
     };
   }
 
@@ -368,6 +376,7 @@ export function resolveDestinationSEO(destinationId: string, locale: Locale): Pa
       ogImageHeight: DEFAULT_OG_IMAGE_HEIGHT,
       ogImageAlt: fallback.ogImageAlt,
       canonicalPath: `/destinations/${destinationId}`,
+      noIndex: true,
     };
   }
 
@@ -421,6 +430,7 @@ export function resolveRouteSEO(
         ogImageHeight: DEFAULT_OG_IMAGE_HEIGHT,
         ogImageAlt: data.ogImageAlt,
         canonicalPath: "/tours",
+        noIndex: true,
       };
     }
   }
@@ -463,5 +473,6 @@ export function resolveRouteSEO(
     ogImageHeight: DEFAULT_OG_IMAGE_HEIGHT,
     ogImageAlt: notFound.ogImageAlt,
     canonicalPath: normPath,
+    noIndex: true,
   };
 }

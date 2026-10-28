@@ -1,4 +1,5 @@
 import type { Locale } from "./whatsapp";
+import { getPublishedDeparturePrice, getUpcomingDepartures } from "./departures";
 
 export type CurrencyCode = "KZT" | "USD" | "EUR" | "GEL" | "CNY" | "KGS";
 
@@ -98,7 +99,7 @@ export function validateRatesSource(rates: unknown): rates is Record<CurrencyCod
   const r = rates as Record<string, unknown>;
   const required: CurrencyCode[] = ["KZT", "USD", "EUR", "GEL", "CNY", "KGS"];
   return required.every(
-    (code) => typeof r[code] === "number" && !Number.isNaN(r[code]) && (r[code] as number) > 0
+    (code) => typeof r[code] === "number" && Number.isFinite(r[code]) && (r[code] as number) > 0
   );
 }
 
@@ -106,25 +107,37 @@ export function validateRatesSource(rates: unknown): rates is Record<CurrencyCod
  * Attempts to fetch live rates from open exchange API, ensuring all 6 currencies are supported.
  * Falls back to verified default rates if fetch fails or data is incomplete.
  */
-export async function fetchLiveExchangeRates(): Promise<Record<CurrencyCode, number>> {
+export interface ExchangeRateSnapshot {
+  rates: Record<CurrencyCode, number>;
+  source: "live" | "fallback";
+  updatedAt: string | null;
+}
+
+export async function fetchExchangeRateSnapshot(): Promise<ExchangeRateSnapshot> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
   try {
-    const res = await fetch("https://open.er-api.com/v6/latest/KZT");
+    const res = await fetch("https://open.er-api.com/v6/latest/KZT", { signal: controller.signal });
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
     if (data && data.rates && validateRatesSource(data.rates)) {
-      return {
+      return { source: "live", updatedAt: new Date().toISOString(), rates: {
         KZT: 1,
         USD: Number(data.rates.USD),
         EUR: Number(data.rates.EUR),
         GEL: Number(data.rates.GEL),
         CNY: Number(data.rates.CNY),
         KGS: Number(data.rates.KGS),
-      };
+      } };
     }
   } catch {
     // Graceful fallback to verified default rates
-  }
-  return DEFAULT_EXCHANGE_RATES;
+  } finally { clearTimeout(timeout); }
+  return { rates: DEFAULT_EXCHANGE_RATES, source: "fallback", updatedAt: null };
+}
+
+export async function fetchLiveExchangeRates(): Promise<Record<CurrencyCode, number>> {
+  return (await fetchExchangeRateSnapshot()).rates;
 }
 
 /**
@@ -201,17 +214,30 @@ export interface TourPriceResult {
  */
 export function formatTourPrice(
   tour: {
+    id?: string;
     priceKzt?: number;
     posterReferencePriceKzt?: number;
   },
   targetCurrency: CurrencyCode,
   locale: Locale = "ru",
   rates: Record<CurrencyCode, number> = DEFAULT_EXCHANGE_RATES,
-  fallbackText?: string
+  fallbackText?: string,
+  asOf?: string,
 ): TourPriceResult {
   const isConverted = targetCurrency !== "KZT";
   const approxPrefix = isConverted ? "≈\u00A0" : "";
   const meta = CURRENCY_MAP[targetCurrency] || CURRENCY_MAP.KZT;
+
+  const publishedPrice = getPublishedDeparturePrice(tour.id, asOf);
+  const announcement = tour.id ? getUpcomingDepartures(asOf, tour.id)[0] : undefined;
+  if (typeof tour.priceKzt !== "number" && announcement && announcement.publishedPriceKzt === null) {
+    return formatTourPrice({}, targetCurrency, locale, rates, fallbackText);
+  }
+  if (typeof tour.priceKzt !== "number" && publishedPrice !== null) {
+    const result = formatTourPrice({ priceKzt: publishedPrice }, targetCurrency, locale, rates, fallbackText);
+    const note = locale === "kz" ? "Instagram жарияланымындағы баға" : "цена из публикации в Instagram";
+    return { ...result, note, fullFormatted: `${result.formatted} (${note})` };
+  }
 
   if (typeof tour.priceKzt === "number") {
     // Calculated directly from original source price with full precision

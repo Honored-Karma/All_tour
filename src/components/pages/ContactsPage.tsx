@@ -1,24 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import {
   MessageCircle,
-  Phone,
   Instagram,
   MapPin,
   Clock,
-  Send,
-  CheckCircle2,
-  Sparkles,
   ArrowRight,
   ShieldCheck,
-  Calendar,
-  Compass,
 } from "lucide-react";
 import type { Dictionary } from "../../i18n/ru";
 import type { Locale } from "../../lib/whatsapp";
 import { BUSINESS_CONFIG } from "../../config/business";
+import { buildWhatsAppBookingUrl } from "../../lib/whatsapp";
 import { BrandLogo } from "../layout/BrandLogo";
-import { BRAND_ASSETS } from "../../data/assets";
 import { getTourBySlug } from "../../data/tours";
 import { BookingForm } from "../booking/BookingForm";
 import { readTourPlan, formatPlanDates } from "../../lib/tourPlanner";
@@ -36,62 +30,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ dict, locale }) => {
   const bookingTour = tourSlug ? getTourBySlug(tourSlug) : undefined;
   const bookingPlan = readTourPlan(searchParams);
   const bookingRequested = hash === "#booking" || !!tourSlug;
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [preferredTour, setPreferredTour] = useState("any");
-  const [notes, setNotes] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [preparedWhatsAppLink, setPreparedWhatsAppLink] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !contact.trim()) return;
-
-    // Compose personalized WhatsApp inquiry
-    const tourLabel =
-      preferredTour === "china-urumqi"
-        ? isKz
-          ? "Үрімші (6 күн)"
-          : "Урумчи (6 дней)"
-        : preferredTour === "china-3d"
-        ? isKz
-          ? "Құлжа (3 күн)"
-          : "Инин (Кульджа), 3 дня"
-        : preferredTour === "kyrgyzstan"
-        ? isKz
-          ? "Қырғызстан"
-          : "Кыргызстан"
-        : preferredTour === "georgia"
-        ? isKz
-          ? "Грузия саяхаты"
-          : "Путешествие в Грузию"
-        : isKz
-          ? "Жалпы кеңес"
-          : "Общая консультация";
-
-    const text = isKz
-      ? `Сәлеметсіз бе, ALL TOUR! Менің атым: ${name}.
-Байланыс: ${contact}.
-Қызықтырған бағыт: ${tourLabel}.
-${notes ? `Сұрағым: ${notes}` : ""}`
-      : `Здравствуйте, ALL TOUR! Меня зовут: ${name}.
-Мой контакт: ${contact}.
-Интересует направление: ${tourLabel}.
-${notes ? `Вопрос: ${notes}` : ""}`;
-
-    const encoded = encodeURIComponent(text);
-    const link = `https://wa.me/${BUSINESS_CONFIG.phoneWhatsAppRaw}?text=${encoded}`;
-
-    setPreparedWhatsAppLink(link);
-    setIsSubmitted(true);
-    window.open(link, "_blank", "noopener,noreferrer");
-  };
-
-  const generalWhatsAppLink = `https://wa.me/${BUSINESS_CONFIG.phoneWhatsAppRaw}?text=${encodeURIComponent(
-    isKz
-      ? "Сәлеметсіз бе, ALL TOUR! Тур таңдауға көмектесіңіз."
-      : "Здравствуйте, ALL TOUR! Хочу получить консультацию по турам."
-  )}`;
+  const generalWhatsAppLink = buildWhatsAppBookingUrl({ locale });
 
   return (
     <div className="pt-28 pb-20 min-h-screen">
@@ -198,12 +137,12 @@ ${notes ? `Вопрос: ${notes}` : ""}`;
                   </div>
                   <div>
                     <div className="font-semibold text-ink">
-                      {isKz ? "Жұмыс уақыты" : "Время работы"}
+                      {isKz ? "Менеджермен байланыс" : "Связь с менеджером"}
                     </div>
                     <div className="text-xs text-muted">
                       {isKz
-                        ? "Күн сайын 09:00-ден 21:00-ге дейін, Алматы уақытымен."
-                        : "Ежедневно с 09:00 до 21:00 по времени Алматы."}
+                        ? "Сапар күндері мен шарттарын WhatsApp арқылы нақтылаңыз."
+                        : "Уточните даты и условия поездки в WhatsApp."}
                     </div>
                   </div>
                 </div>
@@ -229,146 +168,9 @@ ${notes ? `Вопрос: ${notes}` : ""}`;
 
           {/* Right Column: Direct Interactive Form */}
           <div className="lg:col-span-7">
-            {bookingRequested ? (
-              <BookingForm key={tourSlug || "general"} dict={dict} locale={locale} preselectedTour={bookingTour}
-                initialDesiredDate={formatPlanDates(bookingPlan, locale)} initialTravelers={bookingPlan.travelers} />
-            ) : (
-            <div className="rounded-3xl bg-surface-soft border border-line p-6 sm:p-10 backdrop-blur-md h-full flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono text-accent uppercase tracking-wider mb-2">
-                  <Sparkles className="w-4 h-4" />
-                  {isKz ? "Турға өтінім" : "Заявка на тур"}
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ink mb-2">
-                  {isKz ? "Сапарға жазылу немесе кеңес алу" : "Задать вопрос или забронировать тур"}
-                </h2>
-                <p className="text-sm text-muted font-sans mb-8">
-                  {isKz
-                    ? "Форманы толтырыңыз. WhatsApp-та менеджерге жіберуге болатын хабарлама ашылады."
-                    : "Заполните форму. В WhatsApp откроется сообщение, которое нужно отправить менеджеру."}
-                </p>
-
-                {isSubmitted ? (
-                  <div className="rounded-2xl bg-sage/10 border border-sage/30 p-8 text-center space-y-4 my-6">
-                    <div className="w-14 h-14 mx-auto rounded-full bg-sage/20 flex items-center justify-center text-sage-ink">
-                      <CheckCircle2 className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-xl font-serif font-semibold text-ink">
-                      {isKz ? "Хабарлама дайын" : "Сообщение готово"}
-                    </h3>
-                    <p className="text-sm text-muted max-w-md mx-auto font-sans">
-                      {isKz
-                        ? "WhatsApp-та хабарламаны менеджерге жіберіңіз. Чат ашылмаса, төмендегі батырманы басыңыз."
-                        : "Отправьте сообщение менеджеру в WhatsApp. Если чат не открылся, нажмите кнопку ниже."}
-                    </p>
-                    <a
-                      href={preparedWhatsAppLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-sage text-on-accent font-semibold text-sm hover:brightness-110 transition-all"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      {isKz ? "WhatsApp-та ашу" : "Перейти в WhatsApp"}
-                    </a>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                      <label className="block text-xs font-mono text-muted uppercase tracking-wider mb-2">
-                        {isKz ? "Сіздің атыңыз *" : "Ваше имя *"}
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder={isKz ? "Мысалы: Айгүл" : "Например: Алина"}
-                        className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink placeholder-muted text-sm focus:outline-none focus:border-accent transition-colors font-sans"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-mono text-muted uppercase tracking-wider mb-2">
-                        {isKz ? "Телефон немесе WhatsApp *" : "Телефон / WhatsApp *"}
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={contact}
-                        onChange={(e) => setContact(e.target.value)}
-                        placeholder="+7 (700) 000-00-00"
-                        className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink placeholder-muted text-sm focus:outline-none focus:border-accent transition-colors font-sans"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-mono text-muted uppercase tracking-wider mb-2">
-                        {isKz ? "Қай бағыт қызықтырады?" : "Интересующее направление"}
-                      </label>
-                      <select
-                        value={preferredTour}
-                        onChange={(e) => setPreferredTour(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl bg-surface border border-line text-ink text-sm focus:outline-none focus:border-accent transition-colors font-sans"
-                      >
-                        <option value="any">
-                          {isKz ? "Таңдауға көмектесіңіз" : "Помогите выбрать"}
-                        </option>
-                        <option value="china-urumqi">
-                          {isKz ? "Үрімші — 6 күн" : "Урумчи — 6 дней"}
-                        </option>
-                        <option value="china-3d">
-                          {isKz ? "Құлжа — 3 күн" : "Инин (Кульджа) — 3 дня"}
-                        </option>
-                        <option value="kyrgyzstan">
-                          {isKz ? "Қырғызстан" : "Кыргызстан"}
-                        </option>
-                        <option value="georgia">
-                          {isKz ? "Грузия — Тбилиси және Казбеги" : "Грузия — Тбилиси и Казбеги"}
-                        </option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-mono text-muted uppercase tracking-wider mb-2">
-                        {isKz ? "Қосымша сұрақ немесе саяхатшылар саны" : "Ваш вопрос или количество гостей"}
-                      </label>
-                      <textarea
-                        rows={3}
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        placeholder={
-                          isKz
-                            ? "Қашан барғыңыз келеді? Қанша адам барасыздар?"
-                            : "Когда хотите поехать и сколько будет человек"
-                        }
-                        className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-line text-ink placeholder-muted text-sm focus:outline-none focus:border-accent transition-colors font-sans resize-none"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full py-4 rounded-xl bg-accent hover:bg-accent-hover text-on-accent font-semibold text-sm transition-all shadow-lg shadow-accent/10 flex items-center justify-center gap-2 group cursor-pointer"
-                    >
-                      <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                      {isKz ? "WhatsApp-ты ашу" : "Открыть WhatsApp"}
-                    </button>
-
-                    <div className="text-[11px] text-center text-muted font-sans">
-                      {isKz
-                        ? "Деректер WhatsApp-та хабарлама жібергенде менеджерге жетеді."
-                        : "Данные попадут к менеджеру, когда вы отправите сообщение в WhatsApp."}
-                    </div>
-                  </form>
-                )}
-              </div>
-
-              {/* Photo backdrop accent */}
-              <div className="mt-8 pt-6 border-t border-line flex items-center justify-between text-xs text-muted">
-                <span>© {BUSINESS_CONFIG.companyName} {BUSINESS_CONFIG.brandSubline}</span>
-                <span className="font-mono">{BUSINESS_CONFIG.city}</span>
-              </div>
-            </div>
-            )}
+            <BookingForm key={tourSlug || "general"} dict={dict} locale={locale}
+              mode={bookingRequested ? "tour" : "consultation"} preselectedTour={bookingTour}
+              initialDesiredDate={formatPlanDates(bookingPlan, locale)} initialTravelers={bookingPlan.travelers} />
           </div>
         </div>
       </div>

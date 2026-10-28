@@ -11,6 +11,7 @@ export const PageFallback: React.FC<PageFallbackProps> = ({ locale = "ru" }) => 
 
   return (
     <div
+      data-testid="route-loading"
       role="status"
       aria-live="polite"
       aria-label={label}

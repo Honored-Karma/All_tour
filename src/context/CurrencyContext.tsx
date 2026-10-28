@@ -13,7 +13,7 @@ import {
   SUPPORTED_CURRENCIES,
   DEFAULT_EXCHANGE_RATES,
   ALLTOUR_CURRENCY_STORAGE_KEY,
-  fetchLiveExchangeRates,
+  fetchExchangeRateSnapshot,
   convertCurrency,
   formatCurrencyPrice,
   formatTourPrice as formatTourPriceUtil,
@@ -70,11 +70,11 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
   // Fetch live rates on mount to update if network is available
   useEffect(() => {
     let mounted = true;
-    fetchLiveExchangeRates()
-      .then((live) => {
+    fetchExchangeRateSnapshot()
+      .then((snapshot) => {
         if (mounted) {
-          setRates(live);
-          setIsLiveRates(true);
+          setRates(snapshot.rates);
+          setIsLiveRates(snapshot.source === "live");
         }
       })
       .catch(() => {

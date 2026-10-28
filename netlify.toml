@@ -1,0 +1,109 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/"
+  to = "/_localized/kz"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours"
+  to = "/_localized/kz/tours"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/about"
+  to = "/_localized/kz/about"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/reviews"
+  to = "/_localized/kz/reviews"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/faq"
+  to = "/_localized/kz/faq"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/contacts"
+  to = "/_localized/kz/contacts"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours/kyrgyzstan-content-tour"
+  to = "/_localized/kz/tours/kyrgyzstan-content-tour"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours/china-urumqi"
+  to = "/_localized/kz/tours/china-urumqi"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours/china-content-3d"
+  to = "/_localized/kz/tours/china-content-3d"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours/discover-georgia"
+  to = "/_localized/kz/tours/discover-georgia"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours/issyk-kul"
+  to = "/_localized/kz/tours/issyk-kul"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/tours/tien-shan-panoramas"
+  to = "/_localized/kz/tours/tien-shan-panoramas"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/destinations/kyrgyzstan"
+  to = "/_localized/kz/destinations/kyrgyzstan"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/destinations/georgia"
+  to = "/_localized/kz/destinations/georgia"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+
+[[redirects]]
+  from = "/destinations/china"
+  to = "/_localized/kz/destinations/china"
+  status = 200
+  force = true
+  query = { lang = "kz" }
+

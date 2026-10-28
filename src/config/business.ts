@@ -8,6 +8,9 @@ export interface BusinessConfig {
   logoMark: string;
   instagramUrl: string;
   instagramHandle: string;
+  telegramUrl: string;
+  contactsSourceUrl: string;
+  contactsCheckedAt: string;
   whatsappNumber: string;
   whatsappDisplay: string;
   whatsappRequiresConfirmation: boolean;
@@ -32,9 +35,12 @@ export const businessConfig: BusinessConfig = {
   logoMark: "/assets/brand/logo-mark.png",
   instagramUrl: "https://www.instagram.com/all_tour.kz/",
   instagramHandle: "@all_tour.kz",
+  telegramUrl: "https://t.me/all_tour",
+  contactsSourceUrl: "https://www.instagram.com/all_tour.kz/",
+  contactsCheckedAt: "2026-10-28",
   whatsappNumber: "77711434268",
   whatsappDisplay: "+7 771 143 42 68",
-  whatsappRequiresConfirmation: true,
+  whatsappRequiresConfirmation: false,
   departureCity: {
     ru: "Алматы",
     kz: "Алматы",

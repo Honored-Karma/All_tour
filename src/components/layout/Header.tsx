@@ -47,11 +47,11 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="fixed top-0 inset-x-0 z-40 px-3 sm:px-6 pt-2 sm:pt-3 pointer-events-none">
       <div className="max-w-7xl mx-auto pointer-events-auto liquid-glass-nav rounded-2xl px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-4">
         {/* Zone 1: Official Brand Logo with light surface capsule */}
-        <BrandLogo variant="header" className="shrink-0 whitespace-nowrap" />
+        <BrandLogo locale={locale} variant="header" className="shrink-0 whitespace-nowrap" />
 
         {/* Zone 2: Navigation Links */}
         <nav
-          aria-label="Primary Navigation"
+          aria-label={locale === "kz" ? "Негізгі навигация" : "Основная навигация"}
           className="hidden xl:flex items-center gap-5 text-sm font-medium text-muted"
         >
           <NavLink

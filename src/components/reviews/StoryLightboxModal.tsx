@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import { useDialog } from "../../hooks/useDialog";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   storyScreenshots,
@@ -23,6 +24,8 @@ export const StoryLightboxModal: React.FC<StoryLightboxModalProps> = ({
   dict,
   locale,
 }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(!!activeStory, dialogRef, onClose);
   useEffect(() => {
     if (!activeStory) return;
     const currentIndex = storyScreenshots.findIndex(
@@ -43,11 +46,8 @@ export const StoryLightboxModal: React.FC<StoryLightboxModalProps> = ({
       }
     };
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [activeStory, onClose, onSelectStory]);
@@ -74,6 +74,8 @@ export const StoryLightboxModal: React.FC<StoryLightboxModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label={activeStory.title[locale]}

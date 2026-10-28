@@ -19,6 +19,8 @@ interface TourCompareModalProps {
   onRemoveTour: (tourId: string) => void;
   locale: Locale;
   dict?: Dictionary;
+  limitReached?: boolean;
+  search?: string;
 }
 
 export const TourCompareModal: React.FC<TourCompareModalProps> = ({
@@ -28,6 +30,8 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
   onRemoveTour,
   locale,
   dict,
+  limitReached = false,
+  search = "",
 }) => {
   const t = dict || getDictionary(locale);
   const { formatTourPrice } = useCurrency();
@@ -40,6 +44,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
       title={t.compare.modalTitle}
       closeLabel={t.compare.close}
     >
+      {limitReached && <p role="status" className="text-sm text-accent">{t.compare.limitNotice}</p>}
       {comparedTours.length === 0 ? (
         <div className="py-12 text-center space-y-3">
           <p className="text-sm text-muted">
@@ -48,7 +53,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
         </div>
       ) : (
         <div className="space-y-6 overflow-x-auto pb-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 min-w-[620px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 min-w-0">
             {comparedTours.map((tour) => {
               const dest = getDestinationById(tour.destinationId);
               const bookingUrl = buildWhatsAppBookingUrl({
@@ -70,8 +75,8 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
                       <button
                         type="button"
                         onClick={() => onRemoveTour(tour.id)}
-                        aria-label={t.compare.removeAria}
-                        className="text-muted hover:text-ink transition-colors cursor-pointer"
+                        aria-label={`${t.compare.removeAria}: ${tour.title[locale]}`}
+                        className="w-10 h-10 flex items-center justify-center text-muted hover:text-ink transition-colors cursor-pointer"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -143,7 +148,7 @@ export const TourCompareModal: React.FC<TourCompareModalProps> = ({
 
                   <div className="pt-3 border-t border-line space-y-2">
                     <Link
-                      to={`/tours/${tour.slug}`}
+                      to={`/tours/${tour.slug}${search ? `?${search}` : ""}`}
                       onClick={onClose}
                       className="w-full py-2 rounded-xl bg-surface-soft hover:bg-surface-hover text-xs text-ink text-center font-medium block transition-colors"
                     >

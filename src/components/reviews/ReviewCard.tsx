@@ -29,7 +29,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   return (
     <GlassPanel
       data-testid={`review-card-${review.id}`}
-      className="p-6 sm:p-7 flex flex-col justify-between gap-6"
+      className="min-w-0 p-6 sm:p-7 flex flex-col justify-between gap-6"
     >
       <div className="space-y-4">
         {/* Unboxed editorial metadata line (Zero-Pill discipline) */}
@@ -60,7 +60,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
       </div>
 
       {/* Footer: Author attribution + link to original story screenshot */}
-      <div className="pt-4 border-t border-line flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-line flex flex-col items-start sm:flex-row sm:items-center justify-between gap-4">
         <div className="min-w-0">
           <div className="text-sm font-semibold text-ink truncate">
             {review.author}
@@ -73,7 +73,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
         <button
           type="button"
           onClick={() => onOpenStory(matchingStory)}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line text-xs text-ink hover:text-ink transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          className="min-h-11 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-soft hover:bg-surface-hover border border-line text-xs text-ink hover:text-ink transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           <img
             src={review.storyScreenshot}

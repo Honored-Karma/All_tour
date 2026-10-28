@@ -1,6 +1,7 @@
 import { tours, type Tour, type TourType } from "../data/tours";
 import { destinations, type DestinationId } from "../data/destinations";
 import { matchesTourDuration, type DurationFilter } from "./tourFilters";
+import { getUpcomingDepartures } from "./departures";
 
 export interface TourPlan {
   destination: "all" | DestinationId;
@@ -11,6 +12,7 @@ export interface TourPlan {
   duration: DurationFilter;
   type: "all" | TourType;
   flexible: boolean;
+  publishedOnly: boolean;
 }
 
 export const defaultTourPlan: TourPlan = {
@@ -22,6 +24,7 @@ export const defaultTourPlan: TourPlan = {
   duration: "all",
   type: "all",
   flexible: false,
+  publishedOnly: false,
 };
 
 export function dateKey(date: Date): string {
@@ -72,6 +75,7 @@ export function readTourPlan(params: URLSearchParams): TourPlan {
       ? (type as TourType)
       : "all",
     flexible: params.get("flexible") === "true",
+    publishedOnly: params.get("publishedOnly") === "true",
   };
   plan.to = plan.from && isDateKey(to) && to >= plan.from ? to : "";
   if (
@@ -104,8 +108,12 @@ export function matchesTourPlan(tour: Tour, plan: TourPlan): boolean {
   if (plan.tour && tour.slug !== plan.tour) return false;
   if (plan.type !== "all" && tour.tourType !== plan.type) return false;
   if (!matchesTourDuration(tour, plan.duration)) return false;
-  // An unpublished schedule needs a manager's confirmation, not an invented departure.
-  if (!plan.from || tour.departureDates.length === 0) return true;
+  // Published announcements are a separate opt-in filter; never imply live inventory.
+  const dates = plan.publishedOnly
+    ? [...tour.departureDates.filter((day) => day >= todayKey()), ...getUpcomingDepartures(undefined, tour.id).map((item) => item.startDate)]
+    : tour.departureDates;
+  if (plan.publishedOnly && dates.length === 0) return false;
+  if (!plan.from || dates.length === 0) return true;
   const shift = (day: string, amount: number) => {
     const date = new Date(`${day}T12:00:00`);
     date.setDate(date.getDate() + amount);
@@ -115,7 +123,7 @@ export function matchesTourPlan(tour: Tour, plan: TourPlan): boolean {
   const end = plan.flexible
     ? shift(plan.to || plan.from, 3)
     : plan.to || plan.from;
-  return tour.departureDates.some(
+  return dates.some(
     (date) => isDateKey(date) && date >= start && date <= end,
   );
 }

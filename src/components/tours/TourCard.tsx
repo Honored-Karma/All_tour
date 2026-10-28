@@ -8,6 +8,8 @@ import type { Locale } from "../../lib/whatsapp";
 import { GlassPanel } from "../glass/GlassPanel";
 import { useCurrency } from "../../context/CurrencyContext";
 import { PriceDisplay } from "../common/PriceDisplay";
+import { responsiveMedia } from "../../lib/media";
+import { getUpcomingDepartures, formatDepartureDates } from "../../lib/departures";
 
 interface TourCardProps {
   tour: Tour;
@@ -51,11 +53,11 @@ export const TourCard: React.FC<TourCardProps> = ({
       ? tour.catalogCardImage
       : tour.image;
 
-  const webpDisplayImage = displayImage.startsWith("/media/")
+  const webpDisplayImage = responsiveMedia(displayImage) || (displayImage.startsWith("/media/")
     ? displayImage.replace(/\.jpg$/, ".webp")
     : displayImage === "/assets/brand/group-china-tour.png"
     ? "/assets/brand/group-china-tour.webp"
-    : null;
+    : null);
 
   const imagePosition =
     useCatalogImage && tour.catalogCardImagePosition
@@ -66,7 +68,8 @@ export const TourCard: React.FC<TourCardProps> = ({
     ? tour.duration[locale]
     : dict.tours.card.durationFallback;
 
-  const nextDateText =
+  const announced = getUpcomingDepartures(undefined, tour.id)[0];
+  const nextDateText = announced ? formatDepartureDates(announced, locale) :
     tour.departureDates.length > 0
       ? tour.departureDates[0]
       : dict.tours.card.nextDateFallback;
@@ -100,7 +103,7 @@ export const TourCard: React.FC<TourCardProps> = ({
             >
               {!imgFailed && (
                 <picture>
-                  {webpDisplayImage && <source srcSet={webpDisplayImage} type="image/webp" />}
+                  {webpDisplayImage && <source srcSet={webpDisplayImage} sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw" type="image/webp" />}
                   <img
                     src={displayImage}
                     alt={tour.title[locale]}
@@ -123,7 +126,7 @@ export const TourCard: React.FC<TourCardProps> = ({
             >
               {!imgFailed && (
                 <picture>
-                  {webpDisplayImage && <source srcSet={webpDisplayImage} type="image/webp" />}
+                  {webpDisplayImage && <source srcSet={webpDisplayImage} sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw" type="image/webp" />}
                   <img
                     src={displayImage}
                     alt={tour.title[locale]}

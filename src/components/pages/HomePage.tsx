@@ -7,6 +7,7 @@ import { Hero } from "../sections/Hero";
 import { SmartTourFinder } from "../tours/SmartTourFinder";
 import { FinalCTA } from "../sections/FinalCTA";
 import { destinations } from "../../data/destinations";
+import { UpcomingDepartures } from "../tours/UpcomingDepartures";
 
 interface HomePageProps {
   dict: Dictionary;
@@ -34,6 +35,8 @@ export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion 
       <div className="home-planner-wrap">
         <div className="max-w-7xl mx-auto"><SmartTourFinder dict={dict} locale={locale} /></div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pb-10"><UpcomingDepartures dict={dict} locale={locale} /></div>
 
       <section id="service" aria-labelledby="service-title" className="home-editorial scroll-mt-24">
         <div className="home-editorial-grid">

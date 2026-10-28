@@ -1,5 +1,174 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz"
+    },
+    {
+      "source": "/tours",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours"
+    },
+    {
+      "source": "/about",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/about"
+    },
+    {
+      "source": "/reviews",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/reviews"
+    },
+    {
+      "source": "/faq",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/faq"
+    },
+    {
+      "source": "/contacts",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/contacts"
+    },
+    {
+      "source": "/tours/kyrgyzstan-content-tour",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours/kyrgyzstan-content-tour"
+    },
+    {
+      "source": "/tours/china-urumqi",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours/china-urumqi"
+    },
+    {
+      "source": "/tours/china-content-3d",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours/china-content-3d"
+    },
+    {
+      "source": "/tours/discover-georgia",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours/discover-georgia"
+    },
+    {
+      "source": "/tours/issyk-kul",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours/issyk-kul"
+    },
+    {
+      "source": "/tours/tien-shan-panoramas",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/tours/tien-shan-panoramas"
+    },
+    {
+      "source": "/destinations/kyrgyzstan",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/destinations/kyrgyzstan"
+    },
+    {
+      "source": "/destinations/georgia",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/destinations/georgia"
+    },
+    {
+      "source": "/destinations/china",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "kz"
+        }
+      ],
+      "destination": "/_localized/kz/destinations/china"
+    }
   ]
 }
