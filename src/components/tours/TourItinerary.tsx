@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React from "react";
 import type { TourItineraryStep } from "../../data/tours";
 import type { Locale } from "../../lib/whatsapp";
@@ -57,7 +58,7 @@ export const TourItinerary: React.FC<TourItineraryProps> = ({
                 {step.image && (
                   <div className="hidden sm:block w-28 h-20 rounded-xl overflow-hidden border border-line shrink-0 bg-surface-soft">
                     <img
-                      src={step.image}
+                      src={step.image} srcSet={responsiveMedia(step.image)} sizes="112px" decoding="async"
                       alt={step.title[locale]}
                       loading="lazy"
                       referrerPolicy="no-referrer"

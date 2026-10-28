@@ -523,3 +523,39 @@ test("lead capture opens WhatsApp only after a saved acknowledgment and keeps a 
     assert.ok(document.body.textContent?.includes("AT-20261028-ABCDEF01"));
   } finally { globalThis.fetch = originalFetch; }
 });
+
+test("announced multi-day departure carries the full period into form and WhatsApp in RU/KZ", async (context) => {
+  context.mock.timers.enable({ apis: ["Date"], now: new Date("2026-10-28T12:00:00Z") });
+  for (const locale of ["ru", "kz"] as const) {
+    await mount(`/?lang=${locale}`);
+    const link = document.querySelector<HTMLAnchorElement>('[data-testid="upcoming-departures"] a[href^="/contacts?"][href*="china-content-3d"]')!;
+    assert.ok(link);
+    const params = new URL(link.href).searchParams;
+    assert.equal(params.get("from"), "2026-11-06");
+    assert.equal(params.get("to"), "2026-11-08");
+    await click(link);
+    const dates = formatPlanDates({ from: "2026-11-06", to: "2026-11-08", flexible: false }, locale);
+    assert.equal(field("booking-date").value, dates);
+    await fill("booking-name", "Алия");
+    await submitBooking();
+    assert.ok(new URL(openedWhatsAppUrls[0]).searchParams.get("text")!.includes(dates));
+    await act(async () => root!.unmount()); root = undefined;
+  }
+});
+
+test("comparison lazy dialog restores focus to its persistent opener after Escape", async () => {
+  await mount("/tours");
+  const compare = document.querySelector<HTMLButtonElement>(`[data-testid="tour-card-${tours[0].id}"] button[aria-label="${ru.tours.card.compareAdd}"]`)!;
+  await click(compare);
+  const opener = button(ru.compare.open.replace("{count}", "1"));
+  opener.focus(); await click(opener);
+  for (let attempt = 0; document.querySelector('[aria-busy="true"]') && attempt < 100; attempt++) {
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 10)); });
+  }
+  const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+  assert.ok(dialog.contains(document.activeElement));
+  await act(async () => document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
+  assert.equal(document.querySelector('[role="dialog"]'), null);
+  assert.equal(document.activeElement, opener);
+  assert.equal(document.querySelector('[inert]'), null);
+});

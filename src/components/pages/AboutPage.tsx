@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Compass, Users, MapPin, ShieldCheck, MessageCircle } from "lucide-react";
@@ -72,7 +73,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ dict, locale }) => {
 
           <div className="photo-surface relative rounded-3xl overflow-hidden border border-line shadow-2xl aspect-[16/9] sm:aspect-[21/9]">
             <img
-              src={OFFICIAL_LOGO.groupChinaPhoto}
+              src={OFFICIAL_LOGO.groupChinaPhoto} srcSet={responsiveMedia(OFFICIAL_LOGO.groupChinaPhoto)} sizes="(min-width: 1280px) 1216px, calc(100vw - 64px)" loading="lazy" decoding="async"
               alt={ap.groupPhotoAlt}
               className="w-full h-full object-cover"
             />

@@ -9,6 +9,8 @@ import { FinalCTA } from "../sections/FinalCTA";
 import { destinations } from "../../data/destinations";
 import { UpcomingDepartures } from "../tours/UpcomingDepartures";
 
+import { responsiveMedia } from "../../lib/media";
+
 interface HomePageProps {
   dict: Dictionary;
   locale: Locale;
@@ -60,8 +62,8 @@ export const HomePage: React.FC<HomePageProps> = ({ dict, locale, reducedMotion 
                 <Link data-reveal="card" key={destination.id} to={`/destinations/${destination.id}`} className="destination-sketch">
                   <div className="destination-sketch-image">
                     <picture>
-                      <source srcSet={destination.media.heroImage.replace(/\.jpg$/, ".webp")} type="image/webp" />
-                      <img src={destination.media.heroImage} alt={destination.tagline[locale]} loading="lazy" decoding="async" />
+                      <source srcSet={responsiveMedia(destination.media.heroImage)} sizes="(min-width: 1024px) 180px, (min-width: 640px) 28vw, 30vw" type="image/webp" />
+                      <img src={destination.media.heroImage} alt={destination.tagline[locale]} loading="lazy" decoding="async" width={480} height={640} />
                     </picture>
                     <ArrowUpRight size={18} aria-hidden="true" />
                   </div>

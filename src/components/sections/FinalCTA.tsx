@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React, { useState } from "react";
 import { MapPin, Sunset } from "lucide-react";
 import type { Dictionary } from "../../i18n/ru";
@@ -24,7 +25,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({
       <div className="sunset-landscape" aria-hidden="true">
         {!imgFailed && (
           <picture>
-            <source srcSet="/media/final-cta.webp" type="image/webp" />
+            <source srcSet={responsiveMedia("/media/final-cta.jpg")} sizes="100vw" type="image/webp" />
             <img
               src="/media/final-cta.jpg"
               alt=""

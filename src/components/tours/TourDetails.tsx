@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React, { useState } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import type { Tour } from "../../data/tours";
@@ -94,7 +95,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
           className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-line"
         >
           <img
-            src={currentImage}
+            src={currentImage} srcSet={responsiveMedia(currentImage)} sizes="(min-width: 960px) 832px, calc(100vw - 72px)" decoding="async"
             alt={`${tour.title[locale]} — ${selectedImageIdx + 1}`}
             referrerPolicy="no-referrer"
             onError={(e) => {
@@ -118,7 +119,7 @@ export const TourDetails: React.FC<TourDetailsProps> = ({
                 }`}
               >
                 <img
-                  src={imgUrl}
+                  src={imgUrl} srcSet={responsiveMedia(imgUrl)} sizes="96px" loading="lazy" decoding="async"
                   alt={`${tour.title[locale]} — ${idx + 1}`}
                   referrerPolicy="no-referrer"
                   onError={(e) => {

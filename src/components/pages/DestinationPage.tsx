@@ -1,3 +1,4 @@
+import { responsiveMedia } from "../../lib/media";
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, MessageCircle, Check, ArrowRight, Compass } from "lucide-react";
@@ -105,13 +106,9 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
         {/* Hero Section of the Country */}
         <div className="photo-surface relative rounded-3xl overflow-hidden min-h-[380px] sm:min-h-[460px] flex flex-col justify-end p-6 sm:p-12 border border-line shadow-2xl">
           <picture>
+            
             <source
-              media="(max-width: 640px)"
-              srcSet={dest.media.heroImage.replace(/\.jpg$/, "-sm.webp")}
-              type="image/webp"
-            />
-            <source
-              srcSet={dest.media.heroImage.replace(/\.jpg$/, ".webp")}
+              srcSet={responsiveMedia(dest.media.heroImage)} sizes="(min-width: 1280px) 1216px, calc(100vw - 40px)"
               type="image/webp"
             />
             <img
@@ -119,7 +116,7 @@ export const DestinationPage: React.FC<DestinationPageProps> = ({
               alt={dest.name[locale]}
               loading="eager"
               fetchPriority="high"
-              decoding="sync"
+              decoding="async"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
